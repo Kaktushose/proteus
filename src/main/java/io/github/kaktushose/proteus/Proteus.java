@@ -2,15 +2,15 @@ package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.adapter.TypeAdapter;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class Proteus {
 
-    private final Map<Class<?>, Map<Class<?>, TypeAdapter<?, ?>>> adjacencyList = new HashMap<>();
+    private final Map<Class<?>, Map<Class<?>, TypeAdapter<Object, Object>>> adjacencyList = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     public <S, T> void register(Class<S> source, Class<T> target, TypeAdapter<S, T> adapter) {
-        adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(target, adapter);
+        adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(target, (TypeAdapter<Object, Object>) adapter);
     }
 
     @SuppressWarnings("unchecked")
@@ -24,15 +24,12 @@ public class Proteus {
         for (int i = 0; i < path.size() - 1; i++) {
             Class<?> from = path.get(i);
             Class<?> into = path.get(i + 1);
-            TypeAdapter<?, ?> adapter = adjacencyList.get(from).get(into);
-            try {
-                if (intermediate.isEmpty()) {
-                    return Optional.empty();
-                }
-                intermediate = (Optional<Object>) adapter.getClass().getDeclaredMethod("adapt", from).invoke(adapter, intermediate.get());
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException(e);
+
+            if (intermediate.isEmpty()) {
+                return Optional.empty();
             }
+
+            intermediate = adjacencyList.get(from).get(into).adapt(intermediate.get());
         }
 
         return (Optional<T>) intermediate;
