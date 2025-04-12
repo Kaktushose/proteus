@@ -2,6 +2,7 @@ package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.adapter.ReversibleTypAdapter;
 import io.github.kaktushose.proteus.adapter.TypeAdapter;
+import io.github.kaktushose.proteus.exception.CyclingConversionException;
 import io.github.kaktushose.proteus.util.ConcurrentLruCache;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,6 +14,7 @@ public class Proteus {
 
     private final Map<Class<?>, Map<Class<?>, Function<Object, Optional<Object>>>> adjacencyList;
     private final ConcurrentLruCache<Route, List<Class<?>>> pathCache;
+    private static final ThreadLocal<List<Function<?, ?>>> alreadyCalled = ThreadLocal.withInitial(ArrayList::new);
 
     public Proteus() {
         this(1000);
@@ -105,7 +107,14 @@ public class Proteus {
                 return Optional.empty();
             }
 
-            intermediate = adjacencyList.get(from).get(into).apply(intermediate.get());
+            var vertex = adjacencyList.get(from).get(into);
+            var stack = alreadyCalled.get();
+            if (stack.contains(vertex)) {
+                throw new CyclingConversionException(from, into, vertex, stack);
+            }
+            stack.add(vertex);
+            intermediate = vertex.apply(intermediate.get());
+            stack.remove(vertex);
         }
 
         return (Optional<T>) intermediate;
