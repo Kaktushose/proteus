@@ -4,14 +4,15 @@ import io.github.kaktushose.proteus.adapter.ReversibleTypAdapter;
 import io.github.kaktushose.proteus.adapter.TypeAdapter;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class Proteus {
 
-    private final Map<Class<?>, Map<Class<?>, Function<Object, Optional<Object>>>> adjacencyList = new HashMap<>();
+    private final Map<Class<?>, Map<Class<?>, Function<Object, Optional<Object>>>> adjacencyList = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public <S, T> void register(Class<S> source, Class<T> target, TypeAdapter<S, T> adapter) {
+    public <S, T> Proteus register(Class<S> source, Class<T> target, TypeAdapter<S, T> adapter) {
         adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(target, (TypeAdapter<Object, Object>) adapter);
 
         if (adapter instanceof ReversibleTypAdapter<S,T> reversibleTypAdapter) {
@@ -20,6 +21,20 @@ public class Proteus {
                     value -> ((ReversibleTypAdapter<Object, Object>) reversibleTypAdapter).reverse(value)
             );
         }
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <S, T> Proteus register(Class<S> source, Class<T> target, Function<S, Optional<T>> from, Function<T, Optional<S>> into) {
+        adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(
+                target,
+                value -> Optional.ofNullable(from.apply((S) value))
+        );
+        adjacencyList.computeIfAbsent(target, unused -> new HashMap<>()).put(
+                source,
+                value -> Optional.ofNullable(into.apply((T) value))
+        );
+        return this;
     }
 
     @SuppressWarnings("unchecked")
