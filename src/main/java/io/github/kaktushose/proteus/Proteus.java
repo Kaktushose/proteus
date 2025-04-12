@@ -1,16 +1,25 @@
 package io.github.kaktushose.proteus;
 
+import io.github.kaktushose.proteus.adapter.ReversibleTypAdapter;
 import io.github.kaktushose.proteus.adapter.TypeAdapter;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class Proteus {
 
-    private final Map<Class<?>, Map<Class<?>, TypeAdapter<Object, Object>>> adjacencyList = new HashMap<>();
+    private final Map<Class<?>, Map<Class<?>, Function<Object, Optional<Object>>>> adjacencyList = new HashMap<>();
 
     @SuppressWarnings("unchecked")
     public <S, T> void register(Class<S> source, Class<T> target, TypeAdapter<S, T> adapter) {
         adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(target, (TypeAdapter<Object, Object>) adapter);
+
+        if (adapter instanceof ReversibleTypAdapter<S,T> reversibleTypAdapter) {
+            adjacencyList.computeIfAbsent(target, unused -> new HashMap<>()).put(
+                    source,
+                    value -> ((ReversibleTypAdapter<Object, Object>) reversibleTypAdapter).reverse(value)
+            );
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -29,7 +38,7 @@ public class Proteus {
                 return Optional.empty();
             }
 
-            intermediate = adjacencyList.get(from).get(into).adapt(intermediate.get());
+            intermediate = adjacencyList.get(from).get(into).apply(intermediate.get());
         }
 
         return (Optional<T>) intermediate;

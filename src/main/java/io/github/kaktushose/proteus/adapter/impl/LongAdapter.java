@@ -1,13 +1,13 @@
 package io.github.kaktushose.proteus.adapter.impl;
 
-import io.github.kaktushose.proteus.adapter.TypeAdapter;
+import io.github.kaktushose.proteus.adapter.ReversibleTypAdapter;
 
 import java.util.Optional;
 
-public class LongAdapter implements TypeAdapter<String, Long> {
+public class LongAdapter implements ReversibleTypAdapter<String, Long> {
 
     @Override
-    public Optional<Long> adapt(String source) {
+    public Optional<Long> apply(String source) {
         try {
             return Optional.of(Long.valueOf(source));
         } catch (NumberFormatException ignored) {

@@ -1,13 +1,13 @@
 package io.github.kaktushose.proteus.adapter.impl;
 
-import io.github.kaktushose.proteus.adapter.TypeAdapter;
+import io.github.kaktushose.proteus.adapter.ReversibleTypAdapter;
 
 import java.util.Optional;
 
-public class IntegerAdapter implements TypeAdapter<Long, Integer> {
+public class IntegerAdapter implements ReversibleTypAdapter<Long, Integer> {
 
     @Override
-    public Optional<Integer> adapt(Long source) {
+    public Optional<Integer> apply(Long source) {
         if (source > Integer.MAX_VALUE || source < Integer.MIN_VALUE) {
             return Optional.empty();
         }

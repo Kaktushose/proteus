@@ -1,13 +1,11 @@
 package io.github.kaktushose.proteus.adapter;
 
 import java.util.Optional;
+import java.util.function.Function;
 
-public interface TypeAdapter<S, T> {
+public interface TypeAdapter<S, T> extends Function<S, Optional<T>> {
 
-    Optional<T> adapt(S source);
-
-    default Optional<S> reverse(T target) {
-         return Optional.empty();
-    }
+    @Override
+    Optional<T> apply(S source);
 
 }
