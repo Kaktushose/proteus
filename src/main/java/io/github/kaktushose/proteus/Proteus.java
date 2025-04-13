@@ -12,9 +12,20 @@ import java.util.function.Function;
 
 public class Proteus {
 
+    private static final ThreadLocal<List<Function<?, ?>>> alreadyCalled = ThreadLocal.withInitial(ArrayList::new);
+    private static final Map<Class<?>, Class<?>> primitiveMapping = Map.of(
+            boolean.class, Boolean.class,
+            byte.class, Byte.class,
+            short.class, Short.class,
+            int.class, Integer.class,
+            long.class, Long.class,
+            float.class, Float.class,
+            double.class, Double.class,
+            char.class, Character.class
+    );
+
     private final Map<Class<?>, Map<Class<?>, Function<Object, Optional<Object>>>> adjacencyList;
     private final ConcurrentLruCache<Route, List<Class<?>>> pathCache;
-    private static final ThreadLocal<List<Function<?, ?>>> alreadyCalled = ThreadLocal.withInitial(ArrayList::new);
 
     public Proteus() {
         this(1000);
@@ -62,6 +73,8 @@ public class Proteus {
     @NotNull
     @SuppressWarnings("unchecked")
     public <S, T> Proteus register(@NotNull Class<S> source, @NotNull Class<T> target, @NotNull TypeAdapter<S, T> adapter) {
+        source = (Class<S>) primitiveMapping.getOrDefault(source, source);
+        target = (Class<T>) primitiveMapping.getOrDefault(target, target);
         adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(target, (TypeAdapter<Object, Object>) adapter);
 
         if (adapter instanceof ReversibleTypAdapter<S, T> reversibleTypAdapter) {
@@ -79,6 +92,8 @@ public class Proteus {
                                    @NotNull Class<T> target,
                                    @NotNull Function<S, Optional<T>> from,
                                    @NotNull Function<T, Optional<S>> into) {
+        source = (Class<S>) primitiveMapping.getOrDefault(source, source);
+        target = (Class<T>) primitiveMapping.getOrDefault(target, target);
         adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).put(
                 target,
                 value -> Optional.ofNullable(from.apply((S) value))
@@ -93,6 +108,7 @@ public class Proteus {
     @NotNull
     @SuppressWarnings("unchecked")
     public <S, T> Optional<T> convert(@NotNull S value, @NotNull Class<T> target) {
+        target = (Class<T>) primitiveMapping.getOrDefault(target, target);
         var path = pathCache.get(new Route(value.getClass(), target));
         if (path.isEmpty()) {
             return Optional.empty();
