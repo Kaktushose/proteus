@@ -28,10 +28,11 @@ public final class Graph {
     @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Graph register(@NotNull TypeAdapter<?, ?> adapter) {
+        if (adapter.source().isUniversal() ^ adapter.target().isUniversal()) {
+            throw new IllegalArgumentException("Cannot mix universal adapter with non universal adapter!");
+        }
         switch ((Mapper) adapter.mapper()) {
-            case UniMapper uniMapper -> {
-                add(adapter.source(), adapter.target(), uniMapper);
-            }
+            case UniMapper uniMapper -> add(adapter.source(), adapter.target(), uniMapper);
             case BiMapper biMapper -> {
                 add(adapter.source(), adapter.target(), biMapper::from);
                 add(adapter.target(), adapter.source(), biMapper::into);

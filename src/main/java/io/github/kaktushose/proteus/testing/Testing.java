@@ -9,10 +9,10 @@ public class Testing {
 
     public static void main(String[] args) {
         var graph = new Graph();
-        var string = new Type<>("String", null, null, String.class);
-        var integer = new Type<>("Integer", null, null, Integer.class);
-        var longType = new Type<>("Long", null, null, Long.class);
-        var doubleType = new Type<>("Double", null, null, Double.class);
+        var string = Type.universal(String.class);
+        var integer = Type.universal(Integer.class);
+        var longType = Type.universal(Long.class);
+        var doubleType = Type.universal(Double.class);
         graph.register(new TypeAdapter<>(string, integer, (source, context) -> {
             try {
                 return Result.success(Integer.valueOf(source));
@@ -22,6 +22,7 @@ public class Testing {
         }));
         graph.register(new TypeAdapter<>(integer, longType, (source, context) -> Result.success((long) source)));
         graph.register(new TypeAdapter<>(longType, doubleType, (source, context) -> Result.success((double) source)));
+
         System.out.println(graph.convert("10", string, doubleType));
     }
 }
