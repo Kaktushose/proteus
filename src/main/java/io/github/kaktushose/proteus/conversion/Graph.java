@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class Graph {
 
     private static final ThreadLocal<List<UniMapper<Object, Object>>> callStack = ThreadLocal.withInitial(ArrayList::new);
-    private final Map<Type<?>, Map<Type<?>, List<UniMapper<Object, Object>>>> adjacencyList;
+    private final Map<Type<?>, Map<Type<?>, UniMapper<Object, Object>>> adjacencyList;
     private final ConcurrentLruCache<Route, List<Type<?>>> pathCache;
 
     public Graph() {
@@ -28,8 +28,8 @@ public final class Graph {
     @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Graph register(@NotNull TypeAdapter<?, ?> adapter) {
-        if (adapter.source().isUniversal() ^ adapter.target().isUniversal()) {
-            throw new IllegalArgumentException("Cannot mix universal adapter with non universal adapter!");
+        if (!adapter.source().getClass().equals(adapter.target().getClass())) {
+            throw new IllegalArgumentException("Cannot mix different adapter types!");
         }
         switch ((Mapper) adapter.mapper()) {
             case UniMapper uniMapper -> add(adapter.source(), adapter.target(), uniMapper);
@@ -42,9 +42,10 @@ public final class Graph {
     }
 
     private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter) {
-        adjacencyList.computeIfAbsent(source, unused -> new HashMap<>())
-                .computeIfAbsent(target, unused -> new ArrayList<>())
-                .add(adapter);
+        var present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
+        if (present != null) {
+            throw new IllegalArgumentException("Duplicate adapter registration");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -61,7 +62,7 @@ public final class Graph {
 
             switch (intermediate) {
                 case Result.Success<?> success -> {
-                    var vertex = adjacencyList.get(from).get(into).getLast();
+                    var vertex = adjacencyList.get(from).get(into);
                     var stack = callStack.get();
                     if (stack.contains(vertex)) {
                         throw new CyclingConversionException(from, into, vertex, stack);
