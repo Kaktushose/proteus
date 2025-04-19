@@ -35,5 +35,17 @@ public sealed interface Type<T> {
             Objects.requireNonNull(kind);
             Objects.requireNonNull(container);
         }
+
+        public boolean equalsIgnoreContainer(Specific<?> target) {
+            if (target == null) {
+                return false;
+            }
+            var result = Objects.equals(entity, target.entity) && Objects.equals(format, target.format) && Objects.equals(kind, target.kind);
+            return result;
+        }
+
+        public Universal<T> universal() {
+            return new Universal<>(container);
+        }
     }
 }
