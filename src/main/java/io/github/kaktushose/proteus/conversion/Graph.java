@@ -15,6 +15,12 @@ import java.util.stream.Collectors;
 public final class Graph {
 
     private static final ThreadLocal<List<UniMapper<Object, Object>>> callStack = ThreadLocal.withInitial(ArrayList::new);
+    private static final Map<Class<?>, List<Class<?>>> allowedRoutes = Map.of(
+            Type.Universal.class, List.of(Type.Universal.class),
+            Type.Class.class, List.of(Type.Class.class, Type.Specific.class),
+            Type.Specific.class, List.of(Type.Specific.class, Type.Class.class),
+            Type.Parameterized.class, List.of(Type.Parameterized.class)
+    );
     private final Map<Type<?>, Map<Type<?>, UniMapper<Object, Object>>> adjacencyList;
     private final ConcurrentLruCache<Route, List<Edge>> pathCache;
 
@@ -30,7 +36,7 @@ public final class Graph {
     @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Graph register(@NotNull TypeAdapter<?, ?> adapter) {
-        if (!adapter.source().getClass().equals(adapter.target().getClass())) {
+        if (!allowedRoutes.get(adapter.source().getClass()).contains(adapter.target().getClass())) {
             throw new IllegalArgumentException("Cannot mix different types!");
         }
         switch ((Mapper) adapter.mapper()) {
@@ -50,32 +56,11 @@ public final class Graph {
         }
     }
 
-    private Set<Type<?>> neighbours(Type<?> type) {
-        if (type instanceof Type.Specific<?> specific) {
-            var mapper = adjacencyList.get(type);
-            if (mapper != null) {
-                return mapper.keySet();
-            }
-            return adjacencyList.keySet().stream()
-                    .filter(Type.Specific.class::isInstance)
-                    .filter(it -> ((Type.Specific<?>) it).equalsIgnoreContainer(specific))
-                    .collect(Collectors.toSet());
-        }
-        return adjacencyList.getOrDefault(type, Map.of()).keySet();
-    }
-
-    public UniMapper<?, ?> mapper(Type<?> source, Type<?> target) {
-        var mappers = adjacencyList.get(source);
-        if (mappers != null) {
-            return mappers.get(target);
-        }
-        return null;
-    }
-
+    @NotNull
     @SuppressWarnings("unchecked")
-    public <S, T> Result<T> convert(S value, Type<S> source, Type<T> target) {
-        if (source instanceof Type.Universal<?> ^ target instanceof Type.Universal<?>) {
-            return Result.failure("Cannot convert between universal and non-universal type!");
+    public <S, T> Result<T> convert(@Nullable S value, @NotNull Type<S> source, @NotNull Type<T> target) {
+        if (!allowedRoutes.get(source.getClass()).contains(target.getClass())) {
+            return Result.failure("Cannot mix different types!");
         }
 
         var path = pathCache.get(new Route(source, target));
@@ -84,39 +69,38 @@ public final class Graph {
         }
 
         Result<Object> intermediate = Result.success(value);
-        for (Edge step : path) {
-            switch (intermediate) {
-                case Result.Success<?>(Object success) -> {
-                    var mapper = step.mapper();
-                    var callStack = Graph.callStack.get();
-
-                    if (callStack.contains(mapper)) {
-                        throw new CyclingConversionException(step.from(), step.into(), mapper, callStack);
-                    }
-
-                    // a null mapper indicates an implicit specific conversion, we have to find a route for the container types
-                    // for any other case the mapper cannot be null, see the Edge compact constructor
-                    if (mapper == null) {
-                        intermediate = convert(success, ((Type.Specific<Object>) step.from).universal(), ((Type.Specific<Object>) step.into).universal());
-                        break;
-                    }
-
-                    callStack.add(mapper);
-                    intermediate = mapper.from(success, new Mapper.MappingContext());
-                    callStack.remove(mapper);
-                }
-                case Result.Failure<?> failure -> {
-                    return Result.failure(formatError(path, failure, step));
-                }
+        for (Edge edge : path) {
+            if (intermediate instanceof Result.Success<?>(Object success)) {
+                intermediate = applyEdge(edge, success);
+            }
+            if (intermediate instanceof Result.Failure<?> failure) {
+                intermediate = Result.failure(formatError(path, failure, edge));
             }
         }
-
-        if (intermediate instanceof Result.Failure<?> failure) {
-            intermediate = Result.failure(formatError(path, failure, null));
-        }
-
         return (Result<T>) intermediate;
     }
+
+    private Result<Object> applyEdge(Edge edge, Object value) {
+        return switch (edge) {
+            case Edge.ResolvedEdge resolved -> applyMapper(resolved, value);
+            case Edge.UnresolvedEdge unresolved ->
+                    convert(value, unresolved.from().universal(), unresolved.into().universal());
+        };
+    }
+
+    private Result<Object> applyMapper(Edge.ResolvedEdge edge, Object value) {
+        var mapper = edge.mapper();
+        var stack = callStack.get();
+        if (stack.contains(mapper)) {
+            throw new CyclingConversionException(edge.from(), edge.into(), mapper, stack);
+        }
+        stack.add(mapper);
+        var result = mapper.from(value, new Mapper.MappingContext());
+        stack.remove(mapper);
+        return result;
+    }
+
+    private record Route(Type<?> source, Type<?> target) {}
 
     @SuppressWarnings("unchecked")
     private List<Edge> findPath(Route route) {
@@ -127,10 +111,8 @@ public final class Graph {
             return List.of();
         }
 
-        if (source instanceof Type.Specific<?> specificSource &&
-            target instanceof Type.Specific<?> specificTarget &&
-            specificSource.equalsIgnoreContainer(specificTarget)) {
-            return List.of(new Edge((Type<Object>) source, (Type<Object>) target, null));
+        if (source instanceof Type.Specific<?> from && target instanceof Type.Specific<?> into && from.equalsIgnoreContainer(into)) {
+            return List.of(new Edge.UnresolvedEdge((Type.Specific<Object>) from, (Type.Specific<Object>) into));
         }
 
         Queue<Path> queue = new LinkedList<>();
@@ -145,14 +127,37 @@ public final class Graph {
                 }
                 visited.add(neighbour);
 
-                Path newPath = path.add(neighbour, mapper(path.head, neighbour));
+                Path newPath = path.addEdge(neighbour, mapper(path.head, neighbour));
                 if (equals(neighbour, target)) {
-                    return newPath.steps();
+                    return newPath.edges();
                 }
                 queue.offer(newPath);
             }
         }
         return List.of();
+    }
+
+    @NotNull
+    private Set<Type<?>> neighbours(@NotNull Type<?> type) {
+        if (type instanceof Type.Specific<?> specific) {
+            var mappers = adjacencyList.get(type);
+            var result = new HashSet<Type<?>>();
+            if (mappers != null) {
+                result.addAll(mappers.keySet());
+            }
+            result.addAll(adjacencyList.keySet().stream()
+                    .filter(Type.Specific.class::isInstance)
+                    .filter(it -> ((Type.Specific<?>) it).equalsIgnoreContainer(specific))
+                    .collect(Collectors.toSet()));
+            return result;
+        }
+        return adjacencyList.getOrDefault(type, Map.of()).keySet();
+    }
+
+    @Nullable
+    public UniMapper<?, ?> mapper(@NotNull Type<?> source, @NotNull Type<?> target) {
+        var mappers = adjacencyList.getOrDefault(source, Map.of());
+        return mappers.get(target);
     }
 
     private boolean equals(Type<?> first, Type<?> second) {
@@ -166,39 +171,45 @@ public final class Graph {
     }
 
     @SuppressWarnings("unchecked")
-    private record Path(List<Edge> steps, Type<Object> head) {
+    private record Path(List<Edge> edges, Type<Object> head) {
 
         public Path(Type<?> head) {
             this(new ArrayList<>(), (Type<Object>) head);
         }
 
-        public Path add(Type<?> intermediate, UniMapper<?, ?> mapper) {
-            steps.add(new Edge(head, (Type<Object>) intermediate, (UniMapper<Object, Object>) mapper));
-            return new Path(new ArrayList<>(steps), (Type<Object>) intermediate);
-        }
-
-        public List<Edge> steps() {
-            return Collections.unmodifiableList(steps);
-        }
-    }
-
-    private record Edge(Type<Object> from, Type<Object> into, @Nullable UniMapper<Object, Object> mapper) {
-
-        public Edge {
-            if (mapper == null) {
-                if (from instanceof Type.Specific<Object> specificSource &&
-                    into instanceof Type.Specific<Object> specificTarget) {
-                    if (!specificSource.equalsIgnoreContainer(specificTarget)) {
-                        throw new IllegalArgumentException("Illegal edge for two specific types with different format. Please report this error to the devs of proteus!");
-                    }
-                } else {
-                    throw new IllegalArgumentException("Mapper cannot be null for non-specific types. Please report this error to the devs of proteus!");
-                }
+        public Path addEdge(@NotNull Type<?> intermediate, @Nullable UniMapper<?, ?> mapper) {
+            if (mapper != null) {
+                edges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, (UniMapper<Object, Object>) mapper));
+                return new Path(new ArrayList<>(edges), (Type<Object>) intermediate);
             }
+
+            if (head instanceof Type.Specific<Object> from && intermediate instanceof Type.Specific<?> into) {
+                if (!from.equalsIgnoreContainer(into)) {
+                    throw new IllegalArgumentException("Illegal edge for two specific types with different format. Please report this error to the devs of proteus!");
+                }
+            } else {
+                throw new IllegalArgumentException("Mapper cannot be null for non-specific types. Please report this error to the devs of proteus!");
+            }
+
+            edges.add(new Edge.UnresolvedEdge(from, (Type.Specific<Object>) into));
+            return new Path(new ArrayList<>(edges), (Type<Object>) intermediate);
+        }
+
+        public List<Edge> edges() {
+            return Collections.unmodifiableList(edges);
         }
     }
 
-    private record Route(Type<?> source, Type<?> target) {}
+    private sealed interface Edge {
+
+        Type<Object> from();
+
+        Type<Object> into();
+
+        record UnresolvedEdge(Type.Specific<Object> from, Type.Specific<Object> into) implements Edge {}
+
+        record ResolvedEdge(Type<Object> from, Type<Object> into, UniMapper<Object, Object> mapper) implements Edge {}
+    }
 
     private String formatError(List<Edge> path, Result.Failure<?> failure, @Nullable Edge step) {
         Type<?> from;
@@ -208,33 +219,31 @@ public final class Graph {
             from = path.getLast().from();
             into = path.getLast().into();
         } else {
-            from = step.from;
-            into = step.into;
+            from = step.from();
+            into = step.into();
         }
         StringBuilder error = new StringBuilder();
-        error.append("Failed to convert from '%s' to '%s'.\n".formatted(path.getFirst().from, path.getLast().into))
+        error.append("Failed to convert from '%s' to '%s'.\n".formatted(path.getFirst().from(), path.getLast().into()))
                 .append("Type adapting failed for step '%s' -> '%s'! Reason: '%s'\n".formatted(from, into, failure.message()))
                 .append("Path: \n");
 
         error.append("\n");
         for (Edge edge : path) {
-            if (edge.from.equals(from) || edge.from.equals(into)) {
-                error.append("  -> %s".formatted(edge.from));
+            if (edge.from().equals(from) || edge.from().equals(into)) {
+                error.append("  -> %s".formatted(edge.from()));
             } else {
-                error.append("     ").append(edge.from);
+                error.append("     ").append(edge.from());
             }
             error.append("\n");
         }
         var last = path.getLast();
         if (last != null) {
-            if (last.into.equals(from) || last.into.equals(into)) {
-                error.append("  -> %s".formatted(last.into));
+            if (last.into().equals(from) || last.into().equals(into)) {
+                error.append("  -> %s".formatted(last.into()));
             } else {
-                error.append("     ").append(last.into);
+                error.append("     ").append(last.into());
             }
         }
         return error.toString();
     }
-
-
 }
