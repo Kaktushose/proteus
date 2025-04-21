@@ -1,14 +1,15 @@
 package io.github.kaktushose.proteus.testing;
 
-import io.github.kaktushose.proteus.conversion.Graph;
+import io.github.kaktushose.proteus.Proteus;
 import io.github.kaktushose.proteus.conversion.Result;
-import io.github.kaktushose.proteus.conversion.type.Type;
-import io.github.kaktushose.proteus.conversion.type.TypeAdapter;
+import io.github.kaktushose.proteus.type.Type;
+import io.github.kaktushose.proteus.type.TypeAdapter;
 
 public class Testing {
 
     public static void main(String[] args) {
-        var graph = new Graph();
+        var proteus = new Proteus();
+        var graph = proteus.graph();
         var string = new Type.Universal<>(String.class);
         var integer = new Type.Universal<>(Integer.class);
         var longType = new Type.Universal<>(Long.class);
@@ -25,9 +26,9 @@ public class Testing {
         }));
         graph.register(new TypeAdapter<>(string, longType, (source, context) -> Result.success(Long.valueOf(source))))
                 .register(new TypeAdapter<>(integer, longType, (source, context) -> Result.success((long) source)));
-        //graph.register(new TypeAdapter<>(longType, doubleType, (source, context) -> Result.success((double) source)));
+        graph.register(new TypeAdapter<>(longType, doubleType, (source, context) -> Result.success((double) source)));
         graph.register(new TypeAdapter<>(S1Double, S2String, ((source, context) -> Result.success(String.valueOf(source)))));
 
-        System.out.println(graph.convert("1", S1String, S2String));
+        System.out.println(proteus.convert("1", S1String, S2String));
     }
 }

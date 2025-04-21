@@ -33,58 +33,44 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 
 
-/**
- * Simple LRU (Least Recently Used) cache, bounded by a specified cache capacity.
- * <p>This is a simplified, opinionated implementation of an LRU cache for internal
- * use in Spring Framework. It is inspired from
- * <a href="https://github.com/ben-manes/concurrentlinkedhashmap">ConcurrentLinkedHashMap</a>.
- * <p>Read and write operations are internally recorded in dedicated buffers,
- * then drained at chosen times to avoid contention.
- *
- * @param <K> the type of the key used for cache retrieval
- * @param <V> the type of the cached values, does not allow null values
- * @author Brian Clozel
- * @author Ben Manes
- * @see #get(Object)
- * @since 5.3
- */
+/// Simple LRU (Least Recently Used) cache, bounded by a specified cache capacity.
+///
+/// This is a simplified, opinionated implementation of an LRU cache for internal use in Spring Framework. It is
+/// inspired from <a href="https://github.com/ben-manes/concurrentlinkedhashmap">ConcurrentLinkedHashMap</a>.
+///
+/// Read and write operations are internally recorded in dedicated buffers, then drained at chosen times to avoid contention.
+///
+/// @param <K> the type of the key used for cache retrieval
+/// @param <V> the type of the cached values, does not allow null values
+/// @author Brian Clozel
+/// @author Ben Manes
+/// @see #get(Object)
 @SuppressWarnings({"unchecked", "NullAway"})
 public final class ConcurrentLruCache<K, V> {
 
     private final int capacity;
-
     private final AtomicInteger currentSize = new AtomicInteger();
-
     private final ConcurrentMap<K, Node<K, V>> cache;
-
     private final Function<K, V> generator;
-
     private final ReadOperations<K, V> readOperations;
-
     private final WriteOperations writeOperations;
-
     private final Lock evictionLock = new ReentrantLock();
-
     /*
      * Queue that contains all ACTIVE cache entries, ordered with least recently used entries first.
      * Read and write operations are buffered and periodically processed to reorder the queue.
      */
     private final EvictionQueue<K, V> evictionQueue = new EvictionQueue<>();
-
     private final AtomicReference<DrainStatus> drainStatus = new AtomicReference<>(DrainStatus.IDLE);
 
-    /**
-     * Create a new cache instance with the given capacity and generator function.
-     *
-     * @param capacity  the maximum number of entries in the cache
-     *                  (0 indicates no caching, always generating a new value)
-     * @param generator a function to generate a new value for a given key
-     */
-    public ConcurrentLruCache(int capacity, @NotNull Function<K, V> generator) {
+    /// Create a new cache instance with the given capacity and generator function.
+    ///
+    /// @param capacity  the maximum number of entries in the cache (0 indicates no caching, always generating a new value)
+    /// @param generator a function to generate a new value for a given key
+    public ConcurrentLruCache(int capacity, @NotNull Function<@NotNull K, @NotNull V> generator) {
         this(capacity, generator, 16);
     }
 
-    private ConcurrentLruCache(int capacity, Function<K, V> generator, int concurrencyLevel) {
+    private ConcurrentLruCache(int capacity, @NotNull Function<@NotNull K, @NotNull V> generator, int concurrencyLevel) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be >= 0");
         }
@@ -95,13 +81,12 @@ public final class ConcurrentLruCache<K, V> {
         this.writeOperations = new WriteOperations();
     }
 
-    /**
-     * Retrieve an entry from the cache, potentially triggering generation of the value.
-     *
-     * @param key the key to retrieve the entry for
-     * @return the cached or newly generated value
-     */
-    public V get(K key) {
+    /// Retrieve an entry from the cache, potentially triggering generation of the value.
+    ///
+    /// @param key the key to retrieve the entry for
+    /// @return the cached or newly generated value
+    @NotNull
+    public V get(@NotNull K key) {
         if (this.capacity == 0) {
             return this.generator.apply(key);
         }
@@ -153,37 +138,12 @@ public final class ConcurrentLruCache<K, V> {
         }
     }
 
-    /**
-     * Return the maximum number of entries in the cache.
-     *
-     * @see #size()
-     */
+    /// Return the maximum number of entries in the cache.
     public int capacity() {
         return this.capacity;
     }
 
-    /**
-     * Return the maximum number of entries in the cache.
-     *
-     * @deprecated in favor of {@link #capacity()} as of 6.0.
-     */
-    @Deprecated(since = "6.0")
-    public int sizeLimit() {
-        return this.capacity;
-    }
-
-    /**
-     * Return the current size of the cache.
-     *
-     * @see #capacity()
-     */
-    public int size() {
-        return this.cache.size();
-    }
-
-    /**
-     * Immediately remove all entries from this cache.
-     */
+    /// Immediately remove all entries from this cache.
     public void clear() {
         this.evictionLock.lock();
         try {
@@ -213,24 +173,19 @@ public final class ConcurrentLruCache<K, V> {
         }
     }
 
-    /**
-     * Determine whether the given key is present in this cache.
-     *
-     * @param key the key to check for
-     * @return {@code true} if the key is present, {@code false} if there was no matching key
-     */
-    public boolean contains(K key) {
+    /// Determine whether the given key is present in this cache.
+    ///
+    /// @param key the key to check for
+    /// @return `true` if the key is present, `false` if there was no matching key
+    public boolean contains(@NotNull K key) {
         return this.cache.containsKey(key);
     }
 
-    /**
-     * Immediately remove the given key and any associated value.
-     *
-     * @param key the key to evict the entry for
-     * @return {@code true} if the key was present before,
-     * {@code false} if there was no matching key
-     */
-    public boolean remove(K key) {
+    /// Immediately remove the given key and any associated value.
+    ///
+    /// @param key the key to evict the entry for
+    /// @return `true` if the key was present before, `false` if there was no matching key
+    public boolean remove(@NotNull K key) {
         final Node<K, V> node = this.cache.remove(key);
         if (node == null) {
             return false;
@@ -256,57 +211,6 @@ public final class ConcurrentLruCache<K, V> {
             }
         }
     }
-
-    /**
-     * Write operation recorded when a new entry is added to the cache.
-     */
-    private final class AddTask implements Runnable {
-        final Node<K, V> node;
-
-        AddTask(Node<K, V> node) {
-            this.node = node;
-        }
-
-        @Override
-        public void run() {
-            currentSize.lazySet(currentSize.get() + 1);
-            if (this.node.get().isActive()) {
-                evictionQueue.add(this.node);
-                evictEntries();
-            }
-        }
-
-        private void evictEntries() {
-            while (currentSize.get() > capacity) {
-                final Node<K, V> node = evictionQueue.poll();
-                if (node == null) {
-                    return;
-                }
-                cache.remove(node.key, node);
-                markAsRemoved(node);
-            }
-        }
-
-    }
-
-
-    /**
-     * Write operation recorded when an entry is removed to the cache.
-     */
-    private final class RemovalTask implements Runnable {
-        final Node<K, V> node;
-
-        RemovalTask(Node<K, V> node) {
-            this.node = node;
-        }
-
-        @Override
-        public void run() {
-            evictionQueue.remove(this.node);
-            markAsRemoved(this.node);
-        }
-    }
-
 
     /*
      * Draining status for the read/write buffers.
@@ -343,14 +247,13 @@ public final class ConcurrentLruCache<K, V> {
             }
         };
 
-        /**
-         * Determine whether the buffers should be drained.
-         *
-         * @param delayable if a drain should be delayed until required
-         * @return if a drain should be attempted
-         */
+        /// Determine whether the buffers should be drained.
+        ///
+        /// @param delayable if a drain should be delayed until required
+        /// @return if a drain should be attempted
         abstract boolean shouldDrainBuffers(boolean delayable);
     }
+
 
     private enum CacheEntryState {
         ACTIVE, PENDING_REMOVAL, REMOVED
@@ -366,41 +269,25 @@ public final class ConcurrentLruCache<K, V> {
     private static final class ReadOperations<K, V> {
 
         private static final int BUFFER_COUNT = detectNumberOfBuffers();
-
-        private static int detectNumberOfBuffers() {
-            int availableProcessors = Runtime.getRuntime().availableProcessors();
-            int nextPowerOfTwo = 1 << (Integer.SIZE - Integer.numberOfLeadingZeros(availableProcessors - 1));
-            return Math.min(4, nextPowerOfTwo);
-        }
-
         private static final int BUFFERS_MASK = BUFFER_COUNT - 1;
-
         private static final int MAX_PENDING_OPERATIONS = 32;
-
         private static final int MAX_DRAIN_COUNT = 2 * MAX_PENDING_OPERATIONS;
-
         private static final int BUFFER_SIZE = 2 * MAX_DRAIN_COUNT;
-
         private static final int BUFFER_INDEX_MASK = BUFFER_SIZE - 1;
-
         /*
          * Number of operations recorded, for each buffer
          */
         private final AtomicLongArray recordedCount = new AtomicLongArray(BUFFER_COUNT);
-
         /*
          * Number of operations read, for each buffer
          */
         private final long[] readCount = new long[BUFFER_COUNT];
-
         /*
          * Number of operations processed, for each buffer
          */
         private final AtomicLongArray processedCount = new AtomicLongArray(BUFFER_COUNT);
-
         @SuppressWarnings("rawtypes")
         private final AtomicReferenceArray<Node<K, V>>[] buffers = new AtomicReferenceArray[BUFFER_COUNT];
-
         private final EvictionQueue<K, V> evictionQueue;
 
         ReadOperations(EvictionQueue<K, V> evictionQueue) {
@@ -408,6 +295,12 @@ public final class ConcurrentLruCache<K, V> {
             for (int i = 0; i < BUFFER_COUNT; i++) {
                 this.buffers[i] = new AtomicReferenceArray<>(BUFFER_SIZE);
             }
+        }
+
+        private static int detectNumberOfBuffers() {
+            int availableProcessors = Runtime.getRuntime().availableProcessors();
+            int nextPowerOfTwo = 1 << (Integer.SIZE - Integer.numberOfLeadingZeros(availableProcessors - 1));
+            return Math.min(4, nextPowerOfTwo);
         }
 
         @SuppressWarnings("deprecation")  // for Thread.getId() on JDK 19
@@ -490,7 +383,6 @@ public final class ConcurrentLruCache<K, V> {
 
     }
 
-    @SuppressWarnings("serial")
     private static final class Node<K, V> extends AtomicReference<CacheEntry<V>> {
         final K key;
 
@@ -525,7 +417,6 @@ public final class ConcurrentLruCache<K, V> {
             return get().value;
         }
     }
-
 
     private static final class EvictionQueue<K, V> {
 
@@ -609,4 +500,48 @@ public final class ConcurrentLruCache<K, V> {
 
     }
 
+    /// Write operation recorded when a new entry is added to the cache.
+    private final class AddTask implements Runnable {
+        final Node<K, V> node;
+
+        AddTask(Node<K, V> node) {
+            this.node = node;
+        }
+
+        @Override
+        public void run() {
+            currentSize.lazySet(currentSize.get() + 1);
+            if (this.node.get().isActive()) {
+                evictionQueue.add(this.node);
+                evictEntries();
+            }
+        }
+
+        private void evictEntries() {
+            while (currentSize.get() > capacity) {
+                final Node<K, V> node = evictionQueue.poll();
+                if (node == null) {
+                    return;
+                }
+                cache.remove(node.key, node);
+                markAsRemoved(node);
+            }
+        }
+
+    }
+
+    /// Write operation recorded when an entry is removed to the cache.
+    private final class RemovalTask implements Runnable {
+        final Node<K, V> node;
+
+        RemovalTask(Node<K, V> node) {
+            this.node = node;
+        }
+
+        @Override
+        public void run() {
+            evictionQueue.remove(this.node);
+            markAsRemoved(this.node);
+        }
+    }
 }

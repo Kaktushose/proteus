@@ -1,6 +1,7 @@
-package io.github.kaktushose.proteus.conversion.type;
+package io.github.kaktushose.proteus.type;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -36,14 +37,14 @@ public sealed interface Type<T> {
             Objects.requireNonNull(container);
         }
 
-        public boolean equalsIgnoreContainer(Specific<?> target) {
+        public boolean equalsIgnoreContainer(@Nullable Specific<?> target) {
             if (target == null) {
                 return false;
             }
-            var result = Objects.equals(entity, target.entity) && Objects.equals(format, target.format) && Objects.equals(kind, target.kind);
-            return result;
+            return Objects.equals(entity, target.entity) && Objects.equals(format, target.format) && Objects.equals(kind, target.kind);
         }
 
+        @NotNull
         public Universal<T> universal() {
             return new Universal<>(container);
         }
