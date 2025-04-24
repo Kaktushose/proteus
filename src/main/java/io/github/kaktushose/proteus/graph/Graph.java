@@ -5,7 +5,7 @@ import io.github.kaktushose.proteus.conversion.Mapper.BiMapper;
 import io.github.kaktushose.proteus.conversion.Mapper.UniMapper;
 import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.Type.Specific;
+import io.github.kaktushose.proteus.type.internal.Specific;
 import io.github.kaktushose.proteus.type.TypeAdapter;
 import io.github.kaktushose.proteus.util.ConcurrentLruCache;
 import io.github.kaktushose.proteus.util.Helpers;

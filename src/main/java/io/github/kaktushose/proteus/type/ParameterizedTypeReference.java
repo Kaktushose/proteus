@@ -42,6 +42,7 @@ public abstract class ParameterizedTypeReference<T> {
 
     private final Type type;
 
+    @SuppressWarnings("unused")
     protected ParameterizedTypeReference() {
         Class<?> parameterizedTypeReferenceSubclass = findParameterizedTypeReferenceSubclass(getClass());
         Type type = parameterizedTypeReferenceSubclass.getGenericSuperclass();
@@ -52,20 +53,12 @@ public abstract class ParameterizedTypeReference<T> {
         if (actualTypeArguments.length != 1) {
             throw new IllegalArgumentException("Number of type arguments must be 1");
         }
+
         this.type = actualTypeArguments[0];
     }
 
-    private ParameterizedTypeReference(Type type) {
+    protected ParameterizedTypeReference(Type type) {
         this.type = type;
-    }
-
-    /// Build a `ParameterizedTypeReference` wrapping the given type.
-    ///
-    /// @param type a generic type (possibly obtained via reflection, for example, from [#getGenericReturnType()])
-    /// @return a corresponding reference which may be passed into `ParameterizedTypeReference`-accepting methods
-    @NotNull
-    public static <T> ParameterizedTypeReference<T> forType(@NotNull Type type) {
-        return new ParameterizedTypeReference<>(type) {};
     }
 
     @NotNull
@@ -78,11 +71,6 @@ public abstract class ParameterizedTypeReference<T> {
         } else {
             return findParameterizedTypeReferenceSubclass(parent);
         }
-    }
-
-    @NotNull
-    public Type getType() {
-        return this.type;
     }
 
     @Override

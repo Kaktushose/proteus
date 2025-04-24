@@ -3,6 +3,9 @@ package io.github.kaktushose.proteus.util;
 import io.github.kaktushose.proteus.conversion.Result;
 import io.github.kaktushose.proteus.graph.Edge;
 import io.github.kaktushose.proteus.type.Type;
+import io.github.kaktushose.proteus.type.internal.Java;
+import io.github.kaktushose.proteus.type.internal.Specific;
+import io.github.kaktushose.proteus.type.internal.Universal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,10 +15,9 @@ import java.util.Map;
 public class Helpers {
 
     private static final Map<Class<?>, List<Class<?>>> allowedRoutes = Map.of(
-            Type.Universal.class, List.of(Type.Universal.class),
-            Type.Class.class, List.of(Type.Class.class, Type.Specific.class),
-            Type.Specific.class, List.of(Type.Specific.class, Type.Class.class),
-            Type.Parameterized.class, List.of(Type.Parameterized.class)
+            Universal.class, List.of(Universal.class),
+            Java.class, List.of(Java.class, Specific.class),
+            Specific.class, List.of(Specific.class, Java.class)
     );
 
     public static boolean invalidRoute(@NotNull Class<?> from, @NotNull Class<?> into) {

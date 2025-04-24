@@ -2,7 +2,7 @@ package io.github.kaktushose.proteus.graph;
 
 import io.github.kaktushose.proteus.conversion.Mapper.UniMapper;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.Type.Specific;
+import io.github.kaktushose.proteus.type.internal.Specific;
 import org.jetbrains.annotations.NotNull;
 
 sealed public interface Edge {
