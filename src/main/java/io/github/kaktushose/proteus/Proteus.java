@@ -23,6 +23,7 @@ public class Proteus {
 
     public Proteus(int cacheSize) {
         this.graph = new Graph(cacheSize);
+        UniversalDefaults.registerMappers(graph);
     }
 
     @NotNull
