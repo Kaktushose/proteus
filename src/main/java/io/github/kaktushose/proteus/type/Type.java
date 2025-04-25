@@ -16,10 +16,10 @@ public sealed interface Type<T> permits Java, Specific, Universal {
     }
 
     static <T> Type<T> of(@NotNull Class<T> klass) {
-        return new Java<>(new ParameterizedTypeReference<>(klass) {});
+        return new Java<>(new TypeReference<>(klass) {});
     }
 
-    static <T> Type<T> of(@NotNull ParameterizedTypeReference<T> reference) {
+    static <T> Type<T> of(@NotNull TypeReference<T> reference) {
         return new Java<>(reference);
     }
 }
