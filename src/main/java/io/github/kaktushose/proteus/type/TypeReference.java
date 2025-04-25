@@ -27,7 +27,7 @@ import java.lang.reflect.Type;
 /// and retain it at runtime, you need to create a subclass (ideally as anonymous inline class) as follows:
 ///
 /// ```
-/// ParameterizedTypeReference<List<String>> typeRef = new ParameterizedTypeReference<List<String>>() {};
+/// TypeReference<List<String>> typeRef = new TypeReference<List<String>>() {};
 /// ```
 ///
 /// The resulting `typeRef` instance can then be used to obtain a [Type] instance that carries the captured
@@ -38,12 +38,13 @@ import java.lang.reflect.Type;
 /// @author Arjen Poutsma
 /// @author Rossen Stoyanchev
 /// @see <a href="https://gafter.blogspot.nl/2006/12/super-type-tokens.html">Neal Gafter on Super Type Tokens</a>
-public abstract class ParameterizedTypeReference<T> {
+public abstract class TypeReference<T> {
 
     private final Type type;
 
-    protected ParameterizedTypeReference() {
-        Class<?> parameterizedTypeReferenceSubclass = findParameterizedTypeReferenceSubclass(getClass());
+    @SuppressWarnings("unused")
+    protected TypeReference() {
+        Class<?> parameterizedTypeReferenceSubclass = findSubclass(getClass());
         Type type = parameterizedTypeReferenceSubclass.getGenericSuperclass();
         if (!(type instanceof ParameterizedType parameterizedType)) {
             throw new IllegalArgumentException("Type must be a parameterized type");
@@ -52,42 +53,29 @@ public abstract class ParameterizedTypeReference<T> {
         if (actualTypeArguments.length != 1) {
             throw new IllegalArgumentException("Number of type arguments must be 1");
         }
+
         this.type = actualTypeArguments[0];
     }
 
-    private ParameterizedTypeReference(Type type) {
+    protected TypeReference(Type type) {
         this.type = type;
     }
 
-    /// Build a `ParameterizedTypeReference` wrapping the given type.
-    ///
-    /// @param type a generic type (possibly obtained via reflection, for example, from [#getGenericReturnType()])
-    /// @return a corresponding reference which may be passed into `ParameterizedTypeReference`-accepting methods
     @NotNull
-    public static <T> ParameterizedTypeReference<T> forType(@NotNull Type type) {
-        return new ParameterizedTypeReference<>(type) {};
-    }
-
-    @NotNull
-    private static Class<?> findParameterizedTypeReferenceSubclass(@NotNull Class<?> child) {
+    private static Class<?> findSubclass(@NotNull Class<?> child) {
         Class<?> parent = child.getSuperclass();
         if (Object.class == parent) {
-            throw new IllegalStateException("Expected ParameterizedTypeReference superclass");
-        } else if (ParameterizedTypeReference.class == parent) {
+            throw new IllegalStateException("Expected TypeReference superclass");
+        } else if (TypeReference.class == parent) {
             return child;
         } else {
-            return findParameterizedTypeReferenceSubclass(parent);
+            return findSubclass(parent);
         }
-    }
-
-    @NotNull
-    public Type getType() {
-        return this.type;
     }
 
     @Override
     public boolean equals(@Nullable Object other) {
-        return (this == other || (other instanceof ParameterizedTypeReference<?> that && this.type.equals(that.type)));
+        return (this == other || (other instanceof TypeReference<?> that && this.type.equals(that.type)));
     }
 
     @Override
@@ -97,6 +85,6 @@ public abstract class ParameterizedTypeReference<T> {
 
     @Override
     public String toString() {
-        return "ParameterizedTypeReference<" + this.type + ">";
+        return "TypeReference<" + this.type + ">";
     }
 }
