@@ -5,7 +5,6 @@ import io.github.kaktushose.proteus.conversion.Mapper;
 import io.github.kaktushose.proteus.conversion.Result;
 import io.github.kaktushose.proteus.type.Type;
 import io.github.kaktushose.proteus.type.TypeAdapter;
-import io.github.kaktushose.proteus.type.internal.Specific;
 
 public class Testing {
 

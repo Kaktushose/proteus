@@ -5,10 +5,8 @@ import io.github.kaktushose.proteus.conversion.Mapper.BiMapper;
 import io.github.kaktushose.proteus.conversion.Mapper.UniMapper;
 import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.internal.Specific;
 import io.github.kaktushose.proteus.type.TypeAdapter;
 import io.github.kaktushose.proteus.util.ConcurrentLruCache;
-import io.github.kaktushose.proteus.util.Helpers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,9 +27,6 @@ public final class Graph {
     @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
     public Graph register(@NotNull TypeAdapter<?, ?> adapter) {
-        if (Helpers.invalidRoute(adapter.source().getClass(), adapter.target().getClass())) {
-            throw new IllegalArgumentException("Cannot mix different types!");
-        }
         switch ((Mapper) adapter.mapper()) {
             case UniMapper uniMapper -> add(adapter.source(), adapter.target(), uniMapper);
             case BiMapper biMapper -> {
@@ -56,15 +51,15 @@ public final class Graph {
 
     @NotNull
     public Set<Type<?>> neighbours(@NotNull Type<?> type) {
-        if (type instanceof Specific<?> specific) {
+        if (type instanceof Type.Specific<?> specific) {
             var mappers = adjacencyList.get(type);
             var result = new HashSet<Type<?>>();
             if (mappers != null) {
                 result.addAll(mappers.keySet());
             }
             result.addAll(adjacencyList.keySet().stream()
-                    .filter(Specific.class::isInstance)
-                    .filter(it -> ((Specific<?>) it).equalsIgnoreContainer(specific))
+                    .filter(Type.Specific.class::isInstance)
+                    .filter(it -> ((Type.Specific<?>) it).equalsIgnoreContainer(specific))
                     .collect(Collectors.toSet()));
             return result;
         }
@@ -87,8 +82,8 @@ public final class Graph {
             return List.of();
         }
 
-        if (source instanceof Specific<?> from && target instanceof Specific<?> into && from.equalsIgnoreContainer(into)) {
-            return List.of(new UnresolvedEdge((Specific<Object>) from, (Specific<Object>) into));
+        if (source instanceof Type.Specific<?> from && target instanceof Type.Specific<?> into && from.equalsIgnoreContainer(into)) {
+            return List.of(new UnresolvedEdge((Type.Specific<Object>) from, (Type.Specific<Object>) into));
         }
 
         Queue<Path> queue = new LinkedList<>();
@@ -117,7 +112,7 @@ public final class Graph {
         if (first.equals(second)) {
             return true;
         }
-        if (first instanceof Specific<?> from && second instanceof Specific<?> into) {
+        if (first instanceof Type.Specific<?> from && second instanceof Type.Specific<?> into) {
             return from.equalsIgnoreContainer(into);
         }
         return false;

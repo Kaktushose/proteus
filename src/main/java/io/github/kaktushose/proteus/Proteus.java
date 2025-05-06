@@ -39,10 +39,6 @@ public class Proteus {
     @NotNull
     @SuppressWarnings("unchecked")
     public <S, T> Result<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
-        if (Helpers.invalidRoute(source.getClass(), target.getClass())) {
-            return Result.failure("Cannot mix different types!");
-        }
-
         var path = graph.path(source, target);
         if (path.isEmpty()) {
             return Result.failure("Found no path to convert from '%s' to '%s'!".formatted(source, target));
@@ -65,7 +61,7 @@ public class Proteus {
         return switch (edge) {
             case Edge.ResolvedEdge resolved -> applyMapper(resolved, value, lossless);
             case Edge.UnresolvedEdge unresolved ->
-                    convert(value, unresolved.from().universal(), unresolved.into().universal());
+                    convert(value, Type.of(unresolved.from().container()), Type.of(unresolved.into().container()));
         };
     }
 

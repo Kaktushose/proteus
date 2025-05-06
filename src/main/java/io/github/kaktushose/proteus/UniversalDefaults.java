@@ -15,17 +15,17 @@ import static io.github.kaktushose.proteus.conversion.Result.success;
 
 final class UniversalDefaults {
 
-    private static final Type<Byte> BYTE = Type.universal(Byte.class);
-    private static final Type<Short> SHORT = Type.universal(Short.class);
-    private static final Type<Integer> INTEGER = Type.universal(Integer.class);
-    private static final Type<Long> LONG = Type.universal(Long.class);
-    private static final Type<Float> FLOAT = Type.universal(Float.class);
-    private static final Type<Double> DOUBLE = Type.universal(Double.class);
-    private static final Type<Character> CHARACTER = Type.universal(Character.class);
-    private static final Type<String> STRING = Type.universal(String.class);
-    private static final Type<StringBuilder> STRING_BUILDER = Type.universal(StringBuilder.class);
-    private static final Type<StringBuffer> STRING_BUFFER = Type.universal(StringBuffer.class);
-    private static final Type<Character[]> CHARACTER_ARRAY = Type.universal(Character[].class);
+    private static final Type<Byte> BYTE = Type.of(Byte.class);
+    private static final Type<Short> SHORT = Type.of(Short.class);
+    private static final Type<Integer> INTEGER = Type.of(Integer.class);
+    private static final Type<Long> LONG = Type.of(Long.class);
+    private static final Type<Float> FLOAT = Type.of(Float.class);
+    private static final Type<Double> DOUBLE = Type.of(Double.class);
+    private static final Type<Character> CHARACTER = Type.of(Character.class);
+    private static final Type<String> STRING = Type.of(String.class);
+    private static final Type<StringBuilder> STRING_BUILDER = Type.of(StringBuilder.class);
+    private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
+    private static final Type<Character[]> CHARACTER_ARRAY = Type.of(Character[].class);
 
     public static void registerMappers(Graph graph) {
         // byte
