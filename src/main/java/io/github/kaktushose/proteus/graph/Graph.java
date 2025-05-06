@@ -51,19 +51,15 @@ public final class Graph {
 
     @NotNull
     public Set<Type<?>> neighbours(@NotNull Type<?> type) {
-        if (type instanceof Type.Specific<?> specific) {
-            var mappers = adjacencyList.get(type);
-            var result = new HashSet<Type<?>>();
-            if (mappers != null) {
-                result.addAll(mappers.keySet());
-            }
-            result.addAll(adjacencyList.keySet().stream()
-                    .filter(Type.Specific.class::isInstance)
-                    .filter(it -> ((Type.Specific<?>) it).equalsIgnoreContainer(specific))
-                    .collect(Collectors.toSet()));
-            return result;
+        var mappers = adjacencyList.get(type);
+        var result = new HashSet<Type<?>>();
+        if (mappers != null) {
+            result.addAll(mappers.keySet());
         }
-        return adjacencyList.getOrDefault(type, Map.of()).keySet();
+        result.addAll(adjacencyList.keySet().stream()
+                .filter(it -> it.equalsIgnoreContainer(type))
+                .collect(Collectors.toSet()));
+        return result;
     }
 
     @Nullable
@@ -82,8 +78,8 @@ public final class Graph {
             return List.of();
         }
 
-        if (source instanceof Type.Specific<?> from && target instanceof Type.Specific<?> into && from.equalsIgnoreContainer(into)) {
-            return List.of(new UnresolvedEdge((Type.Specific<Object>) from, (Type.Specific<Object>) into));
+        if (source.equalsIgnoreContainer(target)) {
+            return List.of(new UnresolvedEdge((Type<Object>) source, (Type<Object>) target));
         }
 
         Queue<Path> queue = new LinkedList<>();
@@ -112,10 +108,7 @@ public final class Graph {
         if (first.equals(second)) {
             return true;
         }
-        if (first instanceof Type.Specific<?> from && second instanceof Type.Specific<?> into) {
-            return from.equalsIgnoreContainer(into);
-        }
-        return false;
+        return first.equalsIgnoreContainer(second);
     }
 
     private record Route(@NotNull Type<?> source, @NotNull Type<?> target) {}

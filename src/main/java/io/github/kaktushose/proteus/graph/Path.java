@@ -23,15 +23,13 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
             return new Path(newEdges, (Type<Object>) intermediate);
         }
 
-        if (head instanceof Type.Specific<Object> from && intermediate instanceof Type.Specific<?> into) {
-            if (!from.equalsIgnoreContainer(into)) {
-                throw new IllegalArgumentException("Illegal edge for two specific types with different format. Please report this error to the devs of proteus!");
-            }
-        } else {
-            throw new UnsupportedOperationException("Mapper cannot be null for non-specific types. Please report this error to the devs of proteus!");
+        if (!head.equalsIgnoreContainer(intermediate)) {
+            throw new IllegalArgumentException("Illegal edge for two types with different format. Please report this error to the devs of proteus!");
         }
-
-        newEdges.add(new Edge.UnresolvedEdge(from, (Type.Specific<Object>) into));
+//        else {
+//            throw new UnsupportedOperationException("Mapper cannot be null for non-specific types. Please report this error to the devs of proteus!");
+//        }
+        newEdges.add(new Edge.UnresolvedEdge(head, (Type<Object>) intermediate));
         return new Path(newEdges, (Type<Object>) intermediate);
     }
 
