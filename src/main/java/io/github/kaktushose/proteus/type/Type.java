@@ -12,19 +12,19 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         Objects.requireNonNull(container);
     }
 
-    public static <T> Type<T> of(@NotNull String entity, @NotNull String format, @NotNull String kind, @NotNull Class<T> container) {
-        return new Type<>(Format.of(entity, format, kind), new TypeReference<>(container) {});
+    public static <T> Type<T> of(@NotNull Format format, @NotNull Class<T> container) {
+        return new Type<>(format, new TypeReference<>(container) {});
     }
 
     public static <T> Type<T> of(@NotNull Class<T> klass) {
-        return new Type<>(Format.none(),  new TypeReference<>(klass) {});
+        return new Type<>(Format.none(), new TypeReference<>(klass) {});
     }
 
     public static <T> Type<T> of(@NotNull TypeReference<T> reference) {
         return new Type<>(Format.none(), reference);
     }
 
-    public boolean equalsIgnoreContainer(@Nullable Type<?> target) {
+    public boolean equalsFormat(@Nullable Type<?> target) {
         if (target == null) {
             return false;
         }

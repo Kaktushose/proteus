@@ -57,7 +57,7 @@ public final class Graph {
             result.addAll(mappers.keySet());
         }
         result.addAll(adjacencyList.keySet().stream()
-                .filter(it -> it.equalsIgnoreContainer(type))
+                .filter(it -> it.equalsFormat(type))
                 .collect(Collectors.toSet()));
         return result;
     }
@@ -78,7 +78,7 @@ public final class Graph {
             return List.of();
         }
 
-        if (source.equalsIgnoreContainer(target)) {
+        if (source.equalsFormat(target)) {
             return List.of(new UnresolvedEdge((Type<Object>) source, (Type<Object>) target));
         }
 
@@ -108,7 +108,7 @@ public final class Graph {
         if (first.equals(second)) {
             return true;
         }
-        return first.equalsIgnoreContainer(second);
+        return first.equalsFormat(second);
     }
 
     private record Route(@NotNull Type<?> source, @NotNull Type<?> target) {}
