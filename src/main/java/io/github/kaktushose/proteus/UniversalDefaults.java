@@ -4,13 +4,13 @@ import io.github.kaktushose.proteus.conversion.Mapper;
 import io.github.kaktushose.proteus.conversion.Result;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.internal.Universal;
 import io.github.kaktushose.proteus.type.TypeAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import static io.github.kaktushose.proteus.conversion.Mapper.UniMapper.lossless;
 import static io.github.kaktushose.proteus.conversion.Result.success;
 
 final class UniversalDefaults {
@@ -29,35 +29,35 @@ final class UniversalDefaults {
 
     public static void registerMappers(Graph graph) {
         // byte
-        graph.register(new TypeAdapter<>(BYTE, SHORT, ((source, context) -> success((short) source))));
-        graph.register(new TypeAdapter<>(BYTE, INTEGER, ((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(BYTE, LONG, ((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(BYTE, FLOAT, ((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(BYTE, DOUBLE, ((source, context) -> success((double) source))));
+        graph.register(new TypeAdapter<>(BYTE, SHORT, lossless((source, context) -> success((short) source))));
+        graph.register(new TypeAdapter<>(BYTE, INTEGER, lossless((source, context) -> success((int) source))));
+        graph.register(new TypeAdapter<>(BYTE, LONG, lossless((source, context) -> success((long) source))));
+        graph.register(new TypeAdapter<>(BYTE, FLOAT, lossless((source, context) -> success((float) source))));
+        graph.register(new TypeAdapter<>(BYTE, DOUBLE, lossless((source, context) -> success((double) source))));
 
         // short
-        graph.register(new TypeAdapter<>(SHORT, INTEGER, ((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(SHORT, LONG, ((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(SHORT, FLOAT, ((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(SHORT, DOUBLE, ((source, context) -> success((double) source))));
+        graph.register(new TypeAdapter<>(SHORT, INTEGER, lossless((source, context) -> success((int) source))));
+        graph.register(new TypeAdapter<>(SHORT, LONG, lossless((source, context) -> success((long) source))));
+        graph.register(new TypeAdapter<>(SHORT, FLOAT, lossless((source, context) -> success((float) source))));
+        graph.register(new TypeAdapter<>(SHORT, DOUBLE, lossless((source, context) -> success((double) source))));
 
         // char
-        graph.register(new TypeAdapter<>(CHARACTER, INTEGER, ((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, LONG, ((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, FLOAT, ((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, DOUBLE, ((source, context) -> success((double) source))));
+        graph.register(new TypeAdapter<>(CHARACTER, INTEGER, lossless((source, context) -> success((int) source))));
+        graph.register(new TypeAdapter<>(CHARACTER, LONG, lossless((source, context) -> success((long) source))));
+        graph.register(new TypeAdapter<>(CHARACTER, FLOAT, lossless((source, context) -> success((float) source))));
+        graph.register(new TypeAdapter<>(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source))));
 
         // int
-        graph.register(new TypeAdapter<>(INTEGER, LONG, ((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(INTEGER, FLOAT, ((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(INTEGER, DOUBLE, ((source, context) -> success((double) source))));
+        graph.register(new TypeAdapter<>(INTEGER, LONG, lossless((source, context) -> success((long) source))));
+        graph.register(new TypeAdapter<>(INTEGER, FLOAT, lossless((source, context) -> success((float) source))));
+        graph.register(new TypeAdapter<>(INTEGER, DOUBLE, lossless((source, context) -> success((double) source))));
 
         // long
-        graph.register(new TypeAdapter<>(LONG, FLOAT, ((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(LONG, DOUBLE, ((source, context) -> success((double) source))));
+        graph.register(new TypeAdapter<>(LONG, FLOAT, lossless((source, context) -> success((float) source))));
+        graph.register(new TypeAdapter<>(LONG, DOUBLE, lossless((source, context) -> success((double) source))));
 
         // float
-        graph.register(new TypeAdapter<>(FLOAT, DOUBLE, ((source, context) -> success((double) source))));
+        graph.register(new TypeAdapter<>(FLOAT, DOUBLE, lossless((source, context) -> success((double) source))));
 
         // char array
         graph.register(new TypeAdapter<>(STRING, CHARACTER_ARRAY, new Mapper.BiMapper<>() {

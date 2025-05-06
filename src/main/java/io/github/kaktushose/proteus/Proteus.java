@@ -32,8 +32,13 @@ public class Proteus {
     }
 
     @NotNull
-    @SuppressWarnings("unchecked")
     public <S, T> Result<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target) {
+        return convert(value, source, target, false);
+    }
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public <S, T> Result<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
         if (Helpers.invalidRoute(source.getClass(), target.getClass())) {
             return Result.failure("Cannot mix different types!");
         }
@@ -46,7 +51,7 @@ public class Proteus {
         Result<Object> intermediate = Result.success(value);
         for (Edge edge : path) {
             if (intermediate instanceof Result.Success<?>(Object success)) {
-                intermediate = applyEdge(edge, success);
+                intermediate = applyEdge(edge, success, lossless);
             }
             if (intermediate instanceof Result.Failure<?> failure) {
                 intermediate = Result.failure(Helpers.formatError(path, failure, edge));
@@ -56,20 +61,23 @@ public class Proteus {
     }
 
     @NotNull
-    private Result<Object> applyEdge(@NotNull Edge edge, @NotNull Object value) {
+    private Result<Object> applyEdge(@NotNull Edge edge, @NotNull Object value, boolean lossless) {
         return switch (edge) {
-            case Edge.ResolvedEdge resolved -> applyMapper(resolved, value);
+            case Edge.ResolvedEdge resolved -> applyMapper(resolved, value, lossless);
             case Edge.UnresolvedEdge unresolved ->
                     convert(value, unresolved.from().universal(), unresolved.into().universal());
         };
     }
 
     @NotNull
-    private Result<Object> applyMapper(@NotNull Edge.ResolvedEdge edge, @NotNull Object value) {
+    private Result<Object> applyMapper(@NotNull Edge.ResolvedEdge edge, @NotNull Object value, boolean lossless) {
         var mapper = edge.mapper();
         var stack = callStack.get();
         if (stack.contains(mapper)) {
             throw new CyclingConversionException(edge.from(), edge.into(), mapper, stack);
+        }
+        if (lossless && !mapper.lossless()) {
+            return Result.failure("No lossless conversion possible");
         }
         stack.add(mapper);
         var result = mapper.from(value, new Mapper.MappingContext());

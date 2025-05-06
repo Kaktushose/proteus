@@ -35,8 +35,8 @@ public final class Graph {
         switch ((Mapper) adapter.mapper()) {
             case UniMapper uniMapper -> add(adapter.source(), adapter.target(), uniMapper);
             case BiMapper biMapper -> {
-                add(adapter.source(), adapter.target(), biMapper::from);
-                add(adapter.target(), adapter.source(), biMapper::into);
+                add(adapter.source(), adapter.target(), (UniMapper<Object, Object>) UniMapper.lossless(biMapper::from));
+                add(adapter.target(), adapter.source(), (UniMapper<Object, Object>) UniMapper.lossless(biMapper::into));
             }
         }
         return this;
