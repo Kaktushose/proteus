@@ -32,7 +32,7 @@ public class ProteusBuilder {
         return this;
     }
 
-    public ProteusBuilder setConflictStrategy(ConflictStrategy conflictStrategy) {
+    public ProteusBuilder conflictStrategy(ConflictStrategy conflictStrategy) {
         this.conflictStrategy = conflictStrategy;
         return this;
     }
