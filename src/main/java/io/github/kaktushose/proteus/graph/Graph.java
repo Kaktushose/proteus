@@ -1,8 +1,8 @@
 package io.github.kaktushose.proteus.graph;
 
-import io.github.kaktushose.proteus.conversion.Mapper;
-import io.github.kaktushose.proteus.conversion.Mapper.BiMapper;
-import io.github.kaktushose.proteus.conversion.Mapper.UniMapper;
+import io.github.kaktushose.proteus.mapping.Mapper;
+import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
+import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.type.Type;
 import io.github.kaktushose.proteus.type.TypeAdapter;

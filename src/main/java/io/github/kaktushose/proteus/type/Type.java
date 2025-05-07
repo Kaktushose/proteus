@@ -33,4 +33,9 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         }
         return format.equals(other.format());
     }
+
+    @Override
+    public @NotNull String toString() {
+        return "%s(%s)".formatted(format, container);
+    }
 }
