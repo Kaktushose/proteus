@@ -1,8 +1,8 @@
-package io.github.kaktushose.proteus.conversion;
+package io.github.kaktushose.proteus.mapping;
 
 import org.jetbrains.annotations.NotNull;
 
-public sealed interface Result<T> {
+public sealed interface MappingResult<T> {
 
     @NotNull
     static <T> Success<T> success(@NotNull T value) {
@@ -14,8 +14,8 @@ public sealed interface Result<T> {
         return new Failure<>(message);
     }
 
-    record Success<T>(@NotNull T value) implements Result<T> {}
+    record Success<T>(@NotNull T value) implements MappingResult<T> {}
 
-    record Failure<T>(@NotNull String message) implements Result<T> {}
+    record Failure<T>(@NotNull String message) implements MappingResult<T> {}
 
 }

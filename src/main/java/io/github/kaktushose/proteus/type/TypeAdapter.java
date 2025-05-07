@@ -1,6 +1,6 @@
 package io.github.kaktushose.proteus.type;
 
-import io.github.kaktushose.proteus.conversion.Mapper;
+import io.github.kaktushose.proteus.mapping.Mapper;
 import org.jetbrains.annotations.NotNull;
 
 public record TypeAdapter<S, T>(@NotNull Type<S> source, @NotNull Type<T> target, @NotNull Mapper mapper) {

@@ -1,7 +1,7 @@
 package io.github.kaktushose.proteus;
 
-import io.github.kaktushose.proteus.conversion.Mapper;
-import io.github.kaktushose.proteus.conversion.Result;
+import io.github.kaktushose.proteus.mapping.Mapper;
+import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.type.Type;
 import io.github.kaktushose.proteus.type.TypeAdapter;
@@ -10,10 +10,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static io.github.kaktushose.proteus.conversion.Mapper.UniMapper.lossless;
-import static io.github.kaktushose.proteus.conversion.Result.success;
+import static io.github.kaktushose.proteus.mapping.Mapper.UniMapper.lossless;
+import static io.github.kaktushose.proteus.mapping.MappingResult.success;
 
-final class UniversalDefaults {
+final class LosslessDefaultMappers {
 
     private static final Type<Byte> BYTE = Type.of(Byte.class);
     private static final Type<Short> SHORT = Type.of(Short.class);
@@ -63,13 +63,13 @@ final class UniversalDefaults {
         graph.register(new TypeAdapter<>(STRING, CHARACTER_ARRAY, new Mapper.BiMapper<>() {
             @NotNull
             @Override
-            public Result<Character[]> from(@NotNull String source, @NotNull MappingContext context) {
+            public MappingResult<Character[]> from(@NotNull String source, @NotNull MappingContext context) {
                 return success(source.chars().mapToObj(c -> (char) c).toArray(Character[]::new));
             }
 
             @NotNull
             @Override
-            public Result<String> into(@NotNull Character @NotNull [] target, @NotNull MappingContext context) {
+            public MappingResult<String> into(@NotNull Character @NotNull [] target, @NotNull MappingContext context) {
                 return success(Arrays.stream(target).map(String::valueOf).collect(Collectors.joining()));
             }
         }));
@@ -78,13 +78,13 @@ final class UniversalDefaults {
         graph.register(new TypeAdapter<>(STRING, STRING_BUFFER, new Mapper.BiMapper<>() {
             @NotNull
             @Override
-            public Result<StringBuffer> from(@NotNull String source, @NotNull MappingContext context) {
+            public MappingResult<StringBuffer> from(@NotNull String source, @NotNull MappingContext context) {
                 return success(new StringBuffer(source));
             }
 
             @NotNull
             @Override
-            public Result<String> into(@NotNull StringBuffer target, @NotNull MappingContext context) {
+            public MappingResult<String> into(@NotNull StringBuffer target, @NotNull MappingContext context) {
                 return success(target.toString());
             }
         }));
@@ -93,13 +93,13 @@ final class UniversalDefaults {
         graph.register(new TypeAdapter<>(STRING, STRING_BUILDER, new Mapper.BiMapper<>() {
             @NotNull
             @Override
-            public Result<StringBuilder> from(@NotNull String source, @NotNull MappingContext context) {
+            public MappingResult<StringBuilder> from(@NotNull String source, @NotNull MappingContext context) {
                 return success(new StringBuilder(source));
             }
 
             @NotNull
             @Override
-            public Result<String> into(@NotNull StringBuilder target, @NotNull MappingContext context) {
+            public MappingResult<String> into(@NotNull StringBuilder target, @NotNull MappingContext context) {
                 return success(target.toString());
             }
         }));

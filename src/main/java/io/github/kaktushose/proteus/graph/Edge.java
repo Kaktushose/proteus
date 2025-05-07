@@ -1,6 +1,6 @@
 package io.github.kaktushose.proteus.graph;
 
-import io.github.kaktushose.proteus.conversion.Mapper.UniMapper;
+import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 

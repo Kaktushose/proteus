@@ -2,7 +2,7 @@ package io.github.kaktushose.proteus.type;
 
 public interface Format {
 
-    boolean equals(Format format);
+    boolean equals(Format other);
 
     static None none() {
         return new None();
@@ -11,7 +11,7 @@ public interface Format {
     record None() implements Format {
 
         @Override
-        public boolean equals(Format format) {
+        public boolean equals(Format other) {
             return false;
         }
     }

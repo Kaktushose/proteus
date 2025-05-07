@@ -1,6 +1,6 @@
 package io.github.kaktushose.proteus.conversion;
 
-import io.github.kaktushose.proteus.conversion.Mapper.UniMapper;
+import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,7 +18,7 @@ public class CyclingConversionException extends RuntimeException {
         super("Cannot convert from '%s' to '%s' because of cycling type adapter calls!\n   -> %s\n      was called by %s".formatted(
                 from,
                 into,
-                mapper,
+                mapper != null ? mapper.getClass().getName() : null,
                 reverse(alreadyCalled).stream()
                         .map(it -> it.getClass().getName())
                         .collect(Collectors.joining("\n      was called by "))

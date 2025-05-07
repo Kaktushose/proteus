@@ -1,8 +1,9 @@
 package io.github.kaktushose.proteus.testing;
 
 import io.github.kaktushose.proteus.Proteus;
-import io.github.kaktushose.proteus.conversion.Mapper;
-import io.github.kaktushose.proteus.conversion.Result;
+import io.github.kaktushose.proteus.conversion.ConversionResult;
+import io.github.kaktushose.proteus.mapping.Mapper;
+import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Format;
 import io.github.kaktushose.proteus.type.Type;
 import io.github.kaktushose.proteus.type.TypeAdapter;
@@ -19,9 +20,15 @@ public class Testing {
         var S1Double = Type.of(format("S1"), Double.class);
         var S2String = Type.of(format("S2"), String.class);
 
-        graph.register(new TypeAdapter<>(S1Double, S2String, Mapper.UniMapper.lossy((source, context) -> Result.success(String.valueOf(source)))));
+        graph.register(new TypeAdapter<>(S1Double, S2String, Mapper.UniMapper.lossy((source, context) ->
+                MappingResult.failure("Fuck you")))
+        );
 
-        System.out.println(proteus.convert(1, S1Integer, S2String, false));
+        var result = proteus.convert(1, S1Integer, S2String, false);
+        switch (result) {
+            case ConversionResult.Failure<String> failure -> System.out.println(failure.formatMessage());
+            case ConversionResult.Success<String> success -> System.out.println(success);
+        }
     }
 
     public record TestingFormat(String format) implements Format {
