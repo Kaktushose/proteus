@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import static io.github.kaktushose.proteus.mapping.Mapper.UniMapper.lossless;
 import static io.github.kaktushose.proteus.mapping.MappingResult.success;
 
-final class UniversalDefaults {
+final class LosslessDefaultMappers {
 
     private static final Type<Byte> BYTE = Type.of(Byte.class);
     private static final Type<Short> SHORT = Type.of(Short.class);
