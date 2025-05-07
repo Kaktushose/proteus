@@ -60,7 +60,7 @@ public class Proteus {
     private ConversionResult<Object> applyEdge(@NotNull Edge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
         return switch (edge) {
             case Edge.ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
-            case Edge.UnresolvedEdge unresolved -> convert(value, Type.of(unresolved.from().container()), Type.of(unresolved.into().container()));
+            case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) -> convert(value, Type.of(from.container()), Type.of(into.container()));
         };
     }
 
