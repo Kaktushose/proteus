@@ -38,7 +38,7 @@ public final class Graph {
     }
 
     private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter) {
-        var present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
+        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
         if (present != null) {
             throw new IllegalArgumentException("Duplicate adapter registration");
         }
@@ -51,39 +51,34 @@ public final class Graph {
 
     @NotNull
     public Set<Type<?>> neighbours(@NotNull Type<?> type) {
-        if (type instanceof Type.Specific<?> specific) {
-            var mappers = adjacencyList.get(type);
-            var result = new HashSet<Type<?>>();
-            if (mappers != null) {
-                result.addAll(mappers.keySet());
-            }
-            result.addAll(adjacencyList.keySet().stream()
-                    .filter(Type.Specific.class::isInstance)
-                    .filter(it -> ((Type.Specific<?>) it).equalsIgnoreContainer(specific))
-                    .collect(Collectors.toSet()));
-            return result;
+        Map<Type<?>, UniMapper<Object, Object>> mappers = adjacencyList.get(type);
+        Set<Type<?>> result = new HashSet<>();
+        if (mappers != null) {
+            result.addAll(mappers.keySet());
         }
-        return adjacencyList.getOrDefault(type, Map.of()).keySet();
+        result.addAll(adjacencyList.keySet().stream()
+                .filter(it -> it.equalsFormat(type))
+                .collect(Collectors.toSet()));
+        return result;
     }
 
     @Nullable
     public UniMapper<?, ?> mapper(@NotNull Type<?> from, @NotNull Type<?> into) {
-        var mappers = adjacencyList.getOrDefault(from, Map.of());
-        return mappers.get(into);
+        return adjacencyList.getOrDefault(from, Map.of()).get(into);
     }
 
     @NotNull
     @SuppressWarnings("unchecked")
     private List<Edge> findPath(@NotNull Route route) {
-        var source = route.source;
-        var target = route.target;
+        Type<?> source = route.source;
+        Type<?> target = route.target;
 
         if (source.equals(target)) {
             return List.of();
         }
 
-        if (source instanceof Type.Specific<?> from && target instanceof Type.Specific<?> into && from.equalsIgnoreContainer(into)) {
-            return List.of(new UnresolvedEdge((Type.Specific<Object>) from, (Type.Specific<Object>) into));
+        if (source.equalsFormat(target)) {
+            return List.of(new UnresolvedEdge((Type<Object>) source, (Type<Object>) target));
         }
 
         Queue<Path> queue = new LinkedList<>();
@@ -112,10 +107,7 @@ public final class Graph {
         if (first.equals(second)) {
             return true;
         }
-        if (first instanceof Type.Specific<?> from && second instanceof Type.Specific<?> into) {
-            return from.equalsIgnoreContainer(into);
-        }
-        return false;
+        return first.equalsFormat(second);
     }
 
     private record Route(@NotNull Type<?> source, @NotNull Type<?> target) {}

@@ -12,7 +12,7 @@ sealed public interface Edge {
     @NotNull
     Type<Object> into();
 
-    record UnresolvedEdge(@NotNull Type.Specific<Object> from, @NotNull Type.Specific<Object> into) implements Edge {}
+    record UnresolvedEdge(@NotNull Type<Object> from, @NotNull Type<Object> into) implements Edge {}
 
     record ResolvedEdge(@NotNull Type<Object> from, @NotNull Type<Object> into, @NotNull UniMapper<Object, Object> mapper) implements Edge {}
 }

@@ -5,41 +5,32 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public sealed interface Type<T> {
+public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> container) {
 
-    static <T> Type<T> specific(@NotNull String entity, @NotNull String format, @NotNull String kind, @NotNull Class<T> container) {
-        return new Specific<>(entity, format, kind, container);
+    public Type {
+        Objects.requireNonNull(format);
+        Objects.requireNonNull(container);
     }
 
-    static <T> Type<T> of(@NotNull Class<T> klass) {
-        return new Java<>(new TypeReference<>(klass) {});
+    public static <T> Type<T> of(@NotNull Format format, @NotNull Class<T> container) {
+        return new Type<>(format, new TypeReference<>(container) {});
     }
 
-    static <T> Type<T> of(@NotNull TypeReference<T> reference) {
-        return new Java<>(reference);
+    public static <T> Type<T> of(@NotNull Class<T> klass) {
+        return new Type<>(Format.none(), new TypeReference<>(klass) {});
     }
 
-    record Java<T>(@NotNull TypeReference<T> reference) implements Type<T> {
+    public static <T> Type<T> of(@NotNull TypeReference<T> reference) {
+        return new Type<>(Format.none(), reference);
+    }
 
-        public Java {
-            Objects.requireNonNull(reference);
+    public boolean equalsFormat(@Nullable Type<?> other) {
+        if (other == null) {
+            return false;
         }
-    }
-
-    record Specific<T>(@NotNull String entity, @NotNull String format, @NotNull String kind, @NotNull Class<T> container) implements Type<T> {
-
-        public Specific {
-            Objects.requireNonNull(entity);
-            Objects.requireNonNull(format);
-            Objects.requireNonNull(kind);
-            Objects.requireNonNull(container);
+        if (other.format() instanceof Format.None) {
+            return false;
         }
-
-        public boolean equalsIgnoreContainer(@Nullable Type.Specific<?> target) {
-            if (target == null) {
-                return false;
-            }
-            return Objects.equals(entity, target.entity) && Objects.equals(format, target.format) && Objects.equals(kind, target.kind);
-        }
+        return format.equals(other.format());
     }
 }
