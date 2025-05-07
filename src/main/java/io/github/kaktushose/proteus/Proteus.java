@@ -6,7 +6,6 @@ import io.github.kaktushose.proteus.graph.Edge;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.MappingContext;
-import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,10 +76,7 @@ public class Proteus {
         }
         stack.add(mapper);
 
-        ConversionResult<Object> result = switch (mapper.from(value, context)) {
-            case MappingResult.Success<Object>(Object success) -> new ConversionResult.Success<>(success);
-            case MappingResult.Failure<Object>(String message) -> new ConversionResult.Failure<>(MAPPING_FAILED, message, context);
-        };
+        ConversionResult<Object> result = ConversionResult.of(mapper.from(value, context), MAPPING_FAILED, context);
 
         stack.remove(mapper);
         return result;

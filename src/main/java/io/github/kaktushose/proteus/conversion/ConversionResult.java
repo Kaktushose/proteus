@@ -2,6 +2,7 @@ package io.github.kaktushose.proteus.conversion;
 
 import io.github.kaktushose.proteus.graph.Edge;
 import io.github.kaktushose.proteus.mapping.Mapper;
+import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -9,6 +10,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public sealed interface ConversionResult<T> {
+
+    @NotNull
+    @SuppressWarnings("unchecked")
+    static <T> ConversionResult<T> of(@NotNull MappingResult<T> result, @NotNull Failure.ErrorType errorType, @Nullable Mapper.MappingContext context) {
+        return switch (result) {
+            case MappingResult.Success<T>(Object success) -> new Success<>((T) success);
+            case MappingResult.Failure<T>(String message) -> new Failure<>(errorType, message, context);
+        };
+    }
 
     record Success<T>(@NotNull T value) implements ConversionResult<T> {}
 
