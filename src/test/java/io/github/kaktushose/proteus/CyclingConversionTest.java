@@ -38,7 +38,8 @@ class CyclingConversionTest {
         proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.lossless((s, c) -> {
             proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO);
             return MappingResult.success(s);
-        })).and().map(TEST_TYPE_TWO).to(TEST_TYPE_ONE, Mapper.lossless((s, c) -> {
+        }));
+        proteus.map(TEST_TYPE_TWO).to(TEST_TYPE_ONE, Mapper.lossless((s, c) -> {
             proteus.convert("", TEST_TYPE_TWO, TEST_TYPE_ONE);
             return MappingResult.success(s);
         }));
@@ -50,7 +51,8 @@ class CyclingConversionTest {
     void conversion_withNestedCall_ShouldWork() {
         proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.lossless((s, c) ->
                 MappingResult.success(s)
-        )).and().map(TEST_TYPE_ONE).to(TEST_TYPE_THREE, Mapper.lossless((s, c) ->
+        ));
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_THREE, Mapper.lossless((s, c) ->
                 MappingResult.of(proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO))
         ));
 

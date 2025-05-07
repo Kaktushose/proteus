@@ -24,10 +24,4 @@ public final class MappingAction<S> {
         proteus.graph().register(source, target, mapper, strategy);
         return this;
     }
-
-    @NotNull
-    public Proteus and() {
-        return proteus;
-    }
-
 }
