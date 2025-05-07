@@ -24,13 +24,13 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         return new Type<>(Format.none(), reference);
     }
 
-    public boolean equalsFormat(@Nullable Type<?> target) {
-        if (target == null) {
+    public boolean equalsFormat(@Nullable Type<?> other) {
+        if (other == null) {
             return false;
         }
-        if (format instanceof Format.None) {
+        if (other.format() instanceof Format.None) {
             return false;
         }
-        return format.equals(target.format);
+        return format.equals(other.format());
     }
 }
