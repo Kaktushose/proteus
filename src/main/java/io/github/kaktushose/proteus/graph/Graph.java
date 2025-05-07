@@ -38,7 +38,7 @@ public final class Graph {
     }
 
     private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter) {
-        var present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
+        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
         if (present != null) {
             throw new IllegalArgumentException("Duplicate adapter registration");
         }
@@ -51,8 +51,8 @@ public final class Graph {
 
     @NotNull
     public Set<Type<?>> neighbours(@NotNull Type<?> type) {
-        var mappers = adjacencyList.get(type);
-        var result = new HashSet<Type<?>>();
+        Map<Type<?>, UniMapper<Object, Object>> mappers = adjacencyList.get(type);
+        Set<Type<?>> result = new HashSet<>();
         if (mappers != null) {
             result.addAll(mappers.keySet());
         }
@@ -64,15 +64,14 @@ public final class Graph {
 
     @Nullable
     public UniMapper<?, ?> mapper(@NotNull Type<?> from, @NotNull Type<?> into) {
-        var mappers = adjacencyList.getOrDefault(from, Map.of());
-        return mappers.get(into);
+        return adjacencyList.getOrDefault(from, Map.of()).get(into);
     }
 
     @NotNull
     @SuppressWarnings("unchecked")
     private List<Edge> findPath(@NotNull Route route) {
-        var source = route.source;
-        var target = route.target;
+        Type<?> source = route.source;
+        Type<?> target = route.target;
 
         if (source.equals(target)) {
             return List.of();

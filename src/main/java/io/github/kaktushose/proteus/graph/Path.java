@@ -18,7 +18,7 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     }
 
     public Path addEdge(@NotNull Type<?> intermediate, @Nullable Mapper.UniMapper<?, ?> mapper) {
-        var newEdges = new ArrayList<>(edges);
+        List<Edge> newEdges = new ArrayList<>(edges);
         if (mapper != null) {
             newEdges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, (Mapper.UniMapper<Object, Object>) mapper));
             return new Path(newEdges, (Type<Object>) intermediate);

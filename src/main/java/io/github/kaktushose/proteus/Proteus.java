@@ -39,7 +39,7 @@ public class Proteus {
     @NotNull
     @SuppressWarnings("unchecked")
     public <S, T> Result<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
-        var path = graph.path(source, target);
+        List<Edge> path = graph.path(source, target);
         if (path.isEmpty()) {
             return Result.failure("Found no path to convert from '%s' to '%s'!".formatted(source, target));
         }
@@ -67,8 +67,8 @@ public class Proteus {
 
     @NotNull
     private Result<Object> applyMapper(@NotNull Edge.ResolvedEdge edge, @NotNull Object value, boolean lossless) {
-        var mapper = edge.mapper();
-        var stack = callStack.get();
+        Mapper.UniMapper<Object, Object> mapper = edge.mapper();
+        List<Mapper.UniMapper<Object, Object>> stack = callStack.get();
         if (stack.contains(mapper)) {
             throw new CyclingConversionException(edge.from(), edge.into(), mapper, stack);
         }
@@ -76,7 +76,7 @@ public class Proteus {
             return Result.failure("No lossless conversion possible");
         }
         stack.add(mapper);
-        var result = mapper.from(value, new Mapper.MappingContext());
+        Result<Object> result = mapper.from(value, new Mapper.MappingContext());
         stack.remove(mapper);
         return result;
     }
