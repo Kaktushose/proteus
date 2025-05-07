@@ -1,16 +1,12 @@
 package io.github.kaktushose.proteus;
 
-import io.github.kaktushose.proteus.mapping.Mapper;
-import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.TypeAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static io.github.kaktushose.proteus.mapping.Mapper.UniMapper.lossless;
+import static io.github.kaktushose.proteus.mapping.Mapper.lossless;
 import static io.github.kaktushose.proteus.mapping.MappingResult.success;
 
 final class LosslessDefaultMappers {
@@ -29,79 +25,52 @@ final class LosslessDefaultMappers {
 
     public static void registerMappers(Graph graph) {
         // byte
-        graph.register(new TypeAdapter<>(BYTE, SHORT, lossless((source, context) -> success((short) source))));
-        graph.register(new TypeAdapter<>(BYTE, INTEGER, lossless((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(BYTE, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(BYTE, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(BYTE, DOUBLE, lossless((source, context) -> success((double) source))));
+        graph.register(BYTE, SHORT, lossless((source, context) -> success((short) source)));
+        graph.register(BYTE, INTEGER, lossless((source, context) -> success((int) source)));
+        graph.register(BYTE, LONG, lossless((source, context) -> success((long) source)));
+        graph.register(BYTE, FLOAT, lossless((source, context) -> success((float) source)));
+        graph.register(BYTE, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // short
-        graph.register(new TypeAdapter<>(SHORT, INTEGER, lossless((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(SHORT, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(SHORT, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(SHORT, DOUBLE, lossless((source, context) -> success((double) source))));
+        graph.register(SHORT, INTEGER, lossless((source, context) -> success((int) source)));
+        graph.register(SHORT, LONG, lossless((source, context) -> success((long) source)));
+        graph.register(SHORT, FLOAT, lossless((source, context) -> success((float) source)));
+        graph.register(SHORT, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // char
-        graph.register(new TypeAdapter<>(CHARACTER, INTEGER, lossless((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source))));
+        graph.register(CHARACTER, INTEGER, lossless((source, context) -> success((int) source)));
+        graph.register(CHARACTER, LONG, lossless((source, context) -> success((long) source)));
+        graph.register(CHARACTER, FLOAT, lossless((source, context) -> success((float) source)));
+        graph.register(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // int
-        graph.register(new TypeAdapter<>(INTEGER, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(INTEGER, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(INTEGER, DOUBLE, lossless((source, context) -> success((double) source))));
+        graph.register(INTEGER, LONG, lossless((source, context) -> success((long) source)));
+        graph.register(INTEGER, FLOAT, lossless((source, context) -> success((float) source)));
+        graph.register(INTEGER, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // long
-        graph.register(new TypeAdapter<>(LONG, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(LONG, DOUBLE, lossless((source, context) -> success((double) source))));
+        graph.register(LONG, FLOAT, lossless((source, context) -> success((float) source)));
+        graph.register(LONG, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // float
-        graph.register(new TypeAdapter<>(FLOAT, DOUBLE, lossless((source, context) -> success((double) source))));
+        graph.register(FLOAT, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // char array
-        graph.register(new TypeAdapter<>(STRING, CHARACTER_ARRAY, new Mapper.BiMapper<>() {
-            @NotNull
-            @Override
-            public MappingResult<Character[]> from(@NotNull String source, @NotNull MappingContext context) {
-                return success(source.chars().mapToObj(c -> (char) c).toArray(Character[]::new));
-            }
-
-            @NotNull
-            @Override
-            public MappingResult<String> into(@NotNull Character @NotNull [] target, @NotNull MappingContext context) {
-                return success(Arrays.stream(target).map(String::valueOf).collect(Collectors.joining()));
-            }
-        }));
+        graph.register(STRING, CHARACTER_ARRAY, lossless(
+                (source, context) -> success(source.chars().mapToObj(c -> (char) c).toArray(Character[]::new)),
+                (target, context) -> success(Arrays.stream(target).map(String::valueOf).collect(Collectors.joining()))
+        ));
 
         // string buffer
-        graph.register(new TypeAdapter<>(STRING, STRING_BUFFER, new Mapper.BiMapper<>() {
-            @NotNull
-            @Override
-            public MappingResult<StringBuffer> from(@NotNull String source, @NotNull MappingContext context) {
-                return success(new StringBuffer(source));
-            }
-
-            @NotNull
-            @Override
-            public MappingResult<String> into(@NotNull StringBuffer target, @NotNull MappingContext context) {
-                return success(target.toString());
-            }
-        }));
+        graph.register(STRING, STRING_BUFFER, lossless(
+                (source, context) -> success(new StringBuffer(source)),
+                (target, context) -> success(target.toString())
+        ));
 
         // string builder
-        graph.register(new TypeAdapter<>(STRING, STRING_BUILDER, new Mapper.BiMapper<>() {
-            @NotNull
-            @Override
-            public MappingResult<StringBuilder> from(@NotNull String source, @NotNull MappingContext context) {
-                return success(new StringBuilder(source));
-            }
-
-            @NotNull
-            @Override
-            public MappingResult<String> into(@NotNull StringBuilder target, @NotNull MappingContext context) {
-                return success(target.toString());
-            }
-        }));
+        graph.register(STRING, STRING_BUILDER, lossless(
+                (source, context) -> success(new StringBuilder(source)),
+                (target, context) -> success(target.toString())
+        ));
     }
 }

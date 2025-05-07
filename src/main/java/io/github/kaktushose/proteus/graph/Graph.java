@@ -1,11 +1,11 @@
 package io.github.kaktushose.proteus.graph;
 
+import io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.TypeAdapter;
 import io.github.kaktushose.proteus.util.ConcurrentLruCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,22 +25,30 @@ public final class Graph {
     }
 
     @NotNull
+    public <S, T> Graph register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper) {
+        return register(from, into, mapper, ConflictStrategy.OVERRIDE);
+    }
+
+    @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public Graph register(@NotNull TypeAdapter<?, ?> adapter) {
-        switch ((Mapper) adapter.mapper()) {
-            case UniMapper uniMapper -> add(adapter.source(), adapter.target(), uniMapper);
+    public <S, T> Graph register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ConflictStrategy strategy) {
+        switch (mapper) {
+            case UniMapper uniMapper -> add(from, into, uniMapper, strategy);
             case BiMapper biMapper -> {
-                add(adapter.source(), adapter.target(), (UniMapper<Object, Object>) UniMapper.lossless(biMapper::from));
-                add(adapter.target(), adapter.source(), (UniMapper<Object, Object>) UniMapper.lossless(biMapper::into));
+                add(from, into, (UniMapper<Object, Object>) Mapper.lossless(biMapper::from), strategy);
+                add(from, into, (UniMapper<Object, Object>) Mapper.lossless(biMapper::into), strategy);
             }
         }
         return this;
     }
 
-    private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter) {
+    private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter, @NotNull ConflictStrategy strategy) {
         UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
         if (present != null) {
-            throw new IllegalArgumentException("Duplicate adapter registration");
+            switch (strategy) {
+                case FAIL -> throw new IllegalArgumentException("Duplicated adapter registration for route: '%s' -> '%s'".formatted(source, target));
+                case OVERRIDE -> adjacencyList.compute(source, (k, v) -> new HashMap<>()).putIfAbsent(target, adapter);
+            }
         }
     }
 

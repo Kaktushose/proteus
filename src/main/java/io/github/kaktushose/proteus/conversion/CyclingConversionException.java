@@ -15,7 +15,7 @@ public class CyclingConversionException extends RuntimeException {
                                       @Nullable Type<?> into,
                                       @Nullable UniMapper<Object, Object> mapper,
                                       @NotNull List<UniMapper<Object, Object>> alreadyCalled) {
-        super("Cannot convert from '%s' to '%s' because of cycling type adapter calls!\n   -> %s\n      was called by %s".formatted(
+        super("Cannot convert from '%s' to '%s' because of cycling source adapter calls!\n   -> %s\n      was called by %s".formatted(
                 from,
                 into,
                 mapper != null ? mapper.getClass().getName() : null,

@@ -4,7 +4,6 @@ import io.github.kaktushose.proteus.conversion.ConversionResult;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.TypeAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,18 +13,18 @@ class LosslessConversionTest {
 
     private static final Type<String> TEST_TYPE_ONE = Type.of(new TestFormat("TestTypeOne"), String.class);
     private static final Type<String> TEST_TYPE_TWO = Type.of(new TestFormat("TestTypeTwo"), String.class);
-    private static Proteus proteus = new Proteus();
+    private static Proteus proteus;
 
     @BeforeEach
     void init() {
-        proteus = new Proteus();
+        proteus = Proteus.builder().sharedGraph(false).build();
     }
 
     @Test
     void losslessConversion_WithLossyMapper_ShouldFail() {
-        proteus.graph().register(new TypeAdapter<>(TEST_TYPE_ONE, TEST_TYPE_TWO, Mapper.UniMapper.lossy((s, c) ->
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.lossy((s, c) ->
                 MappingResult.success(s)
-        )));
+        ));
 
         var result = proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO, true);
 
@@ -35,9 +34,9 @@ class LosslessConversionTest {
 
     @Test
     void lossyConversion_WithLossyMapper_ShouldWork() {
-        proteus.graph().register(new TypeAdapter<>(TEST_TYPE_ONE, TEST_TYPE_TWO, Mapper.UniMapper.lossless((s, c) ->
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.lossless((s, c) ->
                 MappingResult.success(s)
-        )));
+        ));
 
         final var input = "INPUT";
         var result = proteus.convert(input, TEST_TYPE_ONE, TEST_TYPE_TWO);

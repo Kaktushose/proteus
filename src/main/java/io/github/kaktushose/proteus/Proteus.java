@@ -18,19 +18,33 @@ public class Proteus {
 
     private static final ThreadLocal<List<Mapper.UniMapper<Object, Object>>> callStack = ThreadLocal.withInitial(ArrayList::new);
     private final Graph graph;
+    private final ProteusBuilder.ConflictStrategy conflictStrategy;
 
-    public Proteus() {
-        this(1000);
+    Proteus(Graph graph, ProteusBuilder.ConflictStrategy conflictStrategy) {
+        this.graph = graph;
+        this.conflictStrategy = conflictStrategy;
     }
 
-    public Proteus(int cacheSize) {
-        this.graph = new Graph(cacheSize);
-        LosslessDefaultMappers.registerMappers(graph);
+    public static Proteus create() {
+        return builder().build();
+    }
+
+    public static ProteusBuilder builder() {
+        return new ProteusBuilder();
+    }
+
+    @NotNull
+    public <S> MappingAction<S> map(Type<S> from) {
+        return new MappingAction<>(from, this);
     }
 
     @NotNull
     public Graph graph() {
         return graph;
+    }
+
+    public ProteusBuilder.ConflictStrategy conflictStrategy() {
+        return conflictStrategy;
     }
 
     @NotNull
@@ -59,7 +73,7 @@ public class Proteus {
     private ConversionResult<Object> applyEdge(@NotNull Edge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
         return switch (edge) {
             case Edge.ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
-            case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) -> convert(value, Type.of(from.container()), Type.of(into.container()));
+            case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) -> convert(value, Type.of(from.container()), Type.of(into.container()), lossless);
         };
     }
 

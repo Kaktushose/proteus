@@ -5,7 +5,6 @@ import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Format;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.TypeAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,22 +18,22 @@ class ContainerConversionTest {
     private static final Type<Long> TEST_TYPE_TWO = Type.of(testFormat, Long.class);
     private static final Type<String> TEST_TYPE_THREE = Type.of(new TestFormat("TestTypeTwo"), String.class);
 
-    private static Proteus proteus = new Proteus();
+    private static Proteus proteus;
 
     @BeforeEach
     void init() {
-        proteus = new Proteus();
+        proteus = Proteus.builder().sharedGraph(false).build();
     }
 
     @Test
     void conversion_withImplicitContainerPath_ShouldWork() {
-        proteus.graph().register(new TypeAdapter<>(TEST_TYPE_TWO, TEST_TYPE_THREE, Mapper.UniMapper.lossy((s, c) ->
-                MappingResult.success(String.valueOf(s))
-        )));
+        proteus.map(TEST_TYPE_TWO).to(TEST_TYPE_THREE, Mapper.lossy((s, c) ->
+                MappingResult.success(String.valueOf(s)))
+        );
 
         final var input = 10;
         var result = proteus.convert(input, TEST_TYPE_ONE, TEST_TYPE_THREE);
-        System.out.println(result);
+
         assertEquals(ConversionResult.Success.class, result.getClass());
         assertEquals(String.valueOf(input), ((ConversionResult.Success<String>) result).value());
     }

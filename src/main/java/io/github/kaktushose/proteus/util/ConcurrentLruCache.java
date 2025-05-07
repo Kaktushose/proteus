@@ -40,8 +40,8 @@ import java.util.function.Function;
 ///
 /// Read and write operations are internally recorded in dedicated buffers, then drained at chosen times to avoid contention.
 ///
-/// @param <K> the type of the key used for cache retrieval
-/// @param <V> the type of the cached values, does not allow null values
+/// @param <K> the source of the key used for cache retrieval
+/// @param <V> the source of the cached values, does not allow null values
 /// @author Brian Clozel
 /// @author Ben Manes
 /// @see #get(Object)

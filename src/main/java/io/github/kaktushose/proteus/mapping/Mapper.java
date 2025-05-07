@@ -7,45 +7,60 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public sealed interface Mapper {
+public sealed interface Mapper<S, T> {
 
-    non-sealed interface UniMapper<S, T> extends Mapper {
+    static <S, T> UniMapper<S, T> lossy(@NotNull BiFunction<S, MappingContext, MappingResult<T>> mapper) {
+        return new UniMapper<>() {
+            @Override
+            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
+                return mapper.apply(source, context);
+            }
+
+            @Override
+            public boolean lossless() {
+                return false;
+            }
+        };
+    }
+
+    static <S, T> UniMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext, MappingResult<T>> mapper) {
+        return new UniMapper<>() {
+            @Override
+            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
+                return mapper.apply(source, context);
+            }
+
+            @Override
+            public boolean lossless() {
+                return true;
+            }
+        };
+    }
+
+    static <S, T> BiMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext, MappingResult<T>> from, @NotNull BiFunction<T, MappingContext, MappingResult<S>> into) {
+        return new BiMapper<>() {
+
+            @Override
+            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
+                return from.apply(source, context);
+            }
+
+            @Override
+            public @NotNull MappingResult<S> into(@NotNull T target, @NotNull MappingContext context) {
+                return into.apply(target, context);
+            }
+        };
+    }
+
+    non-sealed interface UniMapper<S, T> extends Mapper<S, T> {
         @NotNull
         MappingResult<T> from(@NotNull S source, @NotNull MappingContext context);
 
         boolean lossless();
 
-        static <S, T> UniMapper<S, T> lossy(@NotNull BiFunction<S, MappingContext, MappingResult<T>> mapper) {
-            return new UniMapper<>() {
-                @Override
-                public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
-                    return mapper.apply(source, context);
-                }
-
-                @Override
-                public boolean lossless() {
-                    return false;
-                }
-            };
-        }
-
-        static <S, T> UniMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext, MappingResult<T>> mapper) {
-            return new UniMapper<>() {
-                @Override
-                public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
-                    return mapper.apply(source, context);
-                }
-
-                @Override
-                public boolean lossless() {
-                    return true;
-                }
-            };
-        }
-
     }
 
-    non-sealed interface BiMapper<S, T> extends Mapper {
+    non-sealed interface BiMapper<S, T> extends Mapper<S, T> {
         @NotNull
         MappingResult<T> from(@NotNull S source, @NotNull MappingContext context);
 
@@ -64,5 +79,4 @@ public sealed interface Mapper {
         }
 
     }
-
 }
