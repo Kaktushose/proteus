@@ -43,11 +43,11 @@ public final class Graph {
     }
 
     private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter, @NotNull ConflictStrategy strategy) {
-        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, unused -> new HashMap<>()).putIfAbsent(target, adapter);
+        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, unused -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
         if (present != null) {
             switch (strategy) {
                 case FAIL -> throw new IllegalArgumentException("Duplicated adapter registration for route: '%s' -> '%s'".formatted(source, target));
-                case OVERRIDE -> adjacencyList.compute(source, (k, v) -> new HashMap<>()).putIfAbsent(target, adapter);
+                case OVERRIDE -> adjacencyList.compute(source, (k, v) -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
             }
         }
     }
@@ -58,7 +58,7 @@ public final class Graph {
     }
 
     @NotNull
-    public Set<Type<?>> neighbours(@NotNull Type<?> type) {
+    private Set<Type<?>> neighbours(@NotNull Type<?> type) {
         Map<Type<?>, UniMapper<Object, Object>> mappers = adjacencyList.get(type);
         Set<Type<?>> result = new HashSet<>();
         if (mappers != null) {
@@ -71,7 +71,7 @@ public final class Graph {
     }
 
     @Nullable
-    public UniMapper<?, ?> mapper(@NotNull Type<?> from, @NotNull Type<?> into) {
+    private UniMapper<?, ?> mapper(@NotNull Type<?> from, @NotNull Type<?> into) {
         return adjacencyList.getOrDefault(from, Map.of()).get(into);
     }
 
