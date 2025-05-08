@@ -4,16 +4,13 @@ import io.github.kaktushose.proteus.graph.Graph;
 
 public class ProteusBuilder {
 
-    private static final Graph sharedGraph = new Graph(1000);
     private int cacheSize;
     private boolean defaultMappers;
-    private boolean useSharedGraph;
     private ConflictStrategy conflictStrategy;
 
     public ProteusBuilder() {
         cacheSize = 1000;
         defaultMappers = true;
-        useSharedGraph = true;
         conflictStrategy = ConflictStrategy.FAIL;
     }
 
@@ -27,18 +24,13 @@ public class ProteusBuilder {
         return this;
     }
 
-    public ProteusBuilder sharedGraph(boolean sharedGraph) {
-        this.useSharedGraph = sharedGraph;
-        return this;
-    }
-
     public ProteusBuilder conflictStrategy(ConflictStrategy conflictStrategy) {
         this.conflictStrategy = conflictStrategy;
         return this;
     }
 
     public Proteus build() {
-        Graph graph = useSharedGraph ? sharedGraph : new Graph(cacheSize);
+        Graph graph = new Graph(cacheSize);
         if (defaultMappers) {
             LosslessDefaultMappers.registerMappers(graph);
         }

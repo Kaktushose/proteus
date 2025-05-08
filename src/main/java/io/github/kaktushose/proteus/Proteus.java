@@ -16,6 +16,8 @@ import static io.github.kaktushose.proteus.conversion.ConversionResult.Failure.E
 
 public class Proteus {
 
+    private static final Proteus GLOBAL_INSTANCE = Proteus.create();
+
     private static final ThreadLocal<List<Mapper.UniMapper<Object, Object>>> callStack = ThreadLocal.withInitial(ArrayList::new);
     private final Graph graph;
     private final ProteusBuilder.ConflictStrategy conflictStrategy;
@@ -33,18 +35,21 @@ public class Proteus {
         return new ProteusBuilder();
     }
 
-    @NotNull
-    public <S> MappingAction<S> map(Type<S> from) {
-        return new MappingAction<>(from, this);
-    }
-
-    @NotNull
-    public Graph graph() {
-        return graph;
+    public static Proteus global() {
+        return GLOBAL_INSTANCE;
     }
 
     public ProteusBuilder.ConflictStrategy conflictStrategy() {
         return conflictStrategy;
+    }
+
+    public void reconfigureCacheSize(int newSize) {
+        graph.adjustCacheSize(newSize);
+    }
+
+    @NotNull
+    public <S> MappingAction<S> map(Type<S> from) {
+        return new MappingAction<>(from, this);
     }
 
     @NotNull
