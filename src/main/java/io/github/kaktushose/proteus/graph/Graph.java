@@ -17,11 +17,15 @@ import java.util.stream.Collectors;
 public final class Graph {
 
     private final Map<Type<?>, Map<Type<?>, UniMapper<Object, Object>>> adjacencyList;
-    private final ConcurrentLruCache<Route, List<Edge>> pathCache;
+    private ConcurrentLruCache<Route, List<Edge>> pathCache;
 
     public Graph(int cacheSize) {
-        pathCache = new ConcurrentLruCache<>(cacheSize, this::findPath);
         adjacencyList = new ConcurrentHashMap<>();
+        adjustCacheSize(cacheSize);
+    }
+
+    public void adjustCacheSize(int newSize) {
+        pathCache = new ConcurrentLruCache<>(newSize, this::findPath);
     }
 
     @NotNull
