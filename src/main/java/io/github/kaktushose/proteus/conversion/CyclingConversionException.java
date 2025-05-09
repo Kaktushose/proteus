@@ -9,8 +9,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/// Thrown to indicate that a cycling [UniMapper] call occurred during conversion.
 public class CyclingConversionException extends RuntimeException {
 
+    /// Constructs a new CyclingConversionException.
+    ///
+    /// @param from the initial [Type] of the path
+    /// @param into the target [Type] of the path
+    /// @param mapper the [UniMapper] that was called cyclic
+    /// @param alreadyCalled the callstack of previously called [UniMapper]s
     public CyclingConversionException(@Nullable Type<?> from,
                                       @Nullable Type<?> into,
                                       @Nullable UniMapper<Object, Object> mapper,
