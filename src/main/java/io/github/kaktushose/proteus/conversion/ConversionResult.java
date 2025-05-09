@@ -88,7 +88,7 @@ public sealed interface ConversionResult<T> {
         }
     }
 
-    /// Gives additional information about the conversion that failed.
+    /// Provides additional information about the conversion that failed.
     ///
     /// @param path a [List] of [Edge]s describing the full path of the conversion
     /// @param step the [ResolvedEdge] at which the conversion failed

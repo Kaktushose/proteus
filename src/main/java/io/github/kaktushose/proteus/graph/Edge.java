@@ -31,8 +31,8 @@ sealed public interface Edge {
 
     /// Represents an [Edge] with an [UniMapper] already associated with it.
     ///
-    /// @param from the [Type] representing the starting node of this edge
-    /// @param into the [Type] representing the ending node of this edge
+    /// @param from   the [Type] representing the starting node of this edge
+    /// @param into   the [Type] representing the ending node of this edge
     /// @param mapper the corresponding [UniMapper] to map from `from` into `into`
     record ResolvedEdge(@NotNull Type<Object> from, @NotNull Type<Object> into, @NotNull UniMapper<Object, Object> mapper) implements Edge {}
 }
