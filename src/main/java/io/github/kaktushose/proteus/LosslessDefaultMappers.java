@@ -21,7 +21,7 @@ final class LosslessDefaultMappers {
     private static final Type<String> STRING = Type.of(String.class);
     private static final Type<StringBuilder> STRING_BUILDER = Type.of(StringBuilder.class);
     private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
-    private static final Type<Character[]> CHARACTER_ARRAY = Type.of(Character[].class);
+    private static final Type<char[]> CHARACTER_ARRAY = Type.of(char[].class);
 
     public static void registerMappers(Proteus p) {
         // byte
@@ -57,8 +57,8 @@ final class LosslessDefaultMappers {
 
         // char array
         p.register(STRING, CHARACTER_ARRAY, lossless(
-                (source, context) -> success(source.chars().mapToObj(c -> (char) c).toArray(Character[]::new)),
-                (target, context) -> success(Arrays.stream(target).map(String::valueOf).collect(Collectors.joining()))
+                (source, context) -> success(source.toCharArray()),
+                (target, context) -> success(new String(target))
         ));
 
         // string buffer
