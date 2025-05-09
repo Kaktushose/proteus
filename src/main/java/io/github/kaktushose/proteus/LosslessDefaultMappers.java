@@ -23,52 +23,52 @@ final class LosslessDefaultMappers {
     private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
     private static final Type<Character[]> CHARACTER_ARRAY = Type.of(Character[].class);
 
-    public static void registerMappers(Graph graph) {
+    public static void registerMappers(Proteus p) {
         // byte
-        graph.register(BYTE, SHORT, lossless((source, context) -> success((short) source)));
-        graph.register(BYTE, INTEGER, lossless((source, context) -> success((int) source)));
-        graph.register(BYTE, LONG, lossless((source, context) -> success((long) source)));
-        graph.register(BYTE, FLOAT, lossless((source, context) -> success((float) source)));
-        graph.register(BYTE, DOUBLE, lossless((source, context) -> success((double) source)));
+        p.register(BYTE, SHORT, lossless((source, context) -> success((short) source)));
+        p.register(BYTE, INTEGER, lossless((source, context) -> success((int) source)));
+        p.register(BYTE, LONG, lossless((source, context) -> success((long) source)));
+        p.register(BYTE, FLOAT, lossless((source, context) -> success((float) source)));
+        p.register(BYTE, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // short
-        graph.register(SHORT, INTEGER, lossless((source, context) -> success((int) source)));
-        graph.register(SHORT, LONG, lossless((source, context) -> success((long) source)));
-        graph.register(SHORT, FLOAT, lossless((source, context) -> success((float) source)));
-        graph.register(SHORT, DOUBLE, lossless((source, context) -> success((double) source)));
+        p.register(SHORT, INTEGER, lossless((source, context) -> success((int) source)));
+        p.register(SHORT, LONG, lossless((source, context) -> success((long) source)));
+        p.register(SHORT, FLOAT, lossless((source, context) -> success((float) source)));
+        p.register(SHORT, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // char
-        graph.register(CHARACTER, INTEGER, lossless((source, context) -> success((int) source)));
-        graph.register(CHARACTER, LONG, lossless((source, context) -> success((long) source)));
-        graph.register(CHARACTER, FLOAT, lossless((source, context) -> success((float) source)));
-        graph.register(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source)));
+        p.register(CHARACTER, INTEGER, lossless((source, context) -> success((int) source)));
+        p.register(CHARACTER, LONG, lossless((source, context) -> success((long) source)));
+        p.register(CHARACTER, FLOAT, lossless((source, context) -> success((float) source)));
+        p.register(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // int
-        graph.register(INTEGER, LONG, lossless((source, context) -> success((long) source)));
-        graph.register(INTEGER, FLOAT, lossless((source, context) -> success((float) source)));
-        graph.register(INTEGER, DOUBLE, lossless((source, context) -> success((double) source)));
+        p.register(INTEGER, LONG, lossless((source, context) -> success((long) source)));
+        p.register(INTEGER, FLOAT, lossless((source, context) -> success((float) source)));
+        p.register(INTEGER, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // long
-        graph.register(LONG, FLOAT, lossless((source, context) -> success((float) source)));
-        graph.register(LONG, DOUBLE, lossless((source, context) -> success((double) source)));
+        p.register(LONG, FLOAT, lossless((source, context) -> success((float) source)));
+        p.register(LONG, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // float
-        graph.register(FLOAT, DOUBLE, lossless((source, context) -> success((double) source)));
+        p.register(FLOAT, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // char array
-        graph.register(STRING, CHARACTER_ARRAY, lossless(
+        p.register(STRING, CHARACTER_ARRAY, lossless(
                 (source, context) -> success(source.chars().mapToObj(c -> (char) c).toArray(Character[]::new)),
                 (target, context) -> success(Arrays.stream(target).map(String::valueOf).collect(Collectors.joining()))
         ));
 
         // string buffer
-        graph.register(STRING, STRING_BUFFER, lossless(
+        p.register(STRING, STRING_BUFFER, lossless(
                 (source, context) -> success(new StringBuffer(source)),
                 (target, context) -> success(target.toString())
         ));
 
         // string builder
-        graph.register(STRING, STRING_BUILDER, lossless(
+        p.register(STRING, STRING_BUILDER, lossless(
                 (source, context) -> success(new StringBuilder(source)),
                 (target, context) -> success(target.toString())
         ));

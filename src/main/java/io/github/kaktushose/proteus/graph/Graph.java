@@ -29,13 +29,8 @@ public final class Graph {
     }
 
     @NotNull
-    public <S, T> Graph register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper) {
-        return register(from, into, mapper, ConflictStrategy.OVERRIDE);
-    }
-
-    @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public <S, T> Graph register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ConflictStrategy strategy) {
+    public <S, T> void register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ConflictStrategy strategy) {
         switch (mapper) {
             case UniMapper uniMapper -> add(from, into, uniMapper, strategy);
             case BiMapper biMapper -> {
@@ -43,7 +38,6 @@ public final class Graph {
                 add(from, into, (UniMapper<Object, Object>) Mapper.lossless(biMapper::into), strategy);
             }
         }
-        return this;
     }
 
     private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter, @NotNull ConflictStrategy strategy) {

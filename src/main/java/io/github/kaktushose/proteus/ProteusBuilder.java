@@ -31,10 +31,13 @@ public class ProteusBuilder {
 
     public Proteus build() {
         Graph graph = new Graph(cacheSize);
+        Proteus p =  new Proteus(graph, conflictStrategy);
+
         if (defaultMappers) {
-            LosslessDefaultMappers.registerMappers(graph);
+            LosslessDefaultMappers.registerMappers(p);
         }
-        return new Proteus(graph, conflictStrategy);
+
+        return p;
     }
 
     public enum ConflictStrategy {

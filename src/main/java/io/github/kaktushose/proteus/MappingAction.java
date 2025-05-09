@@ -21,7 +21,7 @@ public final class MappingAction<S> {
 
     @NotNull
     public <T> MappingAction<S> to(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
-        proteus.graph().register(source, target, mapper, strategy);
+        proteus.register(source, target, mapper, strategy);
         return this;
     }
 }

@@ -53,6 +53,17 @@ public class Proteus {
     }
 
     @NotNull
+    public <S, T> Proteus register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper) {
+        return register(from, into, mapper, conflictStrategy);
+    }
+
+    @NotNull
+    public <S, T> Proteus register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
+        graph.register(from, into, mapper, strategy);
+        return this;
+    }
+
+    @NotNull
     public <S, T> ConversionResult<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target) {
         return convert(value, source, target, false);
     }
