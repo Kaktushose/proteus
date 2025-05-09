@@ -1,6 +1,7 @@
 package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.conversion.ConversionResult;
+import io.github.kaktushose.proteus.conversion.ConversionResult.ConversionContext;
 import io.github.kaktushose.proteus.conversion.CyclingConversionException;
 import io.github.kaktushose.proteus.graph.Edge;
 import io.github.kaktushose.proteus.graph.Graph;
@@ -100,13 +101,13 @@ public class Proteus {
         if (stack.contains(mapper)) {
             throw new CyclingConversionException(edge.from(), edge.into(), mapper, stack);
         }
-        MappingContext context = new MappingContext(path, edge);
+        ConversionContext context = new ConversionContext(path, edge);
         if (lossless && !mapper.lossless()) {
             return new ConversionResult.Failure<>(NO_LOSSLESS_CONVERSION, "No lossless conversion possible", context);
         }
         stack.add(mapper);
 
-        ConversionResult<Object> result = ConversionResult.of(mapper.from(value, context), MAPPING_FAILED, context);
+        ConversionResult<Object> result = ConversionResult.of(mapper.from(value, new MappingContext()), MAPPING_FAILED, context);
 
         stack.remove(mapper);
         return result;

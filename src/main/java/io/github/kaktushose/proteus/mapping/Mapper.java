@@ -68,15 +68,5 @@ public sealed interface Mapper<S, T> {
         MappingResult<S> into(@NotNull T target, @NotNull MappingContext context);
     }
 
-    record MappingContext(@NotNull List<Edge> path, @NotNull Edge.ResolvedEdge step) {
-
-        public Type<?> from() {
-            return path.getFirst().from();
-        }
-
-        public Type<?> into() {
-            return path.getLast().into();
-        }
-
-    }
+    record MappingContext() {}
 }

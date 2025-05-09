@@ -1,7 +1,6 @@
 package io.github.kaktushose.proteus.conversion;
 
 import io.github.kaktushose.proteus.graph.Edge;
-import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,7 @@ public sealed interface ConversionResult<T> {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    static <T> ConversionResult<T> of(@NotNull MappingResult<T> result, @NotNull Failure.ErrorType errorType, @Nullable Mapper.MappingContext context) {
+    static <T> ConversionResult<T> of(@NotNull MappingResult<T> result, @NotNull Failure.ErrorType errorType, @Nullable ConversionContext context) {
         return switch (result) {
             case MappingResult.Success<T>(Object success) -> new Success<>((T) success);
             case MappingResult.Failure<T>(String message) -> new Failure<>(errorType, message, context);
@@ -22,7 +21,7 @@ public sealed interface ConversionResult<T> {
 
     record Success<T>(@NotNull T value) implements ConversionResult<T> {}
 
-    record Failure<T>(@NotNull ErrorType errorType, @NotNull String message, @Nullable Mapper.MappingContext context) implements ConversionResult<T> {
+    record Failure<T>(@NotNull ErrorType errorType, @NotNull String message, @Nullable ConversionContext context) implements ConversionResult<T> {
 
         @NotNull
         public String detailedMessage() {
@@ -56,5 +55,17 @@ public sealed interface ConversionResult<T> {
             MAPPING_FAILED,
             NO_LOSSLESS_CONVERSION
         }
+    }
+
+    record ConversionContext(@NotNull List<Edge> path, @NotNull Edge.ResolvedEdge step) {
+
+        public Type<?> from() {
+            return path.getFirst().from();
+        }
+
+        public Type<?> into() {
+            return path.getLast().into();
+        }
+
     }
 }
