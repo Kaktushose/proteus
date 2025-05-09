@@ -25,7 +25,7 @@ public sealed interface ConversionResult<T> {
     record Failure<T>(@NotNull ErrorType errorType, @NotNull String message, @Nullable Mapper.MappingContext context) implements ConversionResult<T> {
 
         @NotNull
-        public String formatMessage() {
+        public String detailedMessage() {
             if (context == null) {
                 return message;
             }
