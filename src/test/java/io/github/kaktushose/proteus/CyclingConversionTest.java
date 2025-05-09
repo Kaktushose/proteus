@@ -20,7 +20,7 @@ class CyclingConversionTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.builder().sharedGraph(false).build();
+        proteus = Proteus.create();
     }
 
     @Test

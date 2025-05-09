@@ -28,14 +28,13 @@ public final class Graph {
         pathCache = new ConcurrentLruCache<>(newSize, this::findPath);
     }
 
-    @NotNull
     @SuppressWarnings({"unchecked", "rawtypes"})
     public <S, T> void register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ConflictStrategy strategy) {
         switch (mapper) {
             case UniMapper uniMapper -> add(from, into, uniMapper, strategy);
             case BiMapper biMapper -> {
                 add(from, into, (UniMapper<Object, Object>) Mapper.lossless(biMapper::from), strategy);
-                add(from, into, (UniMapper<Object, Object>) Mapper.lossless(biMapper::into), strategy);
+                add(into, from, (UniMapper<Object, Object>) Mapper.lossless(biMapper::into), strategy);
             }
         }
     }
@@ -114,6 +113,10 @@ public final class Graph {
             return true;
         }
         return first.equalsFormat(second);
+    }
+
+    public void resize(int cacheSize) {
+
     }
 
     private record Route(@NotNull Type<?> source, @NotNull Type<?> target) {}
