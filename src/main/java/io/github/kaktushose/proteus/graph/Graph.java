@@ -6,7 +6,7 @@ import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.util.ConcurrentLruCache;
+import io.github.kaktushose.proteus.internal.ConcurrentLruCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

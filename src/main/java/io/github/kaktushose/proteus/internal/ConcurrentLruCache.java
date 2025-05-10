@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package io.github.kaktushose.proteus.util;
+package io.github.kaktushose.proteus.internal;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
