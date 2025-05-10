@@ -112,6 +112,7 @@ jobs:
           git config --global user.name github-actions[bot]
           
           mike deploy -u ${{ steps.check.outputs.version }} wiki
+          echo ${{ steps.check.outputs.version }} 
           mike set-default --allow-undefined ${{ steps.check.outputs.version }} 
 
   maven_central:
