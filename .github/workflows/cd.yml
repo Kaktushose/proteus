@@ -111,9 +111,8 @@ jobs:
           git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
           git config --global user.name github-actions[bot]
           
-          mike deploy -u ${{ steps.check.outputs.version }} wiki
-          echo ${{ steps.check.outputs.version }} 
-          mike set-default --allow-undefined ${{ steps.check.outputs.version }} 
+          mike deploy -u ${{ needs.check_if_release.outputs.version }} wiki
+          mike set-default ${{ needs.check_if_release.outputs.version }} 
 
   maven_central:
     runs-on: ubuntu-latest
