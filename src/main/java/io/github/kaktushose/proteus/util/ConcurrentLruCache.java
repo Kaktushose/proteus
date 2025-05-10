@@ -176,7 +176,7 @@ public final class ConcurrentLruCache<K, V> {
     /// Determine whether the given key is present in this cache.
     ///
     /// @param key the key to check for
-    /// @return `true` if the key is present, `false` if there was no matching key
+    /// @return `true` if the key is present,`false` if there was no matching key
     public boolean contains(@NotNull K key) {
         return this.cache.containsKey(key);
     }
@@ -184,7 +184,7 @@ public final class ConcurrentLruCache<K, V> {
     /// Immediately remove the given key and any associated value.
     ///
     /// @param key the key to evict the entry for
-    /// @return `true` if the key was present before, `false` if there was no matching key
+    /// @return `true` if the key was present before,`false` if there was no matching key
     public boolean remove(@NotNull K key) {
         final Node<K, V> node = this.cache.remove(key);
         if (node == null) {

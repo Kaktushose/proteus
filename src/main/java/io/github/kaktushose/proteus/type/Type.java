@@ -7,9 +7,9 @@ import java.util.Objects;
 
 /// Representation of a type that can be converted from and into.
 ///
-/// @param format the [Format] describing this type
+/// @param format    the [Format] describing this type
 /// @param container the [TypeReference] used to hold the data of this type
-/// @param <T> the type of the [TypeReference]
+/// @param <T>       the type of the [TypeReference]
 public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> container) {
 
     public Type {
@@ -19,10 +19,10 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
 
     /// Creates a new [Type] with the given [Format] and container [Class].
     ///
-    /// @param format the [Format] of the [Type]
+    /// @param format    the [Format] of the [Type]
     /// @param container the [Class] that will be used to hold the data of the [Type]
+    /// @param <T>       the type of the container [Class]
     /// @return a new [Type] with the given [Format] and container [Class]
-    /// @param <T> the type of the container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Format format, @NotNull Class<T> container) {
         return new Type<>(format, new TypeReference<>(container) {});
@@ -31,8 +31,8 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// Creates a new [Type] with the given container [Class] that will have the [Format.None].
     ///
     /// @param container the [Class] that will be used to hold the data of the [Type]
+    /// @param <T>       the type of the container [Class]
     /// @return a new [Type] with the given [Format] and the [Format.None]
-    /// @param <T> the type of the container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Class<T> container) {
         return new Type<>(Format.none(), new TypeReference<>(container) {});
@@ -41,8 +41,8 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// Creates a new [Type] with the given container [TypeReference] that will have the [Format.None].
     ///
     /// @param container the [TypeReference] that will be used to hold the data of the [Type]
+    /// @param <T>       the type of the container [TypeReference]
     /// @return a new [Type] with the given [Format] and the [Format.None]
-    /// @param <T> the type of the container [TypeReference]
     @NotNull
     public static <T> Type<T> of(@NotNull TypeReference<T> container) {
         return new Type<>(Format.none(), container);
