@@ -1,18 +1,14 @@
 package io.github.kaktushose.proteus;
 
-import io.github.kaktushose.proteus.mapping.Mapper;
-import io.github.kaktushose.proteus.mapping.MappingResult;
-import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.TypeAdapter;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import static io.github.kaktushose.proteus.mapping.Mapper.UniMapper.lossless;
+import static io.github.kaktushose.proteus.mapping.Mapper.lossless;
 import static io.github.kaktushose.proteus.mapping.MappingResult.success;
 
+/// Default lossless mappers for primitive types following the widening primitive conversion. Additionally, provides
+/// bidirectional mappers for `char[]`, [String], [StringBuffer] and [StringBuilder].
+///
+/// @see <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html#jls-5.1.2">Java Language Specification</a>
 final class LosslessDefaultMappers {
 
     private static final Type<Byte> BYTE = Type.of(Byte.class);
@@ -25,83 +21,56 @@ final class LosslessDefaultMappers {
     private static final Type<String> STRING = Type.of(String.class);
     private static final Type<StringBuilder> STRING_BUILDER = Type.of(StringBuilder.class);
     private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
-    private static final Type<Character[]> CHARACTER_ARRAY = Type.of(Character[].class);
+    private static final Type<char[]> CHARACTER_ARRAY = Type.of(char[].class);
 
-    public static void registerMappers(Graph graph) {
+    static void registerMappers(Proteus proteus) {
         // byte
-        graph.register(new TypeAdapter<>(BYTE, SHORT, lossless((source, context) -> success((short) source))));
-        graph.register(new TypeAdapter<>(BYTE, INTEGER, lossless((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(BYTE, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(BYTE, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(BYTE, DOUBLE, lossless((source, context) -> success((double) source))));
+        proteus.register(BYTE, SHORT, lossless((source, context) -> success((short) source)));
+        proteus.register(BYTE, INTEGER, lossless((source, context) -> success((int) source)));
+        proteus.register(BYTE, LONG, lossless((source, context) -> success((long) source)));
+        proteus.register(BYTE, FLOAT, lossless((source, context) -> success((float) source)));
+        proteus.register(BYTE, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // short
-        graph.register(new TypeAdapter<>(SHORT, INTEGER, lossless((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(SHORT, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(SHORT, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(SHORT, DOUBLE, lossless((source, context) -> success((double) source))));
+        proteus.register(SHORT, INTEGER, lossless((source, context) -> success((int) source)));
+        proteus.register(SHORT, LONG, lossless((source, context) -> success((long) source)));
+        proteus.register(SHORT, FLOAT, lossless((source, context) -> success((float) source)));
+        proteus.register(SHORT, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // char
-        graph.register(new TypeAdapter<>(CHARACTER, INTEGER, lossless((source, context) -> success((int) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source))));
+        proteus.register(CHARACTER, INTEGER, lossless((source, context) -> success((int) source)));
+        proteus.register(CHARACTER, LONG, lossless((source, context) -> success((long) source)));
+        proteus.register(CHARACTER, FLOAT, lossless((source, context) -> success((float) source)));
+        proteus.register(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // int
-        graph.register(new TypeAdapter<>(INTEGER, LONG, lossless((source, context) -> success((long) source))));
-        graph.register(new TypeAdapter<>(INTEGER, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(INTEGER, DOUBLE, lossless((source, context) -> success((double) source))));
+        proteus.register(INTEGER, LONG, lossless((source, context) -> success((long) source)));
+        proteus.register(INTEGER, FLOAT, lossless((source, context) -> success((float) source)));
+        proteus.register(INTEGER, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // long
-        graph.register(new TypeAdapter<>(LONG, FLOAT, lossless((source, context) -> success((float) source))));
-        graph.register(new TypeAdapter<>(LONG, DOUBLE, lossless((source, context) -> success((double) source))));
+        proteus.register(LONG, FLOAT, lossless((source, context) -> success((float) source)));
+        proteus.register(LONG, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // float
-        graph.register(new TypeAdapter<>(FLOAT, DOUBLE, lossless((source, context) -> success((double) source))));
+        proteus.register(FLOAT, DOUBLE, lossless((source, context) -> success((double) source)));
 
         // char array
-        graph.register(new TypeAdapter<>(STRING, CHARACTER_ARRAY, new Mapper.BiMapper<>() {
-            @NotNull
-            @Override
-            public MappingResult<Character[]> from(@NotNull String source, @NotNull MappingContext context) {
-                return success(source.chars().mapToObj(c -> (char) c).toArray(Character[]::new));
-            }
-
-            @NotNull
-            @Override
-            public MappingResult<String> into(@NotNull Character @NotNull [] target, @NotNull MappingContext context) {
-                return success(Arrays.stream(target).map(String::valueOf).collect(Collectors.joining()));
-            }
-        }));
+        proteus.register(STRING, CHARACTER_ARRAY, lossless(
+                (source, context) -> success(source.toCharArray()),
+                (target, context) -> success(new String(target))
+        ));
 
         // string buffer
-        graph.register(new TypeAdapter<>(STRING, STRING_BUFFER, new Mapper.BiMapper<>() {
-            @NotNull
-            @Override
-            public MappingResult<StringBuffer> from(@NotNull String source, @NotNull MappingContext context) {
-                return success(new StringBuffer(source));
-            }
-
-            @NotNull
-            @Override
-            public MappingResult<String> into(@NotNull StringBuffer target, @NotNull MappingContext context) {
-                return success(target.toString());
-            }
-        }));
+        proteus.register(STRING, STRING_BUFFER, lossless(
+                (source, context) -> success(new StringBuffer(source)),
+                (target, context) -> success(target.toString())
+        ));
 
         // string builder
-        graph.register(new TypeAdapter<>(STRING, STRING_BUILDER, new Mapper.BiMapper<>() {
-            @NotNull
-            @Override
-            public MappingResult<StringBuilder> from(@NotNull String source, @NotNull MappingContext context) {
-                return success(new StringBuilder(source));
-            }
-
-            @NotNull
-            @Override
-            public MappingResult<String> into(@NotNull StringBuilder target, @NotNull MappingContext context) {
-                return success(target.toString());
-            }
-        }));
+        proteus.register(STRING, STRING_BUILDER, lossless(
+                (source, context) -> success(new StringBuilder(source)),
+                (target, context) -> success(target.toString())
+        ));
     }
 }
