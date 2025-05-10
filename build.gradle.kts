@@ -95,6 +95,11 @@ tasks.test {
     useJUnitPlatform()
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 tasks.javadoc {
     val options = options as StandardJavadocDocletOptions
     options.overview = "src/main/javadoc/overview.md"
