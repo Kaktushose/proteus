@@ -5,6 +5,10 @@ import io.github.kaktushose.proteus.type.Type;
 import static io.github.kaktushose.proteus.mapping.Mapper.lossless;
 import static io.github.kaktushose.proteus.mapping.MappingResult.success;
 
+/// Default lossless mappers for primitive types following the widening primitive conversion. Additionally, provides
+/// bidirectional mappers for `char[]`, [String], [StringBuffer] and [StringBuilder].
+///
+/// @see <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html#jls-5.1.2">Java Language Specification</a>
 final class LosslessDefaultMappers {
 
     private static final Type<Byte> BYTE = Type.of(Byte.class);
@@ -19,7 +23,7 @@ final class LosslessDefaultMappers {
     private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
     private static final Type<char[]> CHARACTER_ARRAY = Type.of(char[].class);
 
-    public static void registerMappers(Proteus proteus) {
+    static void registerMappers(Proteus proteus) {
         // byte
         proteus.register(BYTE, SHORT, lossless((source, context) -> success((short) source)));
         proteus.register(BYTE, INTEGER, lossless((source, context) -> success((int) source)));

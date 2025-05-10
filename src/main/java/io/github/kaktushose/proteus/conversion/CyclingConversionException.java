@@ -14,8 +14,8 @@ public class CyclingConversionException extends RuntimeException {
 
     /// Constructs a new CyclingConversionException.
     ///
-    /// @param from          the initial [Type] of the path
-    /// @param into          the target [Type] of the path
+    /// @param from          the source [Type] of the path
+    /// @param into          the destination [Type] of the path
     /// @param mapper        the [UniMapper] that was called cyclic
     /// @param alreadyCalled the callstack of previously called [UniMapper]s
     public CyclingConversionException(@Nullable Type<?> from,

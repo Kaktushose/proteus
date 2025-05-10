@@ -12,6 +12,14 @@ import java.util.List;
 
 /// Represents the final result of a type conversion.
 ///
+/// # Example:
+/// ```
+/// switch (result) {
+///     case ConversionResult.Success<Object>(Object success) -> ...; // proceed with converted object
+///     case ConversionResult.Failure<Object> failure -> log(failure);
+/// }
+/// ```
+///
 /// @param <T> the type of the result
 /// @see Proteus#convert(Object, Type, Type)
 public sealed interface ConversionResult<T> {
@@ -94,17 +102,17 @@ public sealed interface ConversionResult<T> {
     /// @param step the [ResolvedEdge] at which the conversion failed
     record ConversionContext(@NotNull List<Edge> path, @NotNull ResolvedEdge step) {
 
-        /// Gets the initial [Type] of the path.
+        /// Gets the source [Type] of the path.
         ///
-        /// @return the initial [Type] of the path
+        /// @return the source [Type] of the path
         @NotNull
         public Type<?> from() {
             return path.getFirst().from();
         }
 
-        /// Gets the target [Type] of the path.
+        /// Gets the destination [Type] of the path.
         ///
-        /// @return the target [Type] of the path
+        /// @return the destination [Type] of the path
         @NotNull
         public Type<?> into() {
             return path.getLast().into();
