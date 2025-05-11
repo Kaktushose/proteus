@@ -17,6 +17,15 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         Objects.requireNonNull(container);
     }
 
+    /// Create a new [Type] with the container retrieved from [Object#getClass()] called on `value`
+    /// that will have the [Format.None]
+    ///
+    /// @param value the object [Object#getClass()] should be called on
+    /// @return a new [Type] with [Format.None] and the container defined by `value`
+    public static Type<Object> arbitrary(Object value) {
+        return new Type<>(Format.none(), new TypeReference<>(value.getClass()) {});
+    }
+
     /// Creates a new [Type] with the given [Format] and container [Class].
     ///
     /// @param format    the [Format] of the [Type]
