@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.kaktushose"
-version = "0.0.1"
+version = "1.0.0"
 
 
 repositories {
@@ -97,6 +97,10 @@ tasks.test {
 }
 
 java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(23)
+    }
+
     withSourcesJar()
     withJavadocJar()
 }

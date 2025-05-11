@@ -33,7 +33,7 @@ jobs:
         if: ${{ steps.check.outputs.release == 'true' }}
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '23'
       - name: verify project version defined in gradle
         id: verify
         if: ${{ steps.check.outputs.release == 'true' }}
@@ -72,7 +72,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '23'
       - name: Generate Documentation
         if: ${{ steps.target_dir.outputs.name != 'ignore' }}
         run: |
@@ -129,7 +129,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '23'
       - name: Build and deploy
         if: ${{ needs.check_if_release.outputs.release == 'true' }}
         env:
