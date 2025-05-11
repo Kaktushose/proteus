@@ -64,11 +64,11 @@ public final class Graph {
     }
 
     private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter, @NotNull ConflictStrategy strategy) {
-        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, unused -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
+        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, _ -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
         if (present != null) {
             switch (strategy) {
                 case FAIL -> throw new IllegalArgumentException("Duplicated adapter registration for route: '%s' -> '%s'".formatted(source, target));
-                case OVERRIDE -> adjacencyList.compute(source, (k, v) -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
+                case OVERRIDE -> adjacencyList.compute(source, (_, _) -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
             }
         }
     }

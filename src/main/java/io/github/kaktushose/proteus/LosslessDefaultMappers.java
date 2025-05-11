@@ -25,52 +25,52 @@ final class LosslessDefaultMappers {
 
     static void registerMappers(Proteus proteus) {
         // byte
-        proteus.register(BYTE, SHORT, lossless((source, context) -> success((short) source)));
-        proteus.register(BYTE, INTEGER, lossless((source, context) -> success((int) source)));
-        proteus.register(BYTE, LONG, lossless((source, context) -> success((long) source)));
-        proteus.register(BYTE, FLOAT, lossless((source, context) -> success((float) source)));
-        proteus.register(BYTE, DOUBLE, lossless((source, context) -> success((double) source)));
+        proteus.register(BYTE, SHORT, lossless((source, _) -> success((short) source)));
+        proteus.register(BYTE, INTEGER, lossless((source, _) -> success((int) source)));
+        proteus.register(BYTE, LONG, lossless((source, _) -> success((long) source)));
+        proteus.register(BYTE, FLOAT, lossless((source, _) -> success((float) source)));
+        proteus.register(BYTE, DOUBLE, lossless((source, _) -> success((double) source)));
 
         // short
-        proteus.register(SHORT, INTEGER, lossless((source, context) -> success((int) source)));
-        proteus.register(SHORT, LONG, lossless((source, context) -> success((long) source)));
-        proteus.register(SHORT, FLOAT, lossless((source, context) -> success((float) source)));
-        proteus.register(SHORT, DOUBLE, lossless((source, context) -> success((double) source)));
+        proteus.register(SHORT, INTEGER, lossless((source, _) -> success((int) source)));
+        proteus.register(SHORT, LONG, lossless((source, _) -> success((long) source)));
+        proteus.register(SHORT, FLOAT, lossless((source, _) -> success((float) source)));
+        proteus.register(SHORT, DOUBLE, lossless((source, _) -> success((double) source)));
 
         // char
-        proteus.register(CHARACTER, INTEGER, lossless((source, context) -> success((int) source)));
-        proteus.register(CHARACTER, LONG, lossless((source, context) -> success((long) source)));
-        proteus.register(CHARACTER, FLOAT, lossless((source, context) -> success((float) source)));
-        proteus.register(CHARACTER, DOUBLE, lossless((source, context) -> success((double) source)));
+        proteus.register(CHARACTER, INTEGER, lossless((source, _) -> success((int) source)));
+        proteus.register(CHARACTER, LONG, lossless((source, _) -> success((long) source)));
+        proteus.register(CHARACTER, FLOAT, lossless((source, _) -> success((float) source)));
+        proteus.register(CHARACTER, DOUBLE, lossless((source, _) -> success((double) source)));
 
         // int
-        proteus.register(INTEGER, LONG, lossless((source, context) -> success((long) source)));
-        proteus.register(INTEGER, FLOAT, lossless((source, context) -> success((float) source)));
-        proteus.register(INTEGER, DOUBLE, lossless((source, context) -> success((double) source)));
+        proteus.register(INTEGER, LONG, lossless((source, _) -> success((long) source)));
+        proteus.register(INTEGER, FLOAT, lossless((source, _) -> success((float) source)));
+        proteus.register(INTEGER, DOUBLE, lossless((source, _) -> success((double) source)));
 
         // long
-        proteus.register(LONG, FLOAT, lossless((source, context) -> success((float) source)));
-        proteus.register(LONG, DOUBLE, lossless((source, context) -> success((double) source)));
+        proteus.register(LONG, FLOAT, lossless((source, _) -> success((float) source)));
+        proteus.register(LONG, DOUBLE, lossless((source, _) -> success((double) source)));
 
         // float
-        proteus.register(FLOAT, DOUBLE, lossless((source, context) -> success((double) source)));
+        proteus.register(FLOAT, DOUBLE, lossless((source, _) -> success((double) source)));
 
         // char array
         proteus.register(STRING, CHARACTER_ARRAY, lossless(
-                (source, context) -> success(source.toCharArray()),
-                (target, context) -> success(new String(target))
+                (source, _) -> success(source.toCharArray()),
+                (target, _) -> success(new String(target))
         ));
 
         // string buffer
         proteus.register(STRING, STRING_BUFFER, lossless(
-                (source, context) -> success(new StringBuffer(source)),
-                (target, context) -> success(target.toString())
+                (source, _) -> success(new StringBuffer(source)),
+                (target, _) -> success(target.toString())
         ));
 
         // string builder
         proteus.register(STRING, STRING_BUILDER, lossless(
-                (source, context) -> success(new StringBuilder(source)),
-                (target, context) -> success(target.toString())
+                (source, _) -> success(new StringBuilder(source)),
+                (target, _) -> success(target.toString())
         ));
     }
 }

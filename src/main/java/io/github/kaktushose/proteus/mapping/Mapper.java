@@ -1,5 +1,6 @@
 package io.github.kaktushose.proteus.mapping;
 
+import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
@@ -17,10 +18,10 @@ public sealed interface Mapper<S, T> {
     /// @param <S>    the source type
     /// @param <T>    the target type
     /// @return a new [UniMapper]
-    static <S, T> UniMapper<S, T> lossy(@NotNull BiFunction<S, MappingContext, MappingResult<T>> mapper) {
+    static <S, T> UniMapper<S, T> lossy(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> mapper) {
         return new UniMapper<>() {
             @Override
-            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
+            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context) {
                 return mapper.apply(source, context);
             }
 
@@ -38,10 +39,10 @@ public sealed interface Mapper<S, T> {
     /// @param <S>    the source type
     /// @param <T>    the target type
     /// @return a new [UniMapper]
-    static <S, T> UniMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext, MappingResult<T>> mapper) {
+    static <S, T> UniMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> mapper) {
         return new UniMapper<>() {
             @Override
-            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
+            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context) {
                 return mapper.apply(source, context);
             }
 
@@ -61,16 +62,16 @@ public sealed interface Mapper<S, T> {
     /// @param <S>  the source type
     /// @param <T>  the target type
     /// @return a new [UniMapper]
-    static <S, T> BiMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext, MappingResult<T>> from, @NotNull BiFunction<T, MappingContext, MappingResult<S>> into) {
+    static <S, T> BiMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> from, @NotNull BiFunction<T, MappingContext<T, S>, MappingResult<S>> into) {
         return new BiMapper<>() {
 
             @Override
-            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext context) {
+            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context) {
                 return from.apply(source, context);
             }
 
             @Override
-            public @NotNull MappingResult<S> into(@NotNull T target, @NotNull MappingContext context) {
+            public @NotNull MappingResult<S> into(@NotNull T target, @NotNull MappingContext<T, S> context) {
                 return into.apply(target, context);
             }
         };
@@ -86,7 +87,7 @@ public sealed interface Mapper<S, T> {
         /// @param context the [MappingContext] providing additional information
         /// @return the target [T] to convert into wrapped in a [MappingResult]
         @NotNull
-        MappingResult<T> from(@NotNull S source, @NotNull MappingContext context);
+        MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context);
 
         boolean lossless();
 
@@ -103,15 +104,20 @@ public sealed interface Mapper<S, T> {
         /// @param context the [MappingContext] providing additional information
         /// @return the target [T] to convert into wrapped in a [MappingResult]
         @NotNull
-        MappingResult<T> from(@NotNull S source, @NotNull MappingContext context);
+        MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context);
 
         /// @param target  the target [T] to convert from
         /// @param context the [MappingContext] providing additional information
         /// @return the source [S] to convert back into wrapped in a [MappingResult]
         @NotNull
-        MappingResult<S> into(@NotNull T target, @NotNull MappingContext context);
+        MappingResult<S> into(@NotNull T target, @NotNull MappingContext<T, S> context);
     }
 
-    /// TBD
-    record MappingContext() {}
+    /// Provides additional information about the mapping.
+    ///
+    /// @param from the source [Type] of the mapping
+    /// @param into the target [Type] of the mapping
+    /// @param <S> the container type of the source
+    /// @param <T> the container type of the destination
+    record MappingContext<S, T>(Type<S> from, Type<T> into) {}
 }

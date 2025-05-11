@@ -172,7 +172,7 @@ public class Proteus {
         }
         stack.add(mapper);
 
-        ConversionResult<Object> result = ConversionResult.of(mapper.from(value, new MappingContext()), MAPPING_FAILED, context);
+        ConversionResult<Object> result = ConversionResult.of(mapper.from(value, new MappingContext<>(edge.from(), edge.into())), MAPPING_FAILED, context);
 
         stack.remove(mapper);
         return result;
