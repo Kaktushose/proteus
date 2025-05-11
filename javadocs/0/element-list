@@ -1,0 +1,7 @@
+module:io.github.kaktushose.proteus
+io.github.kaktushose.proteus
+io.github.kaktushose.proteus.conversion
+io.github.kaktushose.proteus.graph
+io.github.kaktushose.proteus.internal
+io.github.kaktushose.proteus.mapping
+io.github.kaktushose.proteus.type
