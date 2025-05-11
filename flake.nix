@@ -47,7 +47,7 @@
         };
        in {
          devShells.default = pkgs.mkShell {
-           name = "Jack";
+           name = "Proteus";
            packages = with pkgs; [git jdk gradle maven];
            JDK24 = jdk;
          };
