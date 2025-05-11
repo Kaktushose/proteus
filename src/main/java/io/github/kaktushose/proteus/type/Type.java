@@ -22,7 +22,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     ///
     /// @param value the object [Object#getClass()] should be called on
     /// @return a new [Type] with [Format.None] and the container defined by `value`
-    public static Type<Object> arbitrary(Object value) {
+    public static Type<Object> dynamic(Object value) {
         return new Type<>(Format.none(), new TypeReference<>(value.getClass()) {});
     }
 
@@ -41,7 +41,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     ///
     /// @param container the [Class] that will be used to hold the data of the [Type]
     /// @param <T>       the type of the container [Class]
-    /// @return a new [Type] with the given [Format] and the [Format.None]
+    /// @return a new [Type] with [Format.None] and the given container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Class<T> container) {
         return new Type<>(Format.none(), new TypeReference<>(container) {});
