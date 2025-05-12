@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - cd/automatically-create-draft-release
 
 jobs:
   check_if_release:
@@ -51,103 +50,103 @@ jobs:
             exit 1
           fi
 
-  #  javadoc:
-  #    runs-on: ubuntu-latest
-  #    needs: check_if_release
-  #    steps:
-  #      - name: Checkout
-  #        uses: actions/checkout@v4
-  #        with:
-  #          fetch-depth: 0
-  #      - name: Find target directory
-  #        id: target_dir
-  #        run: |
-  #          branch=${GITHUB_REF#refs/heads/}
-  #
-  #          if [ "${{ needs.check_if_release.outputs.release }}" = "true" ]; then
-  #            echo "name=${{ needs.check_if_release.outputs.version_major }}" >> "$GITHUB_OUTPUT"
-  #          elif [ "$branch" == "main" ]; then
-  #            echo "name=snapshot" >> "$GITHUB_OUTPUT"
-  #          else
-  #            echo "name=ignore" >> "$GITHUB_OUTPUT"
-  #          fi
-  #      - name: Setup Java
-  #        if: ${{ steps.target_dir.outputs.name != 'ignore' }}
-  #        uses: actions/setup-java@v4
-  #        with:
-  #          distribution: 'temurin'
-  #          java-version: '23'
-  #      - name: Generate Documentation
-  #        if: ${{ steps.target_dir.outputs.name != 'ignore' }}
-  #        run: |
-  #          gradle javadoc
-  #      - name: Deploy proteus docs
-  #        if: ${{ steps.target_dir.outputs.name != 'ignore' }}
-  #        uses: JamesIves/github-pages-deploy-action@v4
-  #        with:
-  #          folder: ./build/docs/javadoc
-  #          branch: gh-pages
-  #          target-folder: javadocs/${{ steps.target_dir.outputs.name }}
-  #
-  #  wiki:
-  #    runs-on: ubuntu-latest
-  #    needs: check_if_release
-  #    steps:
-  #      - uses: actions/checkout@v4
-  #        with:
-  #          fetch-depth: 1
-  #      - name: Setup Python
-  #        if: ${{ needs.check_if_release.outputs.release == 'true' }}
-  #        uses: actions/setup-python@v5
-  #        with:
-  #          python-version: 3.x
-  #      - name: Build & Deploy Wiki
-  #        if: ${{ needs.check_if_release.outputs.release == 'true' }}
-  #        run: |
-  #          git fetch
-  #          git checkout gh-pages
-  #          git branch --set-upstream-to=origin/gh-pages
-  #          git pull
-  #          git checkout wiki
-  #
-  #          pip install -r requirements.txt
-  #
-  #          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
-  #          git config --global user.name github-actions[bot]
-  #
-  #          mike deploy -u ${{ needs.check_if_release.outputs.version }} wiki
-  #          mike set-default ${{ needs.check_if_release.outputs.version }}
-  #      - name: Deploy Wiki
-  #        if: ${{ needs.check_if_release.outputs.release == 'true' }}
-  #        run: |
-  #          git checkout gh-pages
-  #          git push
-  #
-  #  maven_central:
-  #    runs-on: ubuntu-latest
-  #    needs: check_if_release
-  #    steps:
-  #      - uses: actions/checkout@v4
-  #      - name: Setup Java
-  #        if: ${{ needs.check_if_release.outputs.release == 'true' }}
-  #        uses: actions/setup-java@v4
-  #        with:
-  #          distribution: 'temurin'
-  #          java-version: '23'
-  #      - name: Build and deploy
-  #        if: ${{ needs.check_if_release.outputs.release == 'true' }}
-  #        env:
-  #          JRELEASER_GPG_PASSPHRASE: ${{ secrets.jreleaser_gpg_pass }}
-  #          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.jreleaser_gpg_public_key }}
-  #          JRELEASER_GPG_SECRET_KEY: ${{ secrets.jreleaser_gpg_secret_key }}
-  #          JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_SONATYPE_USERNAME: ${{ secrets.jreleaser_user }}
-  #          JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_SONATYPE_PASSWORD: ${{ secrets.jreleaser_password }}
-  #        run: |
-  #          gradle jreleaserDeploy
+  javadoc:
+    runs-on: ubuntu-latest
+    needs: check_if_release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Find target directory
+        id: target_dir
+        run: |
+          branch=${GITHUB_REF#refs/heads/}
+          
+          if [ "${{ needs.check_if_release.outputs.release }}" = "true" ]; then
+            echo "name=${{ needs.check_if_release.outputs.version_major }}" >> "$GITHUB_OUTPUT"
+          elif [ "$branch" == "main" ]; then
+            echo "name=snapshot" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=ignore" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Setup Java
+        if: ${{ steps.target_dir.outputs.name != 'ignore' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '23'
+      - name: Generate Documentation
+        if: ${{ steps.target_dir.outputs.name != 'ignore' }}
+        run: |
+          gradle javadoc
+      - name: Deploy proteus docs
+        if: ${{ steps.target_dir.outputs.name != 'ignore' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ./build/docs/javadoc
+          branch: gh-pages
+          target-folder: javadocs/${{ steps.target_dir.outputs.name }}
+
+  wiki:
+    runs-on: ubuntu-latest
+    needs: check_if_release
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Setup Python
+        if: ${{ needs.check_if_release.outputs.release == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Build & Deploy Wiki
+        if: ${{ needs.check_if_release.outputs.release == 'true' }}
+        run: |
+          git fetch
+          git checkout gh-pages
+          git branch --set-upstream-to=origin/gh-pages
+          git pull
+          git checkout wiki
+          
+          pip install -r requirements.txt
+          
+          git config --global user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git config --global user.name github-actions[bot]
+          
+          mike deploy -u ${{ needs.check_if_release.outputs.version }} wiki
+          mike set-default ${{ needs.check_if_release.outputs.version }}
+      - name: Deploy Wiki
+        if: ${{ needs.check_if_release.outputs.release == 'true' }}
+        run: |
+          git checkout gh-pages
+          git push
+
+  maven_central:
+    runs-on: ubuntu-latest
+    needs: check_if_release
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Java
+        if: ${{ needs.check_if_release.outputs.release == 'true' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '23'
+      - name: Build and deploy
+        if: ${{ needs.check_if_release.outputs.release == 'true' }}
+        env:
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.jreleaser_gpg_pass }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.jreleaser_gpg_public_key }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.jreleaser_gpg_secret_key }}
+          JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_SONATYPE_USERNAME: ${{ secrets.jreleaser_user }}
+          JRELEASER_DEPLOY_MAVEN_MAVENCENTRAL_SONATYPE_PASSWORD: ${{ secrets.jreleaser_password }}
+        run: |
+          gradle jreleaserDeploy
 
   create-gh-draft-release:
     runs-on: ubuntu-latest
-    needs: [ check_if_release ]
+    needs: [ check_if_release, maven_central ]
     steps:
       - uses: actions/checkout@v4
       - uses: softprops/action-gh-release@v2
