@@ -12,6 +12,7 @@ jobs:
     outputs:
       release: ${{ steps.check.outputs.release }}
       version: ${{ steps.check.outputs.version }}
+      version_major: ${{ steps.check.outputs.version_major }}
       title: ${{ steps.check.outputs.title }}
     steps:
       - name: Checkout
@@ -28,6 +29,7 @@ jobs:
           then
             echo "release=true" >> "$GITHUB_OUTPUT"
             echo "version=${BASH_REMATCH[1]}" >> "$GITHUB_OUTPUT"
+            echo "version_major=${BASH_REMATCH[2]}" >> "$GITHUB_OUTPUT"
             echo "title=${BASH_REMATCH[14]}" >> "$GITHUB_OUTPUT"
           else
             echo "release=false" >> "$GITHUB_OUTPUT"
@@ -63,8 +65,7 @@ jobs:
   #          branch=${GITHUB_REF#refs/heads/}
   #
   #          if [ "${{ needs.check_if_release.outputs.release }}" = "true" ]; then
-  #            major=$( echo "${{ needs.check_if_release.outputs.version }}" | grep -o '[0-9]*' | head -1 )
-  #            echo "name=$major" >> "$GITHUB_OUTPUT"
+  #            echo "name=${{ needs.check_if_release.outputs.version_major }}" >> "$GITHUB_OUTPUT"
   #          elif [ "$branch" == "main" ]; then
   #            echo "name=snapshot" >> "$GITHUB_OUTPUT"
   #          else
@@ -153,11 +154,19 @@ jobs:
         if: ${{ needs.check_if_release.outputs.release == 'true' }}
         with:
           draft: true
-          tag_name: "v${{ needs.check_if_release.outputs.version }} | ${{ needs.check_if_release.outputs.title }}"
+          tag_name: ":rocket: v${{ needs.check_if_release.outputs.version }} | ${{ needs.check_if_release.outputs.title }}"
           generate_release_notes: true
           body: |
-            # Download / Usage
-            ## Gradle
+            ## :telescope: Overview
+            TBD
+            
+            ## :page_facing_up: Docs
+            You can find the wiki for this version [here](https://kaktushose.github.io/proteus/${{ needs.check_if_release.outputs.version }}/).
+            
+            To visit this version's javadocs click [here](https://kaktushose.github.io/proteus/javadocs/${{ needs.check_if_release.outputs.version_major }}/).
+            
+            ## :package: Download / Usage
+            ### Gradle
             ```kotlin
             repositories {
               mavenCentral()
@@ -168,7 +177,7 @@ jobs:
             }
             ```
             
-            ## Maven
+            ### Maven
             ```xml
             <dependency>
               <groupId>io.github.kaktushose</groupId>

@@ -1,0 +1,12 @@
+changelog:
+  categories:
+    - title: ":memo: Changelog"
+      labels:
+        - "*"
+      exclude:
+        labels:
+          - dependencies
+          - release
+    - title: ":toolbox: Dependencies"
+      labels:
+        - dependencies
