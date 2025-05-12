@@ -18,4 +18,4 @@ jobs:
           java-version: '23'
           cache: gradle
       - name: Build with Gradle
-        run: gradle build
+        run: gradle build --no-daemon
