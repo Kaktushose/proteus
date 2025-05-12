@@ -29,11 +29,8 @@ jobs:
           else
             echo "release=false" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/setup-java@v4
+      - uses: gradle/actions/setup-gradle@v4
         if: ${{ steps.check.outputs.release == 'true' }}
-        with:
-          distribution: 'temurin'
-          java-version: '23'
       - name: verify project version defined in gradle
         id: verify
         if: ${{ steps.check.outputs.release == 'true' }}

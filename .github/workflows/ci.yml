@@ -2,7 +2,7 @@ name: Java CI
 
 on:
   push:
-    branches: [ main, feature/*, ci/speed-up-gradle ]
+    branches: [ main, feature/* ]
   pull_request:
     branches: [ main, feature/* ]
 
@@ -18,4 +18,4 @@ jobs:
           java-version: 23
       - uses: gradle/actions/setup-gradle@v4
       - name: Build and test with Gradle
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test
