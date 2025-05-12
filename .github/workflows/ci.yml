@@ -2,7 +2,7 @@ name: Java CI
 
 on:
   push:
-    branches: [ main, feature/* ]
+    branches: [ main, feature/*, ci/speed-up-gradle ]
   pull_request:
     branches: [ main, feature/* ]
 
