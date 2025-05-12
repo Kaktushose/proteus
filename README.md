@@ -1,4 +1,4 @@
-[![Generic badge](https://img.shields.io/badge/Version-1.0.0-green.svg)](https://github.com/Kaktushose/proteus/releases/latest)
+[![Generic badge](https://release-badges-generator.vercel.app/api/releases.svg?user=kaktushose&repo=proteus&gradient=92e236,92e236)](https://github.com/Kaktushose/proteus/releases/latest)
 [![Java CI](https://github.com/Kaktushose/proteus/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Kaktushose/proteus/actions/workflows/ci.yml)
 [![Release Deployment](https://github.com/Kaktushose/proteus/actions/workflows/cd.yml/badge.svg)](https://github.com/Kaktushose/proteus/actions/workflows/cd.yml)
 [![license-shield](https://img.shields.io/badge/License-Apache%202.0-lightgrey.svg)]()
