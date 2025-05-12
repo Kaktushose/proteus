@@ -154,7 +154,8 @@ jobs:
         if: ${{ needs.check_if_release.outputs.release == 'true' }}
         with:
           draft: true
-          tag_name: ":rocket: v${{ needs.check_if_release.outputs.version }} | ${{ needs.check_if_release.outputs.title }}"
+          name: "\U0001f680 v${{ needs.check_if_release.outputs.version }} | ${{ needs.check_if_release.outputs.title }}"
+          tag_name: "v${{ needs.check_if_release.outputs.version }}"
           generate_release_notes: true
           body: |
             ## :telescope: Overview
