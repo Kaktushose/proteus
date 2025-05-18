@@ -101,10 +101,10 @@ jobs:
         if: ${{ needs.check_if_release.outputs.release == 'true' }}
         run: |
           git fetch
-          git checkout gh-pages
+          git switch gh-pages
           git branch --set-upstream-to=origin/gh-pages
           git pull
-          git checkout wiki
+          git switch wiki
           
           pip install -r requirements.txt
           
@@ -116,7 +116,7 @@ jobs:
       - name: Deploy Wiki
         if: ${{ needs.check_if_release.outputs.release == 'true' }}
         run: |
-          git checkout gh-pages
+          git switch gh-pages
           git push
 
   maven_central:
