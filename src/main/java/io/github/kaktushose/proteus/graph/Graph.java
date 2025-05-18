@@ -108,7 +108,7 @@ public final class Graph {
         Type<?> target = route.target;
 
         if (source.equals(target)) {
-            return List.of();
+            throw new IllegalArgumentException("Source and target type cannot be equal. Please report this error to the devs of proteus!");
         }
 
         if (source.equalsFormat(target)) {

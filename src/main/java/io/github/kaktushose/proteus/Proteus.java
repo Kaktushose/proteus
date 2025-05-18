@@ -137,6 +137,10 @@ public class Proteus {
     @NotNull
     @SuppressWarnings("unchecked")
     public <S, T> ConversionResult<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
+        if (source.equals(target)) {
+            return new ConversionResult.Success<>((T) value);
+        }
+
         List<Edge> path = graph.path(source, target);
         if (path.isEmpty()) {
             return new ConversionResult.Failure<>(NO_PATH_FOUND, "Found no path to convert from '%s' to '%s'!".formatted(source, target), null);
