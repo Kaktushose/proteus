@@ -2,6 +2,8 @@ package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.type.Type;
 
+import java.math.BigDecimal;
+
 import static io.github.kaktushose.proteus.mapping.Mapper.lossless;
 import static io.github.kaktushose.proteus.mapping.MappingResult.success;
 
@@ -22,6 +24,7 @@ final class LosslessDefaultMappers {
     private static final Type<StringBuilder> STRING_BUILDER = Type.of(StringBuilder.class);
     private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
     private static final Type<char[]> CHARACTER_ARRAY = Type.of(char[].class);
+    private static final Type<BigDecimal> BIG_DECIMAL_TYPE = Type.of(BigDecimal.class);
 
     static void registerMappers(Proteus proteus) {
         // byte
@@ -72,5 +75,7 @@ final class LosslessDefaultMappers {
                 (source, _) -> success(new StringBuilder(source)),
                 (target, _) -> success(target.toString())
         ));
+
+        proteus.register(DOUBLE, BIG_DECIMAL_TYPE, lossless((source, _) -> success(new BigDecimal(source))));
     }
 }
