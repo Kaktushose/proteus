@@ -3,6 +3,7 @@ package io.github.kaktushose.proteus.type;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.invoke.MethodType;
 import java.util.Objects;
 
 /// Representation of a type that can be converted from and into.
@@ -34,7 +35,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// @return a new [Type] with the given [Format] and container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Format format, @NotNull Class<T> container) {
-        return new Type<>(format, new TypeReference<>(container) {});
+        return new Type<>(format, new TypeReference<>(wrap(container)) {});
     }
 
     /// Creates a new [Type] with the given container [Class] that will have the [Format.None].
@@ -44,7 +45,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// @return a new [Type] with [Format.None] and the given container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Class<T> container) {
-        return new Type<>(Format.none(), new TypeReference<>(container) {});
+        return new Type<>(Format.none(), new TypeReference<>(wrap(container)) {});
     }
 
     /// Creates a new [Type] with the given container [TypeReference] that will have the [Format.None].
@@ -55,6 +56,11 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     @NotNull
     public static <T> Type<T> of(@NotNull TypeReference<T> container) {
         return new Type<>(Format.none(), container);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> wrap(Class<T> c) {
+        return (Class<T>) MethodType.methodType(c).wrap().returnType();
     }
 
     /// Whether this type is equals to the given [Type] ignoring the container [TypeReference] and only comparing the
