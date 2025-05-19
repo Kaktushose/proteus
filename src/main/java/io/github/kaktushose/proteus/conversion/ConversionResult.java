@@ -15,7 +15,7 @@ import java.util.List;
 /// # Example:
 /// ```
 /// switch (result) {
-///     case ConversionResult.Success<Object>(Object success) -> ...; // proceed with converted object
+///     case ConversionResult.Success<Object>(Object success, boolean lossless) -> ...; // proceed with converted object
 ///     case ConversionResult.Failure<Object> failure -> log(failure);
 /// }
 /// ```

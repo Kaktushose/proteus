@@ -13,14 +13,14 @@ Type<Integer> integerType = Type.of(Integer.class);
 Type<String> stringType = Type.of(String.class);
 
 // register mapper
-proteus.map(integerType).to(stringType, Mapper.lossless((source, context) -> MappingResult.success(String.valueOf(source))));
+proteus.map(integerType).to(stringType, Mapper.uni((source, context) -> MappingResult.lossless(String.valueOf(source))));
 
 // attempt conversion
 ConversionResult<String> result = proteus.convert(0, integerType, stringType);
 
 // check result
 switch (result) {
-    case ConversionResult.Success<String>(String success) -> System.out.println(success);
+    case ConversionResult.Success<String>(String success, boolean _) -> System.out.println(success);
     case ConversionResult.Failure<?> failure -> System.out.println(failure.detailedMessage());
 }
 ```
