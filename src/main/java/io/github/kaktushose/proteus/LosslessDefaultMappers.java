@@ -4,8 +4,9 @@ import io.github.kaktushose.proteus.type.Type;
 
 import java.math.BigDecimal;
 
-import static io.github.kaktushose.proteus.mapping.Mapper.lossless;
-import static io.github.kaktushose.proteus.mapping.MappingResult.success;
+import static io.github.kaktushose.proteus.mapping.Mapper.bi;
+import static io.github.kaktushose.proteus.mapping.Mapper.uni;
+import static io.github.kaktushose.proteus.mapping.MappingResult.lossless;
 
 /// Default lossless mappers for primitive types following the widening primitive conversion. Additionally, provides
 /// bidirectional mappers for `char[]`, [String], [StringBuffer] and [StringBuilder].
@@ -28,54 +29,54 @@ final class LosslessDefaultMappers {
 
     static void registerMappers(Proteus proteus) {
         // byte
-        proteus.register(BYTE, SHORT, lossless((source, _) -> success((short) source)));
-        proteus.register(BYTE, INTEGER, lossless((source, _) -> success((int) source)));
-        proteus.register(BYTE, LONG, lossless((source, _) -> success((long) source)));
-        proteus.register(BYTE, FLOAT, lossless((source, _) -> success((float) source)));
-        proteus.register(BYTE, DOUBLE, lossless((source, _) -> success((double) source)));
+        proteus.register(BYTE, SHORT, uni((source, _) -> lossless((short) source)));
+        proteus.register(BYTE, INTEGER, uni((source, _) -> lossless((int) source)));
+        proteus.register(BYTE, LONG, uni((source, _) -> lossless((long) source)));
+        proteus.register(BYTE, FLOAT, uni((source, _) -> lossless((float) source)));
+        proteus.register(BYTE, DOUBLE, uni((source, _) -> lossless((double) source)));
 
         // short
-        proteus.register(SHORT, INTEGER, lossless((source, _) -> success((int) source)));
-        proteus.register(SHORT, LONG, lossless((source, _) -> success((long) source)));
-        proteus.register(SHORT, FLOAT, lossless((source, _) -> success((float) source)));
-        proteus.register(SHORT, DOUBLE, lossless((source, _) -> success((double) source)));
+        proteus.register(SHORT, INTEGER, uni((source, _) -> lossless((int) source)));
+        proteus.register(SHORT, LONG, uni((source, _) -> lossless((long) source)));
+        proteus.register(SHORT, FLOAT, uni((source, _) -> lossless((float) source)));
+        proteus.register(SHORT, DOUBLE, uni((source, _) -> lossless((double) source)));
 
         // char
-        proteus.register(CHARACTER, INTEGER, lossless((source, _) -> success((int) source)));
-        proteus.register(CHARACTER, LONG, lossless((source, _) -> success((long) source)));
-        proteus.register(CHARACTER, FLOAT, lossless((source, _) -> success((float) source)));
-        proteus.register(CHARACTER, DOUBLE, lossless((source, _) -> success((double) source)));
+        proteus.register(CHARACTER, INTEGER, uni((source, _) -> lossless((int) source)));
+        proteus.register(CHARACTER, LONG, uni((source, _) -> lossless((long) source)));
+        proteus.register(CHARACTER, FLOAT, uni((source, _) -> lossless((float) source)));
+        proteus.register(CHARACTER, DOUBLE, uni((source, _) -> lossless((double) source)));
 
         // int
-        proteus.register(INTEGER, LONG, lossless((source, _) -> success((long) source)));
-        proteus.register(INTEGER, FLOAT, lossless((source, _) -> success((float) source)));
-        proteus.register(INTEGER, DOUBLE, lossless((source, _) -> success((double) source)));
+        proteus.register(INTEGER, LONG, uni((source, _) -> lossless((long) source)));
+        proteus.register(INTEGER, FLOAT, uni((source, _) -> lossless((float) source)));
+        proteus.register(INTEGER, DOUBLE, uni((source, _) -> lossless((double) source)));
 
         // long
-        proteus.register(LONG, FLOAT, lossless((source, _) -> success((float) source)));
-        proteus.register(LONG, DOUBLE, lossless((source, _) -> success((double) source)));
+        proteus.register(LONG, FLOAT, uni((source, _) -> lossless((float) source)));
+        proteus.register(LONG, DOUBLE, uni((source, _) -> lossless((double) source)));
 
         // float
-        proteus.register(FLOAT, DOUBLE, lossless((source, _) -> success((double) source)));
+        proteus.register(FLOAT, DOUBLE, uni((source, _) -> lossless((double) source)));
 
         // char array
-        proteus.register(STRING, CHARACTER_ARRAY, lossless(
-                (source, _) -> success(source.toCharArray()),
-                (target, _) -> success(new String(target))
+        proteus.register(STRING, CHARACTER_ARRAY, bi(
+                (source, _) -> lossless(source.toCharArray()),
+                (target, _) -> lossless(new String(target))
         ));
 
         // string buffer
-        proteus.register(STRING, STRING_BUFFER, lossless(
-                (source, _) -> success(new StringBuffer(source)),
-                (target, _) -> success(target.toString())
+        proteus.register(STRING, STRING_BUFFER, bi(
+                (source, _) -> lossless(new StringBuffer(source)),
+                (target, _) -> lossless(target.toString())
         ));
 
         // string builder
-        proteus.register(STRING, STRING_BUILDER, lossless(
-                (source, _) -> success(new StringBuilder(source)),
-                (target, _) -> success(target.toString())
+        proteus.register(STRING, STRING_BUILDER, bi(
+                (source, _) -> lossless(new StringBuilder(source)),
+                (target, _) -> lossless(target.toString())
         ));
 
-        proteus.register(DOUBLE, BIG_DECIMAL_TYPE, lossless((source, _) -> success(new BigDecimal(source))));
+        proteus.register(DOUBLE, BIG_DECIMAL_TYPE, uni((source, _) -> lossless(new BigDecimal(source))));
     }
 }

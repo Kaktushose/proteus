@@ -11,58 +11,25 @@ import java.util.function.BiFunction;
 /// @param <T> the target type
 public sealed interface Mapper<S, T> {
 
-    /// Creates an [UniMapper] that can convert from a source type `S` into a target type `T`, but doesn't have to
-    /// guarantee that data may be lost during conversion (lossy conversion).
+    /// Creates an [UniMapper] that can convert from a source type `S` into a target type `T`.
     ///
     /// @param mapper the [BiFunction] that converts the source type into the target type
     /// @param <S>    the source type
     /// @param <T>    the target type
     /// @return a new [UniMapper]
-    static <S, T> UniMapper<S, T> lossy(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> mapper) {
-        return new UniMapper<>() {
-            @Override
-            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context) {
-                return mapper.apply(source, context);
-            }
-
-            @Override
-            public boolean lossless() {
-                return false;
-            }
-        };
-    }
-
-    /// Creates an [UniMapper] that can convert from a source type `S` into a target type `T`, that guarantees
-    /// that **no** data will be lost during conversion (lossless conversion).
-    ///
-    /// @param mapper the [BiFunction] that converts the source type into the target type
-    /// @param <S>    the source type
-    /// @param <T>    the target type
-    /// @return a new [UniMapper]
-    static <S, T> UniMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> mapper) {
-        return new UniMapper<>() {
-            @Override
-            public @NotNull MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context) {
-                return mapper.apply(source, context);
-            }
-
-            @Override
-            public boolean lossless() {
-                return true;
-            }
-        };
+    static <S, T> UniMapper<S, T> uni(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> mapper) {
+        return mapper::apply;
     }
 
     /// Creates an [BiMapper] that can convert from a source type `S` into a target type `T`, but can also reversely
-    /// convert from the target type `T` into the source type `S`. This is always a lossless conversion, meaning
-    /// **no** data must be lost during conversion.
+    /// convert from the target type `T` into the source type `S`.
     ///
     /// @param from the [BiFunction] that converts the source type into the target type
     /// @param into the [BiFunction] that converts the target type into the source type
     /// @param <S>  the source type
     /// @param <T>  the target type
     /// @return a new [UniMapper]
-    static <S, T> BiMapper<S, T> lossless(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> from, @NotNull BiFunction<T, MappingContext<T, S>, MappingResult<S>> into) {
+    static <S, T> BiMapper<S, T> bi(@NotNull BiFunction<S, MappingContext<S, T>, MappingResult<T>> from, @NotNull BiFunction<T, MappingContext<T, S>, MappingResult<S>> into) {
         return new BiMapper<>() {
 
             @Override
@@ -81,6 +48,7 @@ public sealed interface Mapper<S, T> {
     ///
     /// @param <S> the source type
     /// @param <T> the target type
+    @FunctionalInterface
     non-sealed interface UniMapper<S, T> extends Mapper<S, T> {
 
         /// @param source  the source [S] to convert from
@@ -88,8 +56,6 @@ public sealed interface Mapper<S, T> {
         /// @return the target [T] to convert into wrapped in a [MappingResult]
         @NotNull
         MappingResult<T> from(@NotNull S source, @NotNull MappingContext<S, T> context);
-
-        boolean lossless();
 
     }
 
@@ -117,7 +83,7 @@ public sealed interface Mapper<S, T> {
     ///
     /// @param from the source [Type] of the mapping
     /// @param into the target [Type] of the mapping
-    /// @param <S> the container type of the source
-    /// @param <T> the container type of the destination
+    /// @param <S>  the container type of the source
+    /// @param <T>  the container type of the destination
     record MappingContext<S, T>(Type<S> from, Type<T> into) {}
 }

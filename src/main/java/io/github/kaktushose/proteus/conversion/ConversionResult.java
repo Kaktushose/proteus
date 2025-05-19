@@ -26,8 +26,8 @@ public sealed interface ConversionResult<T> {
 
     /// Creates a new [ConversionResult] with the given input.
     ///
-    /// @param result    the [MappingResult] to create the [ConversionResult] from. This is either a [MappingResult.Success] from
-    ///                  the very last step or a [MappingResult.Failure] from any step that failed
+    /// @param result    the [MappingResult] to create the [ConversionResult] from. This is either a [MappingResult.Lossless]
+    ///                  (or [MappingResult.Lossy]) <from the very last step or a [MappingResult.Failure] from any step that failed
     /// @param errorType the [Failure.ErrorType] to use if the given [MappingResult] is a [MappingResult.Failure]
     /// @param context   the [ConversionContext], can be null if this [ConversionResult] wasn't created during conversion
     /// @param <T>       <T> the type of the result
@@ -36,16 +36,18 @@ public sealed interface ConversionResult<T> {
     @SuppressWarnings("unchecked")
     static <T> ConversionResult<T> of(@NotNull MappingResult<T> result, @NotNull Failure.ErrorType errorType, @Nullable ConversionContext context) {
         return switch (result) {
-            case MappingResult.Success<T>(Object success) -> new Success<>((T) success);
+            case MappingResult.Lossless<T>(Object success) -> new Success<>((T) success, true);
+            case MappingResult.Lossy<T>(Object success) -> new Success<>((T) success, false);
             case MappingResult.Failure<T>(String message) -> new Failure<>(errorType, message, context);
         };
     }
 
     /// Implementation of [ConversionResult] that indicates a successful conversion.
     ///
-    /// @param value the value of the result
-    /// @param <T>   the type of the result
-    record Success<T>(@NotNull T value) implements ConversionResult<T> {}
+    /// @param value    the value of the result
+    /// @param lossless whether the conversion was performed without losing data
+    /// @param <T>      the type of the result
+    record Success<T>(@NotNull T value, boolean lossless) implements ConversionResult<T> {}
 
     /// Implementation of [ConversionResult] that indicates a failed conversion.
     ///

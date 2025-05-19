@@ -13,6 +13,7 @@ class LosslessConversionTest {
 
     private static final Type<String> TEST_TYPE_ONE = Type.of(new TestFormat("TestTypeOne"), String.class);
     private static final Type<String> TEST_TYPE_TWO = Type.of(new TestFormat("TestTypeTwo"), String.class);
+    private static final String INPUT = "INPUT";
     private static Proteus proteus;
 
     @BeforeEach
@@ -22,26 +23,47 @@ class LosslessConversionTest {
 
     @Test
     void losslessConversion_WithLossyMapper_ShouldFail() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.lossy((s, c) ->
-                MappingResult.success(s)
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+                MappingResult.lossy(s)
         ));
 
-        var result = proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO, true);
+        var result = proteus.convert(INPUT, TEST_TYPE_ONE, TEST_TYPE_TWO, true);
 
         assertEquals(ConversionResult.Failure.class, result.getClass());
         assertEquals(ConversionResult.Failure.ErrorType.NO_LOSSLESS_CONVERSION, ((ConversionResult.Failure<?>) result).errorType());
     }
 
     @Test
-    void lossyConversion_WithLossyMapper_ShouldWork() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.lossless((s, c) ->
-                MappingResult.success(s)
+    void losslessConversion_WithLosslessMapper_ShouldWork() {
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+                MappingResult.lossless(s)
         ));
 
-        final var input = "INPUT";
-        var result = proteus.convert(input, TEST_TYPE_ONE, TEST_TYPE_TWO);
+        var result = proteus.convert(INPUT, TEST_TYPE_ONE, TEST_TYPE_TWO, true);
 
-        assertEquals(ConversionResult.Success.class, result.getClass());
-        assertEquals(input, ((ConversionResult.Success<String>) result).value());
+        assertEquals(new ConversionResult.Success<>(INPUT , true), result);
     }
+
+    @Test
+    void lossyConversion_WithLossyMapper_ShouldWork() {
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+                MappingResult.lossy(s)
+        ));
+
+        var result = proteus.convert(INPUT, TEST_TYPE_ONE, TEST_TYPE_TWO);
+
+        assertEquals(new ConversionResult.Success<>(INPUT , false), result);
+    }
+
+    @Test
+    void lossyConversion_WithLosslessMapper_ShouldWork() {
+        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+                MappingResult.lossless(s)
+        ));
+
+        var result = proteus.convert(INPUT, TEST_TYPE_ONE, TEST_TYPE_TWO);
+
+        assertEquals(new ConversionResult.Success<>(INPUT , true), result);
+    }
+
 }
