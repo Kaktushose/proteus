@@ -20,7 +20,7 @@ class TypeTest {
 
     @Test
     void conversion_withArbitraryType_ShouldDynamicallyResolveType() {
-        proteus.map(Type.of(String.class)).to(Type.of(Text.class), Mapper.lossless((string, _) -> MappingResult.success(new Text(string))));
+        proteus.map(Type.of(String.class)).to(Type.of(Text.class), Mapper.uni((string, _) -> MappingResult.lossless(new Text(string))));
 
         ConversionResult<Text> result = proteus.convert("ABC", Type.dynamic("ABC"), Type.of(Text.class));
 
@@ -31,11 +31,11 @@ class TypeTest {
 
     @Test
     void conversion_withPrimitive_ShouldMatchWrapped() {
-        proteus.map(Type.of(long.class)).to(Type.of(Integer.class), Mapper.lossless((source, _) -> MappingResult.success(source.intValue())));
+        proteus.map(Type.of(long.class)).to(Type.of(Integer.class), Mapper.uni((source, _) -> MappingResult.lossless(source.intValue())));
 
         ConversionResult<Integer> result = proteus.convert(10L, Type.of(Long.class), Type.of(int.class));
 
-        assertEquals(new ConversionResult.Success<>(10), result);
+        assertEquals(new ConversionResult.Success<>(10, true), result);
     }
 
     @Test
