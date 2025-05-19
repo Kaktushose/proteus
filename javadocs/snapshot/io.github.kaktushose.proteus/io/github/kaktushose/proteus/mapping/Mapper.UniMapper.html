@@ -67,7 +67,6 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
 <li><a href="#from(S,io.github.kaktushose.proteus.mapping.Mapper.MappingContext)" tabindex="0">from(S, Mapper.MappingContext)</a></li>
-<li><a href="#lossless()" tabindex="0">lossless()</a></li>
 </ol>
 </li>
 </ol>
@@ -92,8 +91,13 @@ loadScripts(document, 'script');</script>
 <dt>Enclosing interface:</dt>
 <dd><code><a href="Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a>&lt;<a href="Mapper.html" title="type parameter in Mapper">S</a>,<wbr><a href="Mapper.html" title="type parameter in Mapper">T</a>&gt;</code></dd>
 </dl>
+<dl class="notes">
+<dt>Functional Interface:</dt>
+<dd>This is a functional interface and can therefore be used as the assignment target for a lambda expression or method reference.</dd>
+</dl>
 <hr>
-<div class="type-signature"><span class="modifiers">public static non-sealed interface </span><span class="element-name type-name-label">Mapper.UniMapper&lt;S,<wbr>T&gt;</span><span class="extends-implements">
+<div class="type-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/FunctionalInterface.html" title="class or interface in java.lang" class="external-link">@FunctionalInterface</a>
+</span><span class="modifiers">public static non-sealed interface </span><span class="element-name type-name-label">Mapper.UniMapper&lt;S,<wbr>T&gt;</span><span class="extends-implements">
 extends <a href="Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a>&lt;S,<wbr>T&gt;</span></div>
 <div class="block">A subtype of <a href="Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> that can convert the source type <code>S</code> into the target type <code>T</code>.</div>
 </div>
@@ -124,9 +128,6 @@ extends <a href="Mapper.html" title="interface in io.github.kaktushose.proteus.m
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#from(S,io.github.kaktushose.proteus.mapping.Mapper.MappingContext)" class="member-name-link">from</a><wbr>(<a href="Mapper.UniMapper.html" title="type parameter in Mapper.UniMapper">S</a>&nbsp;source,
  @NotNull <a href="Mapper.MappingContext.html" title="class in io.github.kaktushose.proteus.mapping">Mapper.MappingContext</a>&lt;<a href="Mapper.UniMapper.html" title="type parameter in Mapper.UniMapper">S</a>,<wbr><a href="Mapper.UniMapper.html" title="type parameter in Mapper.UniMapper">T</a>&gt;&nbsp;context)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>boolean</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#lossless()" class="member-name-link">lossless</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -157,14 +158,6 @@ extends <a href="Mapper.html" title="interface in io.github.kaktushose.proteus.m
 <dt>Returns:</dt>
 <dd>the target <a href="Mapper.UniMapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper.UniMapper</code></a> to convert into wrapped in a <a href="MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a></dd>
 </dl>
-</div>
-</section>
-</li>
-<li>
-<section class="detail" id="lossless()">
-<h3>lossless</h3>
-<div class="horizontal-scroll">
-<div class="member-signature"><span class="return-type">boolean</span>&nbsp;<span class="element-name">lossless</span>()</div>
 </div>
 </section>
 </li>

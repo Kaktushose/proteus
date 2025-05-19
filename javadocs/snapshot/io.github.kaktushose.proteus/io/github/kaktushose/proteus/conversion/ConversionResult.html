@@ -95,7 +95,7 @@ loadScripts(document, 'script');</script>
 <div class="block"><p>Represents the final result of a type conversion.</p>
 <h2 id="example--heading">Example:</h2>
 <pre><code>switch (result) {
-    case ConversionResult.Success&lt;Object&gt;(Object success) -&gt; ...; // proceed with converted object
+    case ConversionResult.Success&lt;Object&gt;(Object success, boolean lossless) -&gt; ...; // proceed with converted object
     case ConversionResult.Failure&lt;Object&gt; failure -&gt; log(failure);
 }
 </code></pre>
@@ -185,8 +185,8 @@ loadScripts(document, 'script');</script>
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - <T> the type of the result</dd>
 <dt>Parameters:</dt>
-<dd><code>result</code> - the <a href="../mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> to create the <a href="ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion"><code>ConversionResult</code></a> from. This is either a <a href="../mapping/MappingResult.Success.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Success</code></a> from
-the very last step or a <a href="../mapping/MappingResult.Failure.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Failure</code></a> from any step that failed</dd>
+<dd><code>result</code> - the <a href="../mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> to create the <a href="ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion"><code>ConversionResult</code></a> from. This is either a <a href="../mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Lossless</code></a>
+(or <a href="../mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Lossy</code></a>) &lt;from the very last step or a <a href="../mapping/MappingResult.Failure.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Failure</code></a> from any step that failed</dd>
 <dd><code>errorType</code> - the <a href="ConversionResult.Failure.ErrorType.html" title="enum class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure.ErrorType</code></a> to use if the given <a href="../mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> is a <a href="../mapping/MappingResult.Failure.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Failure</code></a></dd>
 <dd><code>context</code> - the <a href="ConversionResult.ConversionContext.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.ConversionContext</code></a>, can be null if this <a href="ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion"><code>ConversionResult</code></a> wasn't created during conversion</dd>
 <dt>Returns:</dt>

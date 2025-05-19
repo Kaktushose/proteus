@@ -66,6 +66,11 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html#bi(java.util.function.BiFunction,java.util.function.BiFunction)" class="member-name-link">bi(BiFunction&lt;S, Mapper.MappingContext&lt;S, T&gt;, MappingResult&lt;T&gt;&gt;, BiFunction&lt;T, Mapper.MappingContext&lt;T, S&gt;, MappingResult&lt;S&gt;&gt;)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a></dt>
+<dd>
+<div class="block">Creates an <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.BiMapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper.BiMapper</code></a> that can convert from a source type <code>S</code> into a target type <code>T</code>, but can also reversely
+convert from the target type <code>T</code> into the source type <code>S</code>.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.html#build()" class="member-name-link">build()</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.html" title="class in io.github.kaktushose.proteus">ProteusBuilder</a></dt>
 <dd>
 <div class="block">Builds the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus"><code>Proteus</code></a> instance.</div>
@@ -239,7 +244,11 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Success</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossless</a></dt>
+<dd>
+<div class="block">Indicates whether some other object is "equal to" this one.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossy</a></dt>
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
@@ -369,7 +378,11 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Success</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossless</a></dt>
+<dd>
+<div class="block">Returns a hash code value for this object.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossy</a></dt>
 <dd>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
@@ -447,22 +460,25 @@ result of a <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/m
 </dl>
 <h2 class="title" id="I:L">L</h2>
 <dl class="index">
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html#lossless()" class="member-name-link">lossless()</a> - Method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper.UniMapper</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html#lossless(java.util.function.BiFunction)" class="member-name-link">lossless(BiFunction&lt;S, Mapper.MappingContext&lt;S, T&gt;, MappingResult&lt;T&gt;&gt;)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html#lossless()" class="member-name-link">lossless()</a> - Method in record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Success</a></dt>
 <dd>
-<div class="block">Creates an <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper.UniMapper</code></a> that can convert from a source type <code>S</code> into a target type <code>T</code>, that guarantees
-that <strong>no</strong> data will be lost during conversion (lossless conversion).</div>
+<div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html#param-lossless"><code>lossless</code></a> record component.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html#lossless(java.util.function.BiFunction,java.util.function.BiFunction)" class="member-name-link">lossless(BiFunction&lt;S, Mapper.MappingContext&lt;S, T&gt;, MappingResult&lt;T&gt;&gt;, BiFunction&lt;T, Mapper.MappingContext&lt;T, S&gt;, MappingResult&lt;S&gt;&gt;)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html#lossless(T)" class="member-name-link">lossless(T)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping">MappingResult</a></dt>
 <dd>
-<div class="block">Creates an <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.BiMapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper.BiMapper</code></a> that can convert from a source type <code>S</code> into a target type <code>T</code>, but can also reversely
-convert from the target type <code>T</code> into the source type <code>S</code>.</div>
+<div class="block">Creates a new successful, lossless <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a></div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html#lossy(java.util.function.BiFunction)" class="member-name-link">lossy(BiFunction&lt;S, Mapper.MappingContext&lt;S, T&gt;, MappingResult&lt;T&gt;&gt;)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html#%3Cinit%3E(T)" class="member-name-link">Lossless(T)</a> - Constructor for record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossless</a></dt>
 <dd>
-<div class="block">Creates an <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper.UniMapper</code></a> that can convert from a source type <code>S</code> into a target type <code>T</code>, but doesn't have to
-guarantee that data may be lost during conversion (lossy conversion).</div>
+<div class="block">Creates an instance of a <code>Lossless</code> record class.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html#lossy(T)" class="member-name-link">lossy(T)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping">MappingResult</a></dt>
+<dd>
+<div class="block">Creates a new successful, lossy <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a></div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html#%3Cinit%3E(T)" class="member-name-link">Lossy(T)</a> - Constructor for record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossy</a></dt>
+<dd>
+<div class="block">Creates an instance of a <code>Lossy</code> record class.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:M">M</h2>
@@ -513,9 +529,17 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Implementation of <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> that indicates a failed mapping.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html" class="type-name-link" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Success&lt;T&gt;</a> - Record Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/package-summary.html">io.github.kaktushose.proteus.mapping</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" class="type-name-link" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossless&lt;T&gt;</a> - Record Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/package-summary.html">io.github.kaktushose.proteus.mapping</a></dt>
 <dd>
-<div class="block">Implementation of <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> that indicates a successful mapping.</div>
+<div class="block">Implementation of <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> that indicates a successful mapping, where no data was lost during mapping.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" class="type-name-link" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossy&lt;T&gt;</a> - Record Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/package-summary.html">io.github.kaktushose.proteus.mapping</a></dt>
+<dd>
+<div class="block">Implementation of <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> that indicates a successful mapping, where data may be lost during mapping.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Successful.html" class="type-name-link" title="interface in io.github.kaktushose.proteus.mapping">MappingResult.Successful&lt;T&gt;</a> - Interface in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/package-summary.html">io.github.kaktushose.proteus.mapping</a></dt>
+<dd>
+<div class="block">Common type of <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a> for the successful result types <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Lossless</code></a> and <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping"><code>MappingResult.Lossy</code></a>.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html#message()" class="member-name-link">message()</a> - Method in record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure</a></dt>
 <dd>
@@ -640,15 +664,7 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.ConversionContext.html#param-step"><code>step</code></a> record component.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html#success(T)" class="member-name-link">success(T)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping">MappingResult</a></dt>
-<dd>
-<div class="block">Creates a new successful <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.html" title="interface in io.github.kaktushose.proteus.mapping"><code>MappingResult</code></a></div>
-</dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html#%3Cinit%3E(T)" class="member-name-link">Success(T)</a> - Constructor for record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Success</a></dt>
-<dd>
-<div class="block">Creates an instance of a <code>Success</code> record class.</div>
-</dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html#%3Cinit%3E(T)" class="member-name-link">Success(T)</a> - Constructor for record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Success</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html#%3Cinit%3E(T,boolean)" class="member-name-link">Success(T, boolean)</a> - Constructor for record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Success</a></dt>
 <dd>
 <div class="block">Creates an instance of a <code>Success</code> record class.</div>
 </dd>
@@ -695,7 +711,11 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html#toString()" class="member-name-link">toString()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Success</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html#toString()" class="member-name-link">toString()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossless</a></dt>
+<dd>
+<div class="block">Returns a string representation of this record class.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html#toString()" class="member-name-link">toString()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossy</a></dt>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
@@ -728,6 +748,10 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 </dl>
 <h2 class="title" id="I:U">U</h2>
 <dl class="index">
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html#uni(java.util.function.BiFunction)" class="member-name-link">uni(BiFunction&lt;S, Mapper.MappingContext&lt;S, T&gt;, MappingResult&lt;T&gt;&gt;)</a> - Static method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper</a></dt>
+<dd>
+<div class="block">Creates an <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper.UniMapper</code></a> that can convert from a source type <code>S</code> into a target type <code>T</code>.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.UnresolvedEdge.html#%3Cinit%3E(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type)" class="member-name-link">UnresolvedEdge(Type&lt;Object&gt;, Type&lt;Object&gt;)</a> - Constructor for record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.UnresolvedEdge.html" title="class in io.github.kaktushose.proteus.graph">Edge.UnresolvedEdge</a></dt>
 <dd>
 <div class="block">Creates an instance of a <code>UnresolvedEdge</code> record class.</div>
@@ -739,9 +763,17 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html#param-value"><code>value</code></a> record component.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html#value()" class="member-name-link">value()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Success</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html#value()" class="member-name-link">value()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossless</a></dt>
 <dd>
-<div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Success.html#param-value"><code>value</code></a> record component.</div>
+<div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossless.html#param-value"><code>value</code></a> record component.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html#value()" class="member-name-link">value()</a> - Method in record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html" title="class in io.github.kaktushose.proteus.mapping">MappingResult.Lossy</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Lossy.html#param-value"><code>value</code></a> record component.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Successful.html#value()" class="member-name-link">value()</a> - Method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/MappingResult.Successful.html" title="interface in io.github.kaktushose.proteus.mapping">MappingResult.Successful</a></dt>
+<dd>
+<div class="block">Returns the result of the successful mapping</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.ErrorType.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.ErrorType.html" title="enum class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure.ErrorType</a></dt>
 <dd>
