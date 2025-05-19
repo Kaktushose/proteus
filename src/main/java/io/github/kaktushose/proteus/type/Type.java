@@ -19,7 +19,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     }
 
     /// Create a new [Type] with the container retrieved from [Object#getClass()] called on `value`
-    /// that will have the [Format.None]
+    /// that will have the [Format.None].
     ///
     /// @param value the object [Object#getClass()] should be called on
     /// @return a new [Type] with [Format.None] and the container defined by `value`
@@ -27,7 +27,8 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         return new Type<>(Format.none(), new TypeReference<>(value.getClass()) {});
     }
 
-    /// Creates a new [Type] with the given [Format] and container [Class].
+    /// Creates a new [Type] with the given [Format] and container [Class]. Primitive types will be converted to their
+    /// corresponding wrapper types.
     ///
     /// @param format    the [Format] of the [Type]
     /// @param container the [Class] that will be used to hold the data of the [Type]
@@ -38,7 +39,8 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         return new Type<>(format, new TypeReference<>(wrap(container)) {});
     }
 
-    /// Creates a new [Type] with the given container [Class] that will have the [Format.None].
+    /// Creates a new [Type] with the given container [Class] that will have the [Format.None]. Primitive types will be
+    ///  converted to their corresponding wrapper types.
     ///
     /// @param container the [Class] that will be used to hold the data of the [Type]
     /// @param <T>       the type of the container [Class]
