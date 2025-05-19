@@ -7,6 +7,7 @@ import io.github.kaktushose.proteus.graph.Edge;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.MappingContext;
+import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 
@@ -138,7 +139,7 @@ public class Proteus {
     @SuppressWarnings("unchecked")
     public <S, T> ConversionResult<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
         if (source.equals(target)) {
-            return new ConversionResult.Success<>((T) value);
+            return new ConversionResult.Success<>((T) value, true);
         }
 
         List<Edge> path = graph.path(source, target);
@@ -146,9 +147,9 @@ public class Proteus {
             return new ConversionResult.Failure<>(NO_PATH_FOUND, "Found no path to convert from '%s' to '%s'!".formatted(source, target), null);
         }
 
-        ConversionResult<Object> intermediate = new ConversionResult.Success<>(value);
+        ConversionResult<Object> intermediate = new ConversionResult.Success<>(value, true);
         for (Edge edge : path) {
-            if (intermediate instanceof ConversionResult.Success<?>(Object success)) {
+            if (intermediate instanceof ConversionResult.Success<?>(Object success, boolean _)) {
                 intermediate = applyEdge(edge, path, success, lossless);
             }
         }
@@ -159,7 +160,8 @@ public class Proteus {
     private ConversionResult<Object> applyEdge(@NotNull Edge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
         return switch (edge) {
             case Edge.ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
-            case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) -> convert(value, Type.of(from.container()), Type.of(into.container()), lossless);
+            case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) ->
+                    convert(value, Type.of(from.container()), Type.of(into.container()), lossless);
         };
     }
 
@@ -170,15 +172,16 @@ public class Proteus {
         if (stack.contains(mapper)) {
             throw new CyclingConversionException(edge.from(), edge.into(), mapper, stack);
         }
+
         ConversionContext context = new ConversionContext(path, edge);
-        if (lossless && !mapper.lossless()) {
+        stack.add(mapper);
+        MappingResult<Object> result = mapper.from(value, new MappingContext<>(edge.from(), edge.into()));
+
+        if (lossless && result instanceof MappingResult.Lossy<?>) {
             return new ConversionResult.Failure<>(NO_LOSSLESS_CONVERSION, "No lossless conversion possible", context);
         }
-        stack.add(mapper);
-
-        ConversionResult<Object> result = ConversionResult.of(mapper.from(value, new MappingContext<>(edge.from(), edge.into())), MAPPING_FAILED, context);
 
         stack.remove(mapper);
-        return result;
+        return ConversionResult.of(result, MAPPING_FAILED, context);
     }
 }

@@ -19,10 +19,11 @@ public class DynamicTypeTest {
 
     @Test
     void conversationWithArbitraryType() {
-        proteus.map(Type.of(String.class)).to(Type.of(Text.class), Mapper.lossless((string, _) -> MappingResult.success(new Text(string))));
+        proteus.map(Type.of(String.class)).to(Type.of(Text.class), Mapper.uni((string, _) -> MappingResult.lossless(new Text(string))));
 
         ConversionResult<Text> result = proteus.convert("ABC", Type.dynamic("ABC"), Type.of(Text.class));
-        assertEquals(new ConversionResult.Success<>(new Text("ABC")), result);
+
+        assertEquals(new ConversionResult.Success<>(new Text("ABC"), true), result);
     }
 
     record Text(String text) {}

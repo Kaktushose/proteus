@@ -2,11 +2,11 @@ package io.github.kaktushose.proteus.graph;
 
 import io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy;
 import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
+import io.github.kaktushose.proteus.internal.ConcurrentLruCache;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.internal.ConcurrentLruCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,8 +57,8 @@ public final class Graph {
         switch (mapper) {
             case UniMapper uniMapper -> add(from, into, uniMapper, strategy);
             case BiMapper biMapper -> {
-                add(from, into, (UniMapper<Object, Object>) Mapper.lossless(biMapper::from), strategy);
-                add(into, from, (UniMapper<Object, Object>) Mapper.lossless(biMapper::into), strategy);
+                add(from, into, biMapper::from, strategy);
+                add(into, from, biMapper::into, strategy);
             }
         }
     }
