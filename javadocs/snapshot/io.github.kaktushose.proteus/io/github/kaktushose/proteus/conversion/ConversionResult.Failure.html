@@ -72,6 +72,7 @@ loadScripts(document, 'script');</script>
 </li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#to()" tabindex="0">to()</a></li>
 <li><a href="#detailedMessage()" tabindex="0">detailedMessage()</a></li>
 <li><a href="#toString()" tabindex="0">toString()</a></li>
 <li><a href="#hashCode()" tabindex="0">hashCode()</a></li>
@@ -198,9 +199,14 @@ implements <a href="ConversionResult.html" title="interface in io.github.kaktush
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the value of the <a href="#param-message"><code>message</code></a> record component.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;R&gt;&nbsp;<a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure</a><wbr>&lt;R&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#to()" class="member-name-link">to</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Converts this <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> to a <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> with the type <code>R</code>.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a string representation of this record class.</div>
 </div>
 </div>
@@ -209,6 +215,9 @@ implements <a href="ConversionResult.html" title="interface in io.github.kaktush
 <div class="inherited-list">
 <h3 id="methods-inherited-from-class-java.lang.Object">Methods inherited from class&nbsp;java.lang.<a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></h3>
 <code><a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#clone()" title="class or interface in java.lang" class="external-link">clone</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#finalize()" title="class or interface in java.lang" class="external-link">finalize</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#getClass()" title="class or interface in java.lang" class="external-link">getClass</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#notify()" title="class or interface in java.lang" class="external-link">notify</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#notifyAll()" title="class or interface in java.lang" class="external-link">notifyAll</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#wait()" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#wait(long)" title="class or interface in java.lang" class="external-link">wait</a>, <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Object.html#wait(long,int)" title="class or interface in java.lang" class="external-link">wait</a></code></div>
+<div class="inherited-list">
+<h3 id="methods-inherited-from-class-io.github.kaktushose.proteus.conversion.ConversionResult">Methods inherited from interface&nbsp;io.github.kaktushose.proteus.conversion.<a href="ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></h3>
+<code><a href="ConversionResult.html#orElse(T)">orElse</a>, <a href="ConversionResult.html#orElseGet(java.util.function.Supplier)">orElseGet</a>, <a href="ConversionResult.html#orElseThrow()">orElseThrow</a>, <a href="ConversionResult.html#orElseThrow(java.util.function.Supplier)">orElseThrow</a>, <a href="ConversionResult.html#toOptional()">toOptional</a></code></div>
 </section>
 </li>
 </ul>
@@ -248,6 +257,21 @@ implements <a href="ConversionResult.html" title="interface in io.github.kaktush
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="to()">
+<h3>to</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;R&gt;</span>&nbsp;<span class="return-type"><a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure</a>&lt;R&gt;</span>&nbsp;<span class="element-name">to</span>()</div>
+<div class="block">Converts this <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> to a <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> with the type <code>R</code>. This is a convenience method to pass on <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a>s.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>R</code> - the type of the <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> to return</dd>
+<dt>Returns:</dt>
+<dd>this <a href="ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> with the type <code>R</code></dd>
+</dl>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="detailedMessage()">
 <h3>detailedMessage</h3>

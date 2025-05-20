@@ -69,6 +69,11 @@ loadScripts(document, 'script');</script>
 <li><a href="#method-summary" tabindex="0">Method Summary</a></li>
 <li><a href="#method-detail" tabindex="0">Method Details</a>
 <ol class="toc-list">
+<li><a href="#orElse(T)" tabindex="0">orElse(T)</a></li>
+<li><a href="#orElseGet(java.util.function.Supplier)" tabindex="0">orElseGet(Supplier)</a></li>
+<li><a href="#orElseThrow()" tabindex="0">orElseThrow()</a></li>
+<li><a href="#orElseThrow(java.util.function.Supplier)" tabindex="0">orElseThrow(Supplier)</a></li>
+<li><a href="#toOptional()" tabindex="0">toOptional()</a></li>
 <li><a href="#of(io.github.kaktushose.proteus.mapping.MappingResult,io.github.kaktushose.proteus.conversion.ConversionResult.Failure.ErrorType,io.github.kaktushose.proteus.conversion.ConversionResult.ConversionContext)" tabindex="0">of(MappingResult, ConversionResult.Failure.ErrorType, ConversionResult.ConversionContext)</a></li>
 </ol>
 </li>
@@ -96,7 +101,7 @@ loadScripts(document, 'script');</script>
 <h2 id="example--heading">Example:</h2>
 <pre><code>switch (result) {
     case ConversionResult.Success&lt;Object&gt;(Object success, boolean lossless) -&gt; ...; // proceed with converted object
-    case ConversionResult.Failure&lt;Object&gt; failure -&gt; log(failure);
+    case ConversionResult.Failure&lt;?&gt; failure -&gt; log(failure);
 }
 </code></pre>
 </div>
@@ -144,7 +149,8 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="caption"><span>Static Methods</span></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab5" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab5', 3)" class="table-tab">Default Methods</button></div>
+<div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
@@ -155,6 +161,30 @@ loadScripts(document, 'script');</script>
  @Nullable <a href="ConversionResult.ConversionContext.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.ConversionContext</a>&nbsp;context)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1">
 <div class="block">Creates a new <a href="ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion"><code>ConversionResult</code></a> with the given input.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#orElse(T)" class="member-name-link">orElse</a><wbr>(<a href="ConversionResult.html" title="type parameter in ConversionResult">T</a>&nbsp;other)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">If a value is present, returns the value, otherwise returns <code>other</code>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#orElseGet(java.util.function.Supplier)" class="member-name-link">orElseGet</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;? extends <a href="ConversionResult.html" title="type parameter in ConversionResult">T</a>&gt;&nbsp;supplier)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">If a value is present, returns the value, otherwise returns the result produced by the supplying function.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#orElseThrow()" class="member-name-link">orElseThrow</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">If a value is present, returns the value, otherwise throws <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/NoSuchElementException.html" title="class or interface in java.util" class="external-link"><code>NoSuchElementException</code></a>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default &lt;X extends <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&gt;<br><a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#orElseThrow(java.util.function.Supplier)" class="member-name-link">orElseThrow</a><wbr>(@NotNull <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;? extends X&gt;&nbsp;exceptionSupplier)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">
+<div class="block">If a value is present, returns the value, otherwise throws an exception produced by the exception supplying function.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code>default <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a><wbr>&lt;<a href="ConversionResult.html" title="type parameter in ConversionResult">T</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5"><code><a href="#toOptional()" class="member-name-link">toOptional</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab5">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -169,6 +199,84 @@ loadScripts(document, 'script');</script>
 <section class="method-details" id="method-detail">
 <h2>Method Details</h2>
 <ul class="member-list">
+<li>
+<section class="detail" id="orElse(T)">
+<h3 id="orElse(java.lang.Object)">orElse</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></span>&nbsp;<span class="element-name">orElse</span><wbr><span class="parameters">(@NotNull
+ <a href="ConversionResult.html" title="type parameter in ConversionResult">T</a>&nbsp;other)</span></div>
+<div class="block">If a value is present, returns the value, otherwise returns <code>other</code>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>other</code> - the value to be returned, if no value is present.</dd>
+<dt>Returns:</dt>
+<dd>the value, if present, otherwise <code>other</code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="orElseGet(java.util.function.Supplier)">
+<h3>orElseGet</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></span>&nbsp;<span class="element-name">orElseGet</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;? extends <a href="ConversionResult.html" title="type parameter in ConversionResult">T</a>&gt;&nbsp;supplier)</span></div>
+<div class="block">If a value is present, returns the value, otherwise returns the result produced by the supplying function.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>supplier</code> - the supplying function that produces a value to be returned</dd>
+<dt>Returns:</dt>
+<dd>the value, if present, otherwise the result produced by the supplying function</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="orElseThrow()">
+<h3>orElseThrow</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></span>&nbsp;<span class="element-name">orElseThrow</span>()</div>
+<div class="block">If a value is present, returns the value, otherwise throws <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/NoSuchElementException.html" title="class or interface in java.util" class="external-link"><code>NoSuchElementException</code></a>.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>the non-null value described by this <a href="ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion"><code>ConversionResult</code></a></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="orElseThrow(java.util.function.Supplier)">
+<h3>orElseThrow</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@NotNull
+</span><span class="modifiers">default</span>&nbsp;<span class="type-parameters">&lt;X extends <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Throwable.html" title="class or interface in java.lang" class="external-link">Throwable</a>&gt;</span>&nbsp;<span class="return-type"><a href="ConversionResult.html" title="type parameter in ConversionResult">T</a></span>&nbsp;<span class="element-name">orElseThrow</span><wbr><span class="parameters">(@NotNull
+ @NotNull <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;? extends X&gt;&nbsp;exceptionSupplier)</span>
+                                     throws <span class="exceptions">X</span></div>
+<div class="block">If a value is present, returns the value, otherwise throws an exception produced by the exception supplying function.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>X</code> - Type of the exception to be thrown</dd>
+<dt>Parameters:</dt>
+<dd><code>exceptionSupplier</code> - the supplying function that produces an exception to be thrown</dd>
+<dt>Returns:</dt>
+<dd>the value, if present</dd>
+<dt>Throws:</dt>
+<dd><code>X</code> - if no value is present</dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="toOptional()">
+<h3>toOptional</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="modifiers">default</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/Optional.html" title="class or interface in java.util" class="external-link">Optional</a>&lt;<a href="ConversionResult.html" title="type parameter in ConversionResult">T</a>&gt;</span>&nbsp;<span class="element-name">toOptional</span>()</div>
+</div>
+</section>
+</li>
 <li>
 <section class="detail" id="of(io.github.kaktushose.proteus.mapping.MappingResult,io.github.kaktushose.proteus.conversion.ConversionResult.Failure.ErrorType,io.github.kaktushose.proteus.conversion.ConversionResult.ConversionContext)">
 <h3>of</h3>

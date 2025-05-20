@@ -591,6 +591,22 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Creates a new <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> with the given container <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link"><code>Class</code></a> that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Format.None.html" title="class in io.github.kaktushose.proteus.type"><code>Format.None</code></a>.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html#orElse(T)" class="member-name-link">orElse(T)</a> - Method in interface io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></dt>
+<dd>
+<div class="block">If a value is present, returns the value, otherwise returns <code>other</code>.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html#orElseGet(java.util.function.Supplier)" class="member-name-link">orElseGet(Supplier&lt;? extends T&gt;)</a> - Method in interface io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></dt>
+<dd>
+<div class="block">If a value is present, returns the value, otherwise returns the result produced by the supplying function.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html#orElseThrow()" class="member-name-link">orElseThrow()</a> - Method in interface io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></dt>
+<dd>
+<div class="block">If a value is present, returns the value, otherwise throws <a href="https://docs.oracle.com/en/java/javase/23/docs/api/java.base/java/util/NoSuchElementException.html" title="class or interface in java.util" class="external-link"><code>NoSuchElementException</code></a>.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html#orElseThrow(java.util.function.Supplier)" class="member-name-link">orElseThrow(Supplier&lt;? extends X&gt;)</a> - Method in interface io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></dt>
+<dd>
+<div class="block">If a value is present, returns the value, otherwise throws an exception produced by the exception supplying function.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.ConflictStrategy.html#OVERRIDE" class="member-name-link">OVERRIDE</a> - Enum constant in enum class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.ConflictStrategy.html" title="enum class in io.github.kaktushose.proteus">ProteusBuilder.ConflictStrategy</a></dt>
 <dd>
 <div class="block">Will override the existing path with the newly registered one.</div>
@@ -671,6 +687,10 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 </dl>
 <h2 class="title" id="I:T">T</h2>
 <dl class="index">
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html#to()" class="member-name-link">to()</a> - Method in record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure</a></dt>
+<dd>
+<div class="block">Converts this <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> to a <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> with the type <code>R</code>.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html#to(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper)" class="member-name-link">to(Type&lt;T&gt;, Mapper&lt;S, T&gt;)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html" title="class in io.github.kaktushose.proteus">MappingAction</a></dt>
 <dd>
 <div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided target <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
@@ -679,6 +699,8 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided target <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html#toOptional()" class="member-name-link">toOptional()</a> - Method in interface io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.ConversionContext.html#toString()" class="member-name-link">toString()</a> - Method in record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.ConversionContext.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.ConversionContext</a></dt>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
