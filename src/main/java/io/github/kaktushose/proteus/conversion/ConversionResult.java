@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /// Represents the final result of a type conversion.
 ///
@@ -16,13 +19,57 @@ import java.util.List;
 /// ```
 /// switch (result) {
 ///     case ConversionResult.Success<Object>(Object success, boolean lossless) -> ...; // proceed with converted object
-///     case ConversionResult.Failure<Object> failure -> log(failure);
+///     case ConversionResult.Failure<?> failure -> log(failure);
 /// }
 /// ```
 ///
 /// @param <T> the type of the result
 /// @see Proteus#convert(Object, Type, Type)
 public sealed interface ConversionResult<T> {
+
+    /// If a value is present, returns the value, otherwise returns `other`.
+    ///
+    /// @param other the value to be returned, if no value is present.
+    /// @return the value, if present, otherwise `other`
+    @NotNull
+    default T orElse(@NotNull T other) {
+        return toOptional().orElse(other);
+    }
+
+    /// If a value is present, returns the value, otherwise returns the result produced by the supplying function.
+    ///
+    /// @param supplier the supplying function that produces a value to be returned
+    /// @return the value, if present, otherwise the result produced by the supplying function
+    @NotNull
+    default T orElseGet(@NotNull Supplier<? extends T> supplier) {
+        return toOptional().orElseGet(supplier);
+    }
+
+    /// If a value is present, returns the value, otherwise throws [NoSuchElementException].
+    ///
+    /// @return the non-null value described by this [ConversionResult]
+    @NotNull
+    default T orElseThrow() {
+        return toOptional().orElseThrow();
+    }
+
+    /// If a value is present, returns the value, otherwise throws an exception produced by the exception supplying function.
+    ///
+    /// @param exceptionSupplier the supplying function that produces an exception to be thrown
+    /// @param <X>               Type of the exception to be thrown
+    /// @return the value, if present
+    /// @throws X if no value is present
+    @NotNull
+    default <X extends Throwable> T orElseThrow(@NotNull Supplier<? extends X> exceptionSupplier) throws X {
+        return toOptional().orElseThrow(exceptionSupplier);
+    }
+
+    default Optional<T> toOptional() {
+        return switch (this) {
+            case Success(T value, boolean _) -> Optional.of(value);
+            case Failure<T> _ -> Optional.empty();
+        };
+    }
 
     /// Creates a new [ConversionResult] with the given input.
     ///
@@ -55,7 +102,18 @@ public sealed interface ConversionResult<T> {
     /// @param message   an error message describing the failed conversion
     /// @param context   the [ConversionContext], can be null if this [Failure] wasn't created during conversion, e.g. if no path was found
     /// @param <T>       the type of the result
-    record Failure<T>(@NotNull ErrorType errorType, @NotNull String message, @Nullable ConversionContext context) implements ConversionResult<T> {
+    record Failure<T>(@NotNull ErrorType errorType, @NotNull String message,
+                      @Nullable ConversionContext context) implements ConversionResult<T> {
+
+
+        /// Converts this [Failure] to a [Failure] with the type `R`. This is a convenience method to pass on [Failure]s.
+        ///
+        /// @return this [Failure] with the type `R`
+        /// @param <R> the type of the [Failure] to return
+        @SuppressWarnings("unchecked")
+        public <R> Failure<R> to() {
+            return (Failure<R>) this;
+        }
 
         /// Gets a detailed error message showing the full path and which step failed.
         ///
