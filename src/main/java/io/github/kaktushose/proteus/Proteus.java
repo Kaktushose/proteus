@@ -71,6 +71,14 @@ public class Proteus {
         graph.adjustCacheSize(newSize);
     }
 
+    @NotNull
+    @SafeVarargs
+    public final <S> MappingAction<S> map(Type<? extends S> from, Type<? extends S>... additional) {
+        var sources = new ArrayList<>(List.of(additional));
+        sources.add(from);
+        return new MappingAction<>(sources, this);
+    }
+
     /// Entrypoint for registering one or multiple [Mapper]s for the given [Type].
     ///
     /// @param from the [Type]
@@ -78,7 +86,7 @@ public class Proteus {
     /// @return a [MappingAction] to register one or multiple mappers for the given [Type]
     @NotNull
     public <S> MappingAction<S> map(Type<S> from) {
-        return new MappingAction<>(from, this);
+        return new MappingAction<>(List.of(from), this);
     }
 
     /// Registers a new conversion path from the given source [Type] `from` into the given destination [Type] `into`.

@@ -4,17 +4,19 @@ import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /// A [MappingAction] is returned by [Proteus#map(Type)] and used to register one or, if needed, multiple [Mapper]s for
 /// the [Type] that is bound to this [MappingAction].
 ///
 /// @param <S> the type of the [Type] that is bound to this [MappingAction]
 public final class MappingAction<S> {
 
-    private final Type<S> source;
+    private final List<Type<? extends S>> sources;
     private final Proteus proteus;
 
-    MappingAction(@NotNull Type<S> source, @NotNull Proteus proteus) {
-        this.source = source;
+    MappingAction(@NotNull List<Type<? extends S>> sources, @NotNull Proteus proteus) {
+        this.sources = sources;
         this.proteus = proteus;
     }
 
@@ -39,8 +41,9 @@ public final class MappingAction<S> {
     /// @param <T>      the type of the target [Type]
     /// @return this instance for fluent interface
     @NotNull
+    @SuppressWarnings("unchecked")
     public <T> MappingAction<S> to(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
-        proteus.register(source, target, mapper, strategy);
+        sources.forEach(source -> proteus.register((Type<S>) source, target, mapper, strategy));
         return this;
     }
 }
