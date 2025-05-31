@@ -6,16 +6,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-/// A [MappingAction] is returned by [Proteus#map(Type)] and used to register one or, if needed, multiple [Mapper]s for
-/// the [Type] that is bound to this [MappingAction].
+/// A [FromMappingAction] is returned by [Proteus#from(Type)] and used to register one or, if needed, multiple [Mapper]s for
+/// the [Type] that is bound to this [FromMappingAction].
 ///
-/// @param <S> the type of the [Type] that is bound to this [MappingAction]
-public final class MappingAction<S> {
+/// @param <S> the type of the [Type] that is bound to this [FromMappingAction]
+public final class FromMappingAction<S> {
 
     private final List<Type<? extends S>> sources;
     private final Proteus proteus;
 
-    MappingAction(@NotNull List<Type<? extends S>> sources, @NotNull Proteus proteus) {
+    FromMappingAction(@NotNull List<Type<? extends S>> sources, @NotNull Proteus proteus) {
         this.sources = sources;
         this.proteus = proteus;
     }
@@ -28,8 +28,8 @@ public final class MappingAction<S> {
     /// @param <T>    the type of the target [Type]
     /// @return this instance for fluent interface
     @NotNull
-    public <T> MappingAction<S> to(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper) {
-        return to(target, mapper, proteus.conflictStrategy());
+    public <T> FromMappingAction<S> into(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper) {
+        return into(target, mapper, proteus.conflictStrategy());
     }
 
     /// Registers the given [Mapper] for the provided target [Type]. This will use the given [ProteusBuilder.ConflictStrategy]
@@ -42,7 +42,7 @@ public final class MappingAction<S> {
     /// @return this instance for fluent interface
     @NotNull
     @SuppressWarnings("unchecked")
-    public <T> MappingAction<S> to(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
+    public <T> FromMappingAction<S> into(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
         sources.forEach(source -> proteus.register((Type<S>) source, target, mapper, strategy));
         return this;
     }

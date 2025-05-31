@@ -25,10 +25,10 @@ class SubTypesTest {
 
     @Test
     void subTypeConversion_WithNoExplicitMapper_ShouldReturnNoPathFound() {
-        proteus.map(different).to(sub, Mapper.uni((_, _) ->
+        proteus.from(different).into(sub, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.map(base).to(string, Mapper.uni((source, _) ->
+        proteus.from(base).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 
@@ -39,13 +39,13 @@ class SubTypesTest {
 
     @Test
     void subTypeConversion_WithExplicitMapper_ShouldConvert() {
-        proteus.map(different).to(sub, Mapper.uni((_, _) ->
+        proteus.from(different).into(sub, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.map(sub).to(base, Mapper.uni((source, _) ->
+        proteus.from(sub).into(base, Mapper.uni((source, _) ->
                 MappingResult.lossless(source)
         ));
-        proteus.map(base).to(string, Mapper.uni((source, _) ->
+        proteus.from(base).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 
@@ -56,10 +56,10 @@ class SubTypesTest {
 
     @Test
     void subTypeConversion_WithExplicitRegistration_ShouldConvert() {
-        proteus.map(different).to(sub, Mapper.uni((_, _) ->
+        proteus.from(different).into(sub, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.map(base, sub).to(string, Mapper.uni((source, _) ->
+        proteus.from(base, sub).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 
@@ -70,10 +70,10 @@ class SubTypesTest {
 
     @Test
     void subTypeConversion_WithGenericRegistration_ShouldConvert() {
-        proteus.map(different).to(sub, Mapper.uni((_, _) ->
+        proteus.from(different).into(sub, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.map(base).to(string, Mapper.uni((source, _) ->
+        proteus.from(base).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 

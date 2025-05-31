@@ -27,7 +27,7 @@ class ContainerConversionTest {
 
     @Test
     void conversion_withImplicitContainerPath_ShouldWork() {
-        proteus.map(TEST_TYPE_TWO).to(TEST_TYPE_THREE, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_TWO).into(TEST_TYPE_THREE, Mapper.uni((s, _) ->
                 MappingResult.lossless(String.valueOf(s)))
         );
 
