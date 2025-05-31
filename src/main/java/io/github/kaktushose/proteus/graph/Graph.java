@@ -3,6 +3,7 @@ package io.github.kaktushose.proteus.graph;
 import io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy;
 import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.internal.ConcurrentLruCache;
+import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
@@ -25,7 +26,9 @@ import java.util.stream.Collectors;
 /// calling [#path(Type, Type)]. Resolved paths are cached in an LRU-Cache for future lookups.
 public final class Graph {
 
-    private final Map<Type<?>, Map<Type<?>, UniMapper<Object, Object>>> adjacencyList;
+    public record Vertex(UniMapper<Object, Object> mapper, EnumSet<Flag> flags) {}
+
+    private final Map<Type<?>, Map<Type<?>, Vertex>> adjacencyList;
     private ConcurrentLruCache<Route, List<Edge>> pathCache;
 
     /// Creates a new Graph with the given cache size.
@@ -53,7 +56,11 @@ public final class Graph {
     /// @param <S>      the type of the `from` [Type]
     /// @param <T>      the type of into `from` [Type]
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public <S, T> void register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ConflictStrategy strategy) {
+    public <S, T> void register(@NotNull Type<S> from,
+                                @NotNull Type<T> into,
+                                @NotNull Mapper<S, T> mapper,
+                                @NotNull ConflictStrategy strategy,
+                                @NotNull Flag... flags) {
         switch (mapper) {
             case UniMapper uniMapper -> add(from, into, uniMapper, strategy);
             case BiMapper biMapper -> {
@@ -63,12 +70,20 @@ public final class Graph {
         }
     }
 
-    private void add(@NotNull Type<?> source, @NotNull Type<?> target, @NotNull UniMapper<Object, Object> adapter, @NotNull ConflictStrategy strategy) {
-        UniMapper<Object, Object> present = adjacencyList.computeIfAbsent(source, _ -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
+    private void add(@NotNull Type<?> source,
+                     @NotNull Type<?> target,
+                     @NotNull UniMapper<Object, Object> mapper,
+                     @NotNull ConflictStrategy strategy,
+                     @NotNull Flag... flags) {
+        Vertex present = adjacencyList.computeIfAbsent(source, _ -> new ConcurrentHashMap<>())
+                .putIfAbsent(target, new Vertex(mapper, flags.length == 0 ? EnumSet.noneOf(Flag.class) : EnumSet.copyOf(List.of(flags))));
         if (present != null) {
             switch (strategy) {
-                case FAIL -> throw new IllegalArgumentException("Duplicated adapter registration for route: '%s' -> '%s'".formatted(source, target));
-                case OVERRIDE -> adjacencyList.compute(source, (_, _) -> new ConcurrentHashMap<>()).putIfAbsent(target, adapter);
+                case FAIL -> throw new IllegalArgumentException(
+                        "Duplicated mapper registration for route: '%s' -> '%s'".formatted(source, target)
+                );
+                case OVERRIDE -> adjacencyList.compute(source, (_, _) -> new ConcurrentHashMap<>())
+                        .putIfAbsent(target, new Vertex(mapper, EnumSet.copyOf(List.of(flags))));
             }
         }
     }
@@ -85,7 +100,7 @@ public final class Graph {
 
     @NotNull
     private Set<Type<?>> neighbours(@NotNull Type<?> type) {
-        Map<Type<?>, UniMapper<Object, Object>> mappers = adjacencyList.get(type);
+        Map<Type<?>, Vertex> mappers = adjacencyList.get(type);
         Set<Type<?>> result = new HashSet<>();
         if (mappers != null) {
             result.addAll(mappers.keySet());
@@ -97,7 +112,7 @@ public final class Graph {
     }
 
     @Nullable
-    private UniMapper<?, ?> mapper(@NotNull Type<?> from, @NotNull Type<?> into) {
+    private Vertex mapper(@NotNull Type<?> from, @NotNull Type<?> into) {
         return adjacencyList.getOrDefault(from, Map.of()).get(into);
     }
 

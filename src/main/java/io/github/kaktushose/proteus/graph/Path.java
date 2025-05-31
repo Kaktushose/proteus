@@ -35,15 +35,15 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     /// will not be modified.
     ///
     /// @param intermediate the [Type] that this edge maps into. Will become the new head
-    /// @param mapper       the [UniMapper] that maps from the `head` of this path to the given `intermediate` [Type].
+    /// @param vertex       the [UniMapper] that maps from the `head` of this path to the given `intermediate` [Type].
     ///                     Can be null, if `head` and `intermediate` share the same [Format].
     /// @return a copy of this path with the given edge added to it
-    /// @throws IllegalArgumentException      if the `mapper` is null and `head` and `intermediate` don't share the same [Format]
-    /// @throws UnsupportedOperationException if the `mapper` is null and `head` and `intermediate` don't have a format ([Format.None])
-    public Path addEdge(@NotNull Type<?> intermediate, @Nullable UniMapper<?, ?> mapper) {
+    /// @throws IllegalArgumentException      if the `vertex` is null and `head` and `intermediate` don't share the same [Format]
+    /// @throws UnsupportedOperationException if the `vertex` is null and `head` and `intermediate` don't have a format ([Format.None])
+    public Path addEdge(@NotNull Type<?> intermediate, @Nullable Graph.Vertex vertex) {
         List<Edge> newEdges = new ArrayList<>(edges);
-        if (mapper != null) {
-            newEdges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, (UniMapper<Object, Object>) mapper));
+        if (vertex != null) {
+            newEdges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, vertex.mapper()));
             return new Path(newEdges, (Type<Object>) intermediate);
         }
         if (!head.equalsFormat(intermediate)) {

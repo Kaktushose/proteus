@@ -1,5 +1,6 @@
 package io.github.kaktushose.proteus;
 
+import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
@@ -25,11 +26,12 @@ public final class FromMappingAction<S> {
     ///
     /// @param target the target [Type]
     /// @param mapper the [Mapper] to register
+    /// @param flags    the [Flag]s to register this mapper with
     /// @param <T>    the type of the target [Type]
     /// @return this instance for fluent interface
     @NotNull
-    public <T> FromMappingAction<S> into(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper) {
-        return into(target, mapper, proteus.conflictStrategy());
+    public <T> FromMappingAction<S> into(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper, @NotNull Flag... flags) {
+        return into(target, mapper, proteus.conflictStrategy(), flags);
     }
 
     /// Registers the given [Mapper] for the provided target [Type]. This will use the given [ProteusBuilder.ConflictStrategy]
@@ -38,12 +40,16 @@ public final class FromMappingAction<S> {
     /// @param target   the target [Type]
     /// @param mapper   the [Mapper] to register
     /// @param strategy the [ProteusBuilder.ConflictStrategy] to use if the `from` [Type] is already registered
+    /// @param flags    the [Flag]s to register this mapper with
     /// @param <T>      the type of the target [Type]
     /// @return this instance for fluent interface
     @NotNull
     @SuppressWarnings("unchecked")
-    public <T> FromMappingAction<S> into(@NotNull Type<T> target, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
-        sources.forEach(source -> proteus.register((Type<S>) source, target, mapper, strategy));
+    public <T> FromMappingAction<S> into(@NotNull Type<T> target,
+                                         @NotNull Mapper<S, T> mapper,
+                                         @NotNull ProteusBuilder.ConflictStrategy strategy,
+                                         @NotNull Flag... flags) {
+        sources.forEach(source -> proteus.register((Type<S>) source, target, mapper, strategy, flags));
         return this;
     }
 }
