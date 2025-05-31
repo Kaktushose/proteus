@@ -20,7 +20,7 @@ class CyclingConversionTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.create();
+        proteus = Proteus.builder().defaultMappers(false).build();
     }
 
     @Test
