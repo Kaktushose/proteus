@@ -62,10 +62,10 @@ public final class Graph {
                                 @NotNull ConflictStrategy strategy,
                                 @NotNull Flag... flags) {
         switch (mapper) {
-            case UniMapper uniMapper -> add(from, into, uniMapper, strategy);
+            case UniMapper uniMapper -> add(from, into, uniMapper, strategy, flags);
             case BiMapper biMapper -> {
-                add(from, into, biMapper::from, strategy);
-                add(into, from, biMapper::into, strategy);
+                add(from, into, biMapper::from, strategy, flags);
+                add(into, from, biMapper::into, strategy, flags);
             }
         }
     }
@@ -136,14 +136,29 @@ public final class Graph {
         visited.add(source);
         while (!queue.isEmpty()) {
             Path path = queue.poll();
-            for (Type<?> neighbour : neighbours(path.head())) {
+            Set<Type<?>> neighbours = neighbours(path.head());
+            if (neighbours.isEmpty() && path.head().container().type() instanceof Class<?> clazz) {
+                Pair result = superTypesNeighbours(clazz);
+                if (result == null) {
+                    continue;
+                }
+                path = new Path(path.edges(), (Type<Object>) result.head());
+                neighbours = result.neighbours();
+            }
+            for (Type<?> neighbour : neighbours) {
                 if (visited.contains(neighbour)) {
                     continue;
                 }
                 visited.add(neighbour);
 
                 Path newPath = path.addEdge(neighbour, mapper(path.head(), neighbour));
-                if (equals(neighbour, target)) {
+                if (neighbour.equals(target) || neighbour.equalsFormat(target)) {
+                    return newPath.edges();
+                }
+                if (neighbour.format().equals(target.format())
+                    && neighbour.container().type() instanceof Class<?> first
+                    && target.container().type() instanceof Class<?> second
+                    && second.isAssignableFrom(first)) {
                     return newPath.edges();
                 }
                 queue.offer(newPath);
@@ -152,12 +167,19 @@ public final class Graph {
         return List.of();
     }
 
-    private boolean equals(@NotNull Type<?> first, @NotNull Type<?> second) {
-        if (first.equals(second)) {
-            return true;
+    @Nullable
+    private Pair superTypesNeighbours(@Nullable Class<?> clazz) {
+        if (clazz == null) {
+            return null;
         }
-        return first.equalsFormat(second);
+        Set<Type<?>> neighbours = neighbours(Type.of(clazz));
+        if (neighbours.isEmpty()) {
+            return superTypesNeighbours(clazz.getSuperclass());
+        }
+        return new Pair(Type.of(clazz), neighbours);
     }
+
+    private record Pair(Type<?> head, Set<Type<?>> neighbours) {}
 
     private record Route(@NotNull Type<?> source, @NotNull Type<?> target) {}
 }

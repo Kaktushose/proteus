@@ -1,6 +1,7 @@
 package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.conversion.ConversionResult;
+import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
@@ -30,7 +31,7 @@ class SubTypesTest {
         ));
         proteus.from(base).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
-        ));
+        ), Flag.STRICT_SUB_TYPES);
 
         ConversionResult<String> result = proteus.convert(new DifferentType(), different, string);
 
@@ -69,7 +70,7 @@ class SubTypesTest {
     }
 
     @Test
-    void subTypeConversion_WithGenericRegistration_ShouldConvert() {
+    void subTypeConversion_WithNonStrictRegistration_ShouldConvert() {
         proteus.from(different).into(sub, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
@@ -80,6 +81,17 @@ class SubTypesTest {
         ConversionResult<String> result = proteus.convert(new DifferentType(), different, string);
 
         assertEquals(new ConversionResult.Success<>(INPUT, true), result);
+    }
+
+    @Test
+    void nonStrictRegistration_WithBaseTypeAsTarget_ShouldConvert() {
+        final var resultType = new SubType();
+        proteus.from(different).into(sub, Mapper.uni((_, _) ->
+                MappingResult.lossless(resultType)
+        ));
+        ConversionResult<BaseType> result = proteus.convert(new DifferentType(), different, base);
+
+        assertEquals(new ConversionResult.Success<>(resultType, true), result);
     }
 
     private static class DifferentType {}

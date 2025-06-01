@@ -25,7 +25,7 @@ public interface Format {
         /// @return `false`
         @Override
         public boolean equals(Format other) {
-            return false;
+            return other instanceof None;
         }
     }
 }

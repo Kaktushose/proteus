@@ -73,6 +73,10 @@ public abstract class TypeReference<T> {
         }
     }
 
+    public Type type() {
+        return type;
+    }
+
     @Override
     public boolean equals(@Nullable Object other) {
         return (this == other || (other instanceof TypeReference<?> that && this.type.equals(that.type)));

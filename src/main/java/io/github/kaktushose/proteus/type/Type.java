@@ -66,7 +66,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     }
 
     /// Whether this type is equals to the given [Type] ignoring the container [TypeReference] and only comparing the
-    /// [Format]s.
+    /// [Format]s. This will return `false` if one of the [Format]s is of [Format.None].
     ///
     /// @param other the [Type] to compare against
     /// @return `true` if the two [Type]s have the same [Format]
@@ -74,7 +74,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         if (other == null) {
             return false;
         }
-        if (other.format() instanceof Format.None) {
+        if (format instanceof Format.None || other.format() instanceof Format.None) {
             return false;
         }
         return format.equals(other.format());
