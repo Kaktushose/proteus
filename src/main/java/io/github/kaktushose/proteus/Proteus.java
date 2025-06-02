@@ -5,6 +5,7 @@ import io.github.kaktushose.proteus.conversion.ConversionResult.ConversionContex
 import io.github.kaktushose.proteus.conversion.CyclingConversionException;
 import io.github.kaktushose.proteus.graph.Edge;
 import io.github.kaktushose.proteus.graph.Graph;
+import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.MappingContext;
 import io.github.kaktushose.proteus.mapping.MappingResult;
@@ -35,7 +36,8 @@ public class Proteus {
         this.conflictStrategy = conflictStrategy;
     }
 
-    /// Returns a new [Proteus] instance, with no [Mapper]s registered.
+    /// Returns a new [Proteus] instance, with no [Mapper]s registered except for the default mappers
+    /// (see [ProteusBuilder#defaultMappers(boolean)]).
     ///
     /// @return a new empty [Proteus] instance
     public static Proteus create() {
@@ -71,14 +73,52 @@ public class Proteus {
         graph.adjustCacheSize(newSize);
     }
 
+    /// Entrypoint for registering one or multiple [Mapper]s for the given [Type] and its subtypes.
+    ///
+    /// @param into       the [Type]
+    /// @param additional additional [Type]s whose container types are a subtype of the container type of `into`
+    /// @param <T>        the type of the [Type]
+    /// @return a [FromMappingAction] to register one or multiple mappers for the given [Type]s
+    @NotNull
+    @SafeVarargs
+    public final <T> IntoMappingAction<T> into(Type<? extends T> into, Type<? extends T>... additional) {
+        var targets = new ArrayList<>(List.of(additional));
+        targets.add(into);
+        return new IntoMappingAction<>(targets, this);
+    }
+
+    /// Entrypoint for registering one or multiple [Mapper]s for the given [Type].
+    ///
+    /// @param into the [Type]
+    /// @param <T>  the type of the [Type]
+    /// @return a [FromMappingAction] to register one or multiple mappers for the given [Type]
+    @NotNull
+    public <T> IntoMappingAction<T> into(Type<T> into) {
+        return new IntoMappingAction<>(List.of(into), this);
+    }
+
+    /// Entrypoint for registering one or multiple [Mapper]s for the given [Type] and its subtypes.
+    ///
+    /// @param from       the [Type]
+    /// @param additional additional [Type]s whose container types are a subtype of the container type of `from`
+    /// @param <S>        the type of the [Type]
+    /// @return a [FromMappingAction] to register one or multiple mappers for the given [Type]s
+    @NotNull
+    @SafeVarargs
+    public final <S> FromMappingAction<S> from(Type<? extends S> from, Type<? extends S>... additional) {
+        var sources = new ArrayList<>(List.of(additional));
+        sources.add(from);
+        return new FromMappingAction<>(sources, this);
+    }
+
     /// Entrypoint for registering one or multiple [Mapper]s for the given [Type].
     ///
     /// @param from the [Type]
     /// @param <S>  the type of the [Type]
-    /// @return a [MappingAction] to register one or multiple mappers for the given [Type]
+    /// @return a [FromMappingAction] to register one or multiple mappers for the given [Type]
     @NotNull
-    public <S> MappingAction<S> map(Type<S> from) {
-        return new MappingAction<>(from, this);
+    public <S> FromMappingAction<S> from(Type<S> from) {
+        return new FromMappingAction<>(List.of(from), this);
     }
 
     /// Registers a new conversion path from the given source [Type] `from` into the given destination [Type] `into`.
@@ -88,11 +128,12 @@ public class Proteus {
     /// @param from   the source [Type] of the conversion path
     /// @param into   the destination [Type] of the conversion path
     /// @param mapper the [Mapper] to associate with this conversion path
+    /// @param flags    the [Flag]s to register this mapper with
     /// @param <S>    the type of the `from` [Type]
     /// @param <T>    the type of into `from` [Type]
     @NotNull
-    public <S, T> Proteus register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper) {
-        return register(from, into, mapper, conflictStrategy);
+    public <S, T> Proteus register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull Flag... flags) {
+        return register(from, into, mapper, conflictStrategy, flags);
     }
 
     /// Registers a new conversion path from the given source [Type] `from` into the given destination [Type] `into`.
@@ -103,11 +144,16 @@ public class Proteus {
     /// @param into     the destination [Type] of the conversion path
     /// @param mapper   the [Mapper] to associate with this conversion path
     /// @param strategy the [ProteusBuilder.ConflictStrategy] to use if the `from` [Type] is already registered
+    /// @param flags    the [Flag]s to register this mapper with
     /// @param <S>      the type of the `from` [Type]
     /// @param <T>      the type of into `from` [Type]
     @NotNull
-    public <S, T> Proteus register(@NotNull Type<S> from, @NotNull Type<T> into, @NotNull Mapper<S, T> mapper, @NotNull ProteusBuilder.ConflictStrategy strategy) {
-        graph.register(from, into, mapper, strategy);
+    public <S, T> Proteus register(@NotNull Type<S> from,
+                                   @NotNull Type<T> into,
+                                   @NotNull Mapper<S, T> mapper,
+                                   @NotNull ProteusBuilder.ConflictStrategy strategy,
+                                   @NotNull Flag... flags) {
+        graph.register(from, into, mapper, strategy, flags);
         return this;
     }
 

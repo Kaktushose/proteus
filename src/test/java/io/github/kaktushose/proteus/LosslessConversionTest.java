@@ -18,12 +18,12 @@ class LosslessConversionTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.create();
+        proteus = Proteus.builder().defaultMappers(false).build();
     }
 
     @Test
     void losslessConversion_WithLossyMapper_ShouldFail() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) ->
                 MappingResult.lossy(s)
         ));
 
@@ -35,7 +35,7 @@ class LosslessConversionTest {
 
     @Test
     void losslessConversion_WithLosslessMapper_ShouldWork() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) ->
                 MappingResult.lossless(s)
         ));
 
@@ -46,7 +46,7 @@ class LosslessConversionTest {
 
     @Test
     void lossyConversion_WithLossyMapper_ShouldWork() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) ->
                 MappingResult.lossy(s)
         ));
 
@@ -57,7 +57,7 @@ class LosslessConversionTest {
 
     @Test
     void lossyConversion_WithLosslessMapper_ShouldWork() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) ->
                 MappingResult.lossless(s)
         ));
 

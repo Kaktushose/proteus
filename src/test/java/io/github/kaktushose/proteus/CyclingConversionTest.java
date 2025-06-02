@@ -20,12 +20,12 @@ class CyclingConversionTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.create();
+        proteus = Proteus.builder().defaultMappers(false).build();
     }
 
     @Test
     void conversion_withSelfCall_ShouldThrow() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) -> {
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) -> {
             proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO);
             return MappingResult.lossless(s);
         }));
@@ -35,11 +35,11 @@ class CyclingConversionTest {
 
     @Test
     void conversion_withCyclingCall_ShouldThrow() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) -> {
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) -> {
             proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO);
             return MappingResult.lossless(s);
         }));
-        proteus.map(TEST_TYPE_TWO).to(TEST_TYPE_ONE, Mapper.uni((s, _) -> {
+        proteus.from(TEST_TYPE_TWO).into(TEST_TYPE_ONE, Mapper.uni((s, _) -> {
             proteus.convert("", TEST_TYPE_TWO, TEST_TYPE_ONE);
             return MappingResult.lossless(s);
         }));
@@ -49,10 +49,10 @@ class CyclingConversionTest {
 
     @Test
     void conversion_withNestedCall_ShouldWork() {
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) ->
                 MappingResult.lossless(s)
         ));
-        proteus.map(TEST_TYPE_ONE).to(TEST_TYPE_THREE, Mapper.uni((s, _) ->
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_THREE, Mapper.uni((s, _) ->
                 MappingResult.of(proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO))
         ));
 
