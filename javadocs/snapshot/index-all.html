@@ -52,10 +52,10 @@ loadScripts(document, 'script');</script>
 <div class="header">
 <h1>Index</h1>
 </div>
-<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a>
 <h2 class="title" id="I:A">A</h2>
 <dl class="index">
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html#addEdge(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper.UniMapper)" class="member-name-link">addEdge(Type&lt;?&gt;, Mapper.UniMapper&lt;?, ?&gt;)</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html" title="class in io.github.kaktushose.proteus.graph">Path</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html#addEdge(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.graph.Graph.Vertex)" class="member-name-link">addEdge(Type&lt;?&gt;, Graph.Vertex)</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html" title="class in io.github.kaktushose.proteus.graph">Path</a></dt>
 <dd>
 <div class="block">Adds a new edge to this path.</div>
 </dd>
@@ -156,7 +156,8 @@ convert from the target type <code>T</code> into the source type <code>S</code>.
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#create()" class="member-name-link">create()</a> - Static method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
 <dd>
-<div class="block">Returns a new <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus"><code>Proteus</code></a> instance, with no <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s registered.</div>
+<div class="block">Returns a new <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus"><code>Proteus</code></a> instance, with no <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s registered except for the default mappers
+(see <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.html#defaultMappers(boolean)"><code>ProteusBuilder.defaultMappers(boolean)</code></a>).</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/CyclingConversionException.html" class="type-name-link" title="class in io.github.kaktushose.proteus.conversion">CyclingConversionException</a> - Exception Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/package-summary.html">io.github.kaktushose.proteus.conversion</a></dt>
 <dd>
@@ -232,6 +233,10 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a></dt>
+<dd>
+<div class="block">Indicates whether some other object is "equal to" this one.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html" title="class in io.github.kaktushose.proteus.graph">Path</a></dt>
 <dd>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
@@ -288,6 +293,14 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Creates an instance of a <code>Failure</code> record class.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html" class="type-name-link" title="enum class in io.github.kaktushose.proteus.mapping">Flag</a> - Enum Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/package-summary.html">io.github.kaktushose.proteus.mapping</a></dt>
+<dd>
+<div class="block">Flags for further configuration of <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html#flags()" class="member-name-link">flags()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a></dt>
+<dd>
+<div class="block">Returns the value of the <code>flags</code> record component.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html#format()" class="member-name-link">format()</a> - Method in record class io.github.kaktushose.proteus.type.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type">Type</a></dt>
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html#param-format"><code>format</code></a> record component.</div>
@@ -320,10 +333,31 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.MappingContext.html#param-from"><code>from</code></a> record component.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html#from(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">from(Type&lt;S&gt;, Mapper&lt;S, T&gt;, Flag...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html" title="class in io.github.kaktushose.proteus">IntoMappingAction</a></dt>
+<dd>
+<div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided source <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html#from(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">from(Type&lt;S&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy, Flag...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html" title="class in io.github.kaktushose.proteus">IntoMappingAction</a></dt>
+<dd>
+<div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided source <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#from(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type...)" class="member-name-link">from(Type&lt;? extends S&gt;, Type&lt;? extends S&gt;...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
+<dd>
+<div class="block">Entrypoint for registering one or multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> and its subtypes.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#from(io.github.kaktushose.proteus.type.Type)" class="member-name-link">from(Type&lt;S&gt;)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
+<dd>
+<div class="block">Entrypoint for registering one or multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.BiMapper.html#from(S,io.github.kaktushose.proteus.mapping.Mapper.MappingContext)" class="member-name-link">from(S, Mapper.MappingContext&lt;S, T&gt;)</a> - Method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.BiMapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper.BiMapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html#from(S,io.github.kaktushose.proteus.mapping.Mapper.MappingContext)" class="member-name-link">from(S, Mapper.MappingContext&lt;S, T&gt;)</a> - Method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.UniMapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper.UniMapper</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html" class="type-name-link" title="class in io.github.kaktushose.proteus">FromMappingAction&lt;S&gt;</a> - Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/package-summary.html">io.github.kaktushose.proteus</a></dt>
+<dd>
+<div class="block">A <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html" title="class in io.github.kaktushose.proteus"><code>FromMappingAction</code></a> is returned by <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#from(io.github.kaktushose.proteus.type.Type)"><code>Proteus.from(Type)</code></a> and used to register one or, if needed, multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for
+the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> that is bound to this <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html" title="class in io.github.kaktushose.proteus"><code>FromMappingAction</code></a>.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
 <dl class="index">
@@ -343,6 +377,8 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Creates a new Graph with the given cache size.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" class="type-name-link" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a> - Record Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/package-summary.html">io.github.kaktushose.proteus.graph</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:H">H</h2>
 <dl class="index">
@@ -363,6 +399,10 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.UnresolvedEdge.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.UnresolvedEdge.html" title="class in io.github.kaktushose.proteus.graph">Edge.UnresolvedEdge</a></dt>
+<dd>
+<div class="block">Returns a hash code value for this object.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a></dt>
 <dd>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
@@ -427,8 +467,29 @@ that will have the <a href="io.github.kaktushose.proteus/io/github/kaktushose/pr
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.MappingContext.html#param-into"><code>into</code></a> record component.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html#into(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">into(Type&lt;T&gt;, Mapper&lt;S, T&gt;, Flag...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html" title="class in io.github.kaktushose.proteus">FromMappingAction</a></dt>
+<dd>
+<div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided target <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html#into(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">into(Type&lt;T&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy, Flag...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/FromMappingAction.html" title="class in io.github.kaktushose.proteus">FromMappingAction</a></dt>
+<dd>
+<div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided target <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#into(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type...)" class="member-name-link">into(Type&lt;? extends T&gt;, Type&lt;? extends T&gt;...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
+<dd>
+<div class="block">Entrypoint for registering one or multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> and its subtypes.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#into(io.github.kaktushose.proteus.type.Type)" class="member-name-link">into(Type&lt;T&gt;)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
+<dd>
+<div class="block">Entrypoint for registering one or multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.BiMapper.html#into(T,io.github.kaktushose.proteus.mapping.Mapper.MappingContext)" class="member-name-link">into(T, Mapper.MappingContext&lt;T, S&gt;)</a> - Method in interface io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.BiMapper.html" title="interface in io.github.kaktushose.proteus.mapping">Mapper.BiMapper</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html" class="type-name-link" title="class in io.github.kaktushose.proteus">IntoMappingAction&lt;T&gt;</a> - Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/package-summary.html">io.github.kaktushose.proteus</a></dt>
+<dd>
+<div class="block">A <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html" title="class in io.github.kaktushose.proteus"><code>IntoMappingAction</code></a> is returned by <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#into(io.github.kaktushose.proteus.type.Type)"><code>Proteus.into(Type)</code></a> and used to register one or, if needed, multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for
+the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> that is bound to this <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/IntoMappingAction.html" title="class in io.github.kaktushose.proteus"><code>IntoMappingAction</code></a>.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/module-summary.html">io.github.kaktushose.proteus</a> - module io.github.kaktushose.proteus</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/package-summary.html">io.github.kaktushose.proteus</a> - package io.github.kaktushose.proteus</dt>
@@ -483,13 +544,13 @@ result of a <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/m
 </dl>
 <h2 class="title" id="I:M">M</h2>
 <dl class="index">
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#map(io.github.kaktushose.proteus.type.Type)" class="member-name-link">map(Type&lt;S&gt;)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
-<dd>
-<div class="block">Entrypoint for registering one or multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
-</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.ResolvedEdge.html#mapper()" class="member-name-link">mapper()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.ResolvedEdge.html" title="class in io.github.kaktushose.proteus.graph">Edge.ResolvedEdge</a></dt>
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.ResolvedEdge.html#param-mapper"><code>mapper</code></a> record component.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html#mapper()" class="member-name-link">mapper()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a></dt>
+<dd>
+<div class="block">Returns the value of the <code>mapper</code> record component.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" class="type-name-link" title="interface in io.github.kaktushose.proteus.mapping">Mapper&lt;S,<wbr>T&gt;</a> - Interface in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/package-summary.html">io.github.kaktushose.proteus.mapping</a></dt>
 <dd>
@@ -511,11 +572,6 @@ target type <code>T</code> back into the source type <code>S</code>.</div>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.ErrorType.html#MAPPING_FAILED" class="member-name-link">MAPPING_FAILED</a> - Enum constant in enum class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.ErrorType.html" title="enum class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure.ErrorType</a></dt>
 <dd>
 <div class="block">Indicates that a path was found but mapping failed for one of the steps.</div>
-</dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html" class="type-name-link" title="class in io.github.kaktushose.proteus">MappingAction&lt;S&gt;</a> - Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/package-summary.html">io.github.kaktushose.proteus</a></dt>
-<dd>
-<div class="block">A <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html" title="class in io.github.kaktushose.proteus"><code>MappingAction</code></a> is returned by <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#map(io.github.kaktushose.proteus.type.Type)"><code>Proteus.map(Type)</code></a> and used to register one or, if needed, multiple <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for
-the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> that is bound to this <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html" title="class in io.github.kaktushose.proteus"><code>MappingAction</code></a>.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.MappingContext.html#%3Cinit%3E(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type)" class="member-name-link">MappingContext(Type&lt;S&gt;, Type&lt;T&gt;)</a> - Constructor for record class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.MappingContext.html" title="class in io.github.kaktushose.proteus.mapping">Mapper.MappingContext</a></dt>
 <dd>
@@ -653,15 +709,15 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Adjusts the size of the underlying LRU-Cache used for caching paths.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#register(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper)" class="member-name-link">register(Type&lt;S&gt;, Type&lt;T&gt;, Mapper&lt;S, T&gt;)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#register(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">register(Type&lt;S&gt;, Type&lt;T&gt;, Mapper&lt;S, T&gt;, Flag...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
 <dd>
 <div class="block">Registers a new conversion path from the given source <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> <code>from</code> into the given destination <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> <code>into</code>.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.html#register(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy)" class="member-name-link">register(Type&lt;S&gt;, Type&lt;T&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy)</a> - Method in class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.html" title="class in io.github.kaktushose.proteus.graph">Graph</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.html#register(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">register(Type&lt;S&gt;, Type&lt;T&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy, Flag...)</a> - Method in class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.html" title="class in io.github.kaktushose.proteus.graph">Graph</a></dt>
 <dd>
 <div class="block">Registers a new conversion path.</div>
 </dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#register(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy)" class="member-name-link">register(Type&lt;S&gt;, Type&lt;T&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html#register(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy,io.github.kaktushose.proteus.mapping.Flag...)" class="member-name-link">register(Type&lt;S&gt;, Type&lt;T&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy, Flag...)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></dt>
 <dd>
 <div class="block">Registers a new conversion path from the given source <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> <code>from</code> into the given destination <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> <code>into</code>.</div>
 </dd>
@@ -680,6 +736,10 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Returns the value of the <a href="./io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.ConversionContext.html#param-step"><code>step</code></a> record component.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html#STRICT_SUB_TYPES" class="member-name-link">STRICT_SUB_TYPES</a> - Enum constant in enum class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html" title="enum class in io.github.kaktushose.proteus.mapping">Flag</a></dt>
+<dd>
+<div class="block">If this flag is enabled, the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> will not allow subtypes as an input.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html#%3Cinit%3E(T,boolean)" class="member-name-link">Success(T, boolean)</a> - Constructor for record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Success.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Success</a></dt>
 <dd>
 <div class="block">Creates an instance of a <code>Success</code> record class.</div>
@@ -690,14 +750,6 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html#to()" class="member-name-link">to()</a> - Method in record class io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion">ConversionResult.Failure</a></dt>
 <dd>
 <div class="block">Converts this <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> to a <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.Failure.html" title="class in io.github.kaktushose.proteus.conversion"><code>ConversionResult.Failure</code></a> with the type <code>R</code>.</div>
-</dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html#to(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper)" class="member-name-link">to(Type&lt;T&gt;, Mapper&lt;S, T&gt;)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html" title="class in io.github.kaktushose.proteus">MappingAction</a></dt>
-<dd>
-<div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided target <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
-</dd>
-<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html#to(io.github.kaktushose.proteus.type.Type,io.github.kaktushose.proteus.mapping.Mapper,io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy)" class="member-name-link">to(Type&lt;T&gt;, Mapper&lt;S, T&gt;, ProteusBuilder.ConflictStrategy)</a> - Method in class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/MappingAction.html" title="class in io.github.kaktushose.proteus">MappingAction</a></dt>
-<dd>
-<div class="block">Registers the given <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a> for the provided target <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a>.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html#toOptional()" class="member-name-link">toOptional()</a> - Method in interface io.github.kaktushose.proteus.conversion.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/conversion/ConversionResult.html" title="interface in io.github.kaktushose.proteus.conversion">ConversionResult</a></dt>
 <dd>&nbsp;</dd>
@@ -718,6 +770,10 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.UnresolvedEdge.html#toString()" class="member-name-link">toString()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Edge.UnresolvedEdge.html" title="class in io.github.kaktushose.proteus.graph">Edge.UnresolvedEdge</a></dt>
+<dd>
+<div class="block">Returns a string representation of this record class.</div>
+</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html#toString()" class="member-name-link">toString()</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a></dt>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
@@ -750,6 +806,8 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/TypeReference.html#toString()" class="member-name-link">toString()</a> - Method in class io.github.kaktushose.proteus.type.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/TypeReference.html" title="class in io.github.kaktushose.proteus.type">TypeReference</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/TypeReference.html#type()" class="member-name-link">type()</a> - Method in class io.github.kaktushose.proteus.type.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/TypeReference.html" title="class in io.github.kaktushose.proteus.type">TypeReference</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type.html" class="type-name-link" title="class in io.github.kaktushose.proteus.type">Type&lt;T&gt;</a> - Record Class in <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/package-summary.html">io.github.kaktushose.proteus.type</a></dt>
 <dd>
@@ -801,6 +859,10 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html" title="enum class in io.github.kaktushose.proteus.mapping">Flag</a></dt>
+<dd>
+<div class="block">Returns the enum constant of this class with the specified name.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.ConflictStrategy.html#valueOf(java.lang.String)" class="member-name-link">valueOf(String)</a> - Static method in enum class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.ConflictStrategy.html" title="enum class in io.github.kaktushose.proteus">ProteusBuilder.ConflictStrategy</a></dt>
 <dd>
 <div class="block">Returns the enum constant of this class with the specified name.</div>
@@ -810,13 +872,29 @@ the <a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/type/Type
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html#values()" class="member-name-link">values()</a> - Static method in enum class io.github.kaktushose.proteus.mapping.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/mapping/Flag.html" title="enum class in io.github.kaktushose.proteus.mapping">Flag</a></dt>
+<dd>
+<div class="block">Returns an array containing the constants of this enum class, in
+the order they are declared.</div>
+</dd>
 <dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.ConflictStrategy.html#values()" class="member-name-link">values()</a> - Static method in enum class io.github.kaktushose.proteus.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/ProteusBuilder.ConflictStrategy.html" title="enum class in io.github.kaktushose.proteus">ProteusBuilder.ConflictStrategy</a></dt>
 <dd>
 <div class="block">Returns an array containing the constants of this enum class, in
 the order they are declared.</div>
 </dd>
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html#%3Cinit%3E(io.github.kaktushose.proteus.mapping.Mapper.UniMapper,java.util.EnumSet)" class="member-name-link">Vertex(Mapper.UniMapper&lt;Object, Object&gt;, EnumSet&lt;Flag&gt;)</a> - Constructor for record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Graph.Vertex.html" title="class in io.github.kaktushose.proteus.graph">Graph.Vertex</a></dt>
+<dd>
+<div class="block">Creates an instance of a <code>Vertex</code> record class.</div>
+</dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a></main>
+<h2 class="title" id="I:W">W</h2>
+<dl class="index">
+<dt><a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html#withHead(io.github.kaktushose.proteus.type.Type)" class="member-name-link">withHead(Type&lt;Object&gt;)</a> - Method in record class io.github.kaktushose.proteus.graph.<a href="io.github.kaktushose.proteus/io/github/kaktushose/proteus/graph/Path.html" title="class in io.github.kaktushose.proteus.graph">Path</a></dt>
+<dd>
+<div class="block">Returns a copy of this path with the given head as its new head.</div>
+</dd>
+</dl>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:D">D</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:L">L</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:U">U</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a href="#I:W">W</a>&nbsp;<br><a href="allclasses-index.html">All&nbsp;Classes&nbsp;and&nbsp;Interfaces</a><span class="vertical-separator">|</span><a href="allpackages-index.html">All&nbsp;Packages</a><span class="vertical-separator">|</span><a href="serialized-form.html">Serialized&nbsp;Form</a></main>
 </div>
 </body>
 </html>

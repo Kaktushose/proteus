@@ -318,7 +318,7 @@ converted to their corresponding wrapper types.</div>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">equalsFormat</span><wbr><span class="parameters">(@Nullable
  @Nullable <a href="Type.html" title="class in io.github.kaktushose.proteus.type">Type</a>&lt;?&gt;&nbsp;other)</span></div>
 <div class="block">Whether this type is equals to the given <a href="Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> ignoring the container <a href="TypeReference.html" title="class in io.github.kaktushose.proteus.type"><code>TypeReference</code></a> and only comparing the
-<a href="Format.html" title="interface in io.github.kaktushose.proteus.type"><code>Format</code></a>s.</div>
+<a href="Format.html" title="interface in io.github.kaktushose.proteus.type"><code>Format</code></a>s. This will return <code>false</code> if one of the <a href="Format.html" title="interface in io.github.kaktushose.proteus.type"><code>Format</code></a>s is of <a href="Format.None.html" title="class in io.github.kaktushose.proteus.type"><code>Format.None</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>other</code> - the <a href="Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> to compare against</dd>

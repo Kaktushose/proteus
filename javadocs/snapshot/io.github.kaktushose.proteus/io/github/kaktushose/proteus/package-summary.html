@@ -112,21 +112,26 @@ result of a <a href="mapping/Mapper.html" title="interface in io.github.kaktusho
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="MappingAction.html" title="class in io.github.kaktushose.proteus">MappingAction</a>&lt;S&gt;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="FromMappingAction.html" title="class in io.github.kaktushose.proteus">FromMappingAction</a>&lt;S&gt;</div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
-<div class="block">A <a href="MappingAction.html" title="class in io.github.kaktushose.proteus"><code>MappingAction</code></a> is returned by <a href="Proteus.html#map(io.github.kaktushose.proteus.type.Type)"><code>Proteus.map(Type)</code></a> and used to register one or, if needed, multiple <a href="mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for
-the <a href="type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> that is bound to this <a href="MappingAction.html" title="class in io.github.kaktushose.proteus"><code>MappingAction</code></a>.</div>
+<div class="block">A <a href="FromMappingAction.html" title="class in io.github.kaktushose.proteus"><code>FromMappingAction</code></a> is returned by <a href="Proteus.html#from(io.github.kaktushose.proteus.type.Type)"><code>Proteus.from(Type)</code></a> and used to register one or, if needed, multiple <a href="mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for
+the <a href="type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> that is bound to this <a href="FromMappingAction.html" title="class in io.github.kaktushose.proteus"><code>FromMappingAction</code></a>.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IntoMappingAction.html" title="class in io.github.kaktushose.proteus">IntoMappingAction</a>&lt;T&gt;</div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">A <a href="IntoMappingAction.html" title="class in io.github.kaktushose.proteus"><code>IntoMappingAction</code></a> is returned by <a href="Proteus.html#into(io.github.kaktushose.proteus.type.Type)"><code>Proteus.into(Type)</code></a> and used to register one or, if needed, multiple <a href="mapping/Mapper.html" title="interface in io.github.kaktushose.proteus.mapping"><code>Mapper</code></a>s for
+the <a href="type/Type.html" title="class in io.github.kaktushose.proteus.type"><code>Type</code></a> that is bound to this <a href="IntoMappingAction.html" title="class in io.github.kaktushose.proteus"><code>IntoMappingAction</code></a>.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Proteus.html" title="class in io.github.kaktushose.proteus">Proteus</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">The main entrypoint of the proteus library.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ProteusBuilder.html" title="class in io.github.kaktushose.proteus">ProteusBuilder</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ProteusBuilder.html" title="class in io.github.kaktushose.proteus">ProteusBuilder</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Builder for <a href="Proteus.html" title="class in io.github.kaktushose.proteus"><code>Proteus</code></a> instances.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab3"><a href="ProteusBuilder.ConflictStrategy.html" title="enum class in io.github.kaktushose.proteus">ProteusBuilder.ConflictStrategy</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab3">
+<div class="col-first even-row-color class-summary class-summary-tab3"><a href="ProteusBuilder.ConflictStrategy.html" title="enum class in io.github.kaktushose.proteus">ProteusBuilder.ConflictStrategy</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab3">
 <div class="block">The <a href="ProteusBuilder.ConflictStrategy.html" title="enum class in io.github.kaktushose.proteus"><code>ProteusBuilder.ConflictStrategy</code></a> to use if a duplicate path registration happens.</div>
 </div>
 </div>
