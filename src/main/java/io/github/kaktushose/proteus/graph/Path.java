@@ -61,4 +61,12 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
         newEdges.add(new Edge.UnresolvedEdge(head, (Type<Object>) intermediate));
         return new Path(newEdges, (Type<Object>) intermediate);
     }
+
+    /// Returns a copy of this path with the given head as its new head.
+    ///
+    /// @param head the [Type] to use as a new head
+    /// @return a copy of this path with the updated head
+    public Path withHead(@NotNull Type<Object> head) {
+        return new Path(edges, head);
+    }
 }

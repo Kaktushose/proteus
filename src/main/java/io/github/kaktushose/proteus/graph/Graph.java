@@ -29,7 +29,7 @@ public final class Graph {
     public record Vertex(UniMapper<Object, Object> mapper, EnumSet<Flag> flags) {}
 
     private final Map<Type<?>, Map<Type<?>, Vertex>> adjacencyList;
-    private ConcurrentLruCache<Route, List<Edge>> pathCache;
+    private ConcurrentLruCache<Pair<Type<?>, Type<?>>, List<Edge>> pathCache;
 
     /// Creates a new Graph with the given cache size.
     ///
@@ -95,7 +95,7 @@ public final class Graph {
     /// @return a possibly-empty [List] of [Edge]s that connect the `source` and `target` [Type]
     @NotNull
     public List<Edge> path(@NotNull Type<?> source, @NotNull Type<?> target) {
-        return pathCache.get(new Route(source, target));
+        return pathCache.get(new Pair<>(source, target));
     }
 
     @NotNull
@@ -118,9 +118,9 @@ public final class Graph {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private List<Edge> findPath(@NotNull Route route) {
-        Type<?> source = route.source;
-        Type<?> target = route.target;
+    private List<Edge> findPath(@NotNull Pair<Type<?>, Type<?>> route) {
+        Type<?> source = route.first();
+        Type<?> target = route.second();
 
         if (source.equals(target)) {
             throw new IllegalArgumentException("Source and target type cannot be equal. Please report this error to the devs of proteus!");
@@ -135,51 +135,65 @@ public final class Graph {
         queue.offer(new Path(source));
         visited.add(source);
         while (!queue.isEmpty()) {
-            Path path = queue.poll();
-            Set<Type<?>> neighbours = neighbours(path.head());
-            if (neighbours.isEmpty() && path.head().container().type() instanceof Class<?> clazz) {
-                Pair result = superTypesNeighbours(clazz);
-                if (result == null) {
+            Path current = queue.poll();
+            Set<Type<?>> neighbours = neighbours(current.head());
+
+            if (neighbours.isEmpty() && current.head().container().type() instanceof Class<?> clazz) {
+                var result = superTypesNeighbours(clazz).or(() -> interfaceNeighbours(clazz));
+                if (result.isEmpty()) {
                     continue;
                 }
-                path = new Path(path.edges(), (Type<Object>) result.head());
-                neighbours = result.neighbours();
+                current = current.withHead((Type<Object>) result.get().first());
+                neighbours = result.get().second();
             }
+
             for (Type<?> neighbour : neighbours) {
                 if (visited.contains(neighbour)) {
                     continue;
                 }
                 visited.add(neighbour);
 
-                Path newPath = path.addEdge(neighbour, mapper(path.head(), neighbour));
-                if (neighbour.equals(target) || neighbour.equalsFormat(target)) {
-                    return newPath.edges();
+                Path next = current.addEdge(neighbour, mapper(current.head(), neighbour));
+                if (neighbour.equals(target) || neighbour.equalsFormat(target) || equalsSubtype(neighbour, target)) {
+                    return next.edges();
                 }
-                if (neighbour.format().equals(target.format())
-                    && neighbour.container().type() instanceof Class<?> first
-                    && target.container().type() instanceof Class<?> second
-                    && second.isAssignableFrom(first)) {
-                    return newPath.edges();
-                }
-                queue.offer(newPath);
+
+                queue.offer(next);
             }
         }
         return List.of();
     }
 
-    @Nullable
-    private Pair superTypesNeighbours(@Nullable Class<?> clazz) {
-        if (clazz == null) {
-            return null;
+    private Optional<Pair<Type<?>, Set<Type<?>>>> superTypesNeighbours(@Nullable Class<?> clazz) {
+        while (clazz != null) {
+            Type<?> head = Type.of(clazz);
+            Set<Type<?>> neighbours = neighbours(head);
+            if (!neighbours.isEmpty()) {
+                return Optional.of(new Pair<>(head, neighbours));
+            }
+            clazz = clazz.getSuperclass();
         }
-        Set<Type<?>> neighbours = neighbours(Type.of(clazz));
-        if (neighbours.isEmpty()) {
-            return superTypesNeighbours(clazz.getSuperclass());
-        }
-        return new Pair(Type.of(clazz), neighbours);
+        return Optional.empty();
     }
 
-    private record Pair(Type<?> head, Set<Type<?>> neighbours) {}
+    private Optional<Pair<Type<?>, Set<Type<?>>>> interfaceNeighbours(@NotNull Class<?> clazz) {
+        for (Class<?> anInterface : clazz.getInterfaces()) {
+            Type<?> head = Type.of(anInterface);
+            Set<Type<?>> neighbours = neighbours(head);
+            if (!neighbours.isEmpty()) {
+                return Optional.of(new Pair<>(head, neighbours));
+            }
+        }
+        return Optional.empty();
+    }
 
-    private record Route(@NotNull Type<?> source, @NotNull Type<?> target) {}
+    private boolean equalsSubtype(Type<?> neighbour, Type<?> target) {
+        // this is different to #equalsFormat because this returns true for Format.None
+        return neighbour.format().equals(target.format())
+        && neighbour.container().type() instanceof Class<?> first
+        && target.container().type() instanceof Class<?> second
+        && second.isAssignableFrom(first);
+    }
+
+    private record Pair<T, U>(@NotNull T first, @NotNull U second) {}
 }

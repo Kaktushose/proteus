@@ -13,9 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SubTypesTest {
 
     private static final String INPUT = "INPUT";
-    private static final Type<DifferentType> different = Type.of(DifferentType.class);
-    private static final Type<BaseType> base = Type.of(BaseType.class);
-    private static final Type<SubType> sub = Type.of(SubType.class);
+    private static final Type<DifferentType> differentType = Type.of(DifferentType.class);
+    private static final Type<BaseType> baseType = Type.of(BaseType.class);
+    private static final Type<SubType> subType = Type.of(SubType.class);
+    private static final Type<BaseInterface> baseInterface = Type.of(BaseInterface.class);
+    private static final Type<BaseInterfaceImpl> baseInterfaceImpl = Type.of(BaseInterfaceImpl.class);
     private static final Type<String> string = Type.of(String.class);
     private static Proteus proteus;
 
@@ -26,59 +28,73 @@ class SubTypesTest {
 
     @Test
     void subTypeConversion_WithNoExplicitMapper_ShouldReturnNoPathFound() {
-        proteus.from(different).into(sub, Mapper.uni((_, _) ->
+        proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.from(base).into(string, Mapper.uni((source, _) ->
+        proteus.from(baseType).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ), Flag.STRICT_SUB_TYPES);
 
-        ConversionResult<String> result = proteus.convert(new DifferentType(), different, string);
+        ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
 
         assertEquals(ConversionResult.Failure.ErrorType.NO_PATH_FOUND, ((ConversionResult.Failure<?>) result).errorType());
     }
 
     @Test
     void subTypeConversion_WithExplicitMapper_ShouldConvert() {
-        proteus.from(different).into(sub, Mapper.uni((_, _) ->
+        proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.from(sub).into(base, Mapper.uni((source, _) ->
+        proteus.from(subType).into(baseType, Mapper.uni((source, _) ->
                 MappingResult.lossless(source)
         ));
-        proteus.from(base).into(string, Mapper.uni((source, _) ->
+        proteus.from(baseType).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 
-        ConversionResult<String> result = proteus.convert(new DifferentType(), different, string);
+        ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
 
         assertEquals(new ConversionResult.Success<>(INPUT, true), result);
     }
 
     @Test
     void subTypeConversion_WithExplicitRegistration_ShouldConvert() {
-        proteus.from(different).into(sub, Mapper.uni((_, _) ->
+        proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.from(base, sub).into(string, Mapper.uni((source, _) ->
+        proteus.from(baseType, subType).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 
-        ConversionResult<String> result = proteus.convert(new DifferentType(), different, string);
+        ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
+
+        assertEquals(new ConversionResult.Success<>(INPUT, true), result);
+    }
+
+    @Test
+    void nonStrictRegistration_WithInterfaceAsType_ShouldConvert() {
+        proteus.from(differentType).into(baseInterfaceImpl, Mapper.uni((_, _) ->
+                MappingResult.lossless(new BaseInterfaceImpl())
+        ));
+        proteus.from(baseInterface).into(string, Mapper.uni((source, _) ->
+                MappingResult.lossless(source.value())
+        ));
+
+        ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
 
         assertEquals(new ConversionResult.Success<>(INPUT, true), result);
     }
 
     @Test
     void subTypeConversion_WithNonStrictRegistration_ShouldConvert() {
-        proteus.from(different).into(sub, Mapper.uni((_, _) ->
+        proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
-        proteus.from(base).into(string, Mapper.uni((source, _) ->
+        proteus.from(baseType).into(string, Mapper.uni((source, _) ->
                 MappingResult.lossless(source.value())
         ));
 
-        ConversionResult<String> result = proteus.convert(new DifferentType(), different, string);
+        ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
 
         assertEquals(new ConversionResult.Success<>(INPUT, true), result);
     }
@@ -86,13 +102,21 @@ class SubTypesTest {
     @Test
     void nonStrictRegistration_WithBaseTypeAsTarget_ShouldConvert() {
         final var resultType = new SubType();
-        proteus.from(different).into(sub, Mapper.uni((_, _) ->
+        proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(resultType)
         ));
-        ConversionResult<BaseType> result = proteus.convert(new DifferentType(), different, base);
+        ConversionResult<BaseType> result = proteus.convert(new DifferentType(), differentType, baseType);
 
         assertEquals(new ConversionResult.Success<>(resultType, true), result);
     }
+
+    private interface BaseInterface {
+        default String value() {
+            return INPUT;
+        }
+    }
+
+    private static class BaseInterfaceImpl implements BaseInterface {}
 
     private static class DifferentType {}
 
