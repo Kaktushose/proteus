@@ -4,6 +4,7 @@ import io.github.kaktushose.proteus.conversion.ConversionResult;
 import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
+import io.github.kaktushose.proteus.type.Format;
 import io.github.kaktushose.proteus.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubTypesTest {
 
+    private static final Format testFormat = new TestFormat("TestTypeOne");
+    private static final Type<DifferentType> TEST_TYPE_ONE = Type.of(testFormat, DifferentType.class);
+    private static final Type<BaseType> TEST_TYPE_TWO = Type.of(testFormat, BaseType.class);
+    private static final Type<String> TEST_TYPE_THREE = Type.of(new TestFormat("TestTypeTwo"), String.class);
     private static final String INPUT = "INPUT";
     private static final Type<DifferentType> differentType = Type.of(DifferentType.class);
     private static final Type<BaseType> baseType = Type.of(BaseType.class);
@@ -27,7 +32,7 @@ class SubTypesTest {
     }
 
     @Test
-    void subTypeConversion_WithNoExplicitMapper_ShouldReturnNoPathFound() {
+    void subTypeConversion_WithStrictMode_ShouldReturnNoPathFound() {
         proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
@@ -36,6 +41,23 @@ class SubTypesTest {
         ), Flag.STRICT_SUB_TYPES);
 
         ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
+
+        assertEquals(ConversionResult.Failure.ErrorType.NO_PATH_FOUND, ((ConversionResult.Failure<?>) result).errorType());
+    }
+
+
+    @Test
+    void strictMode_WithContainerConversion_ShouldReturnNoPathFound() {
+        proteus = Proteus.builder().defaultMappers(true).build();
+        proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
+                        MappingResult.lossless(new SubType())
+        ));
+
+        proteus.from(TEST_TYPE_TWO).into(TEST_TYPE_THREE, Mapper.uni((s, _) ->
+                MappingResult.lossless(String.valueOf(s))
+        ), Flag.STRICT_SUB_TYPES);
+
+        var result = proteus.convert(new DifferentType(), TEST_TYPE_ONE, TEST_TYPE_THREE);
 
         assertEquals(ConversionResult.Failure.ErrorType.NO_PATH_FOUND, ((ConversionResult.Failure<?>) result).errorType());
     }

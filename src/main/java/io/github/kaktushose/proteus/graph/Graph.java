@@ -28,6 +28,8 @@ public final class Graph {
 
     public record Vertex(UniMapper<Object, Object> mapper, EnumSet<Flag> flags) {}
 
+    // we have to use a thread local to retain this flag for unresolved edges
+    private static final ThreadLocal<Boolean> enforceStrictMode = ThreadLocal.withInitial(() -> false);
     private final Map<Type<?>, Map<Type<?>, Vertex>> adjacencyList;
     private ConcurrentLruCache<Pair<Type<?>, Type<?>>, List<Edge>> pathCache;
 
@@ -145,6 +147,7 @@ public final class Graph {
                 }
                 current = current.withHead((Type<Object>) result.get().first());
                 neighbours = result.get().second();
+                enforceStrictMode.set(true);
             }
 
             for (Type<?> neighbour : neighbours) {
@@ -153,7 +156,11 @@ public final class Graph {
                 }
                 visited.add(neighbour);
 
-                Path next = current.addEdge(neighbour, mapper(current.head(), neighbour));
+                var mapper = mapper(current.head(), neighbour);
+                if (mapper != null && enforceStrictMode.get() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
+                    continue;
+                }
+                Path next = current.addEdge(neighbour, mapper);
                 if (neighbour.equals(target) || neighbour.equalsFormat(target) || equalsSubtype(neighbour, target)) {
                     return next.edges();
                 }
