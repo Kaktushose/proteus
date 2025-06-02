@@ -78,16 +78,20 @@ public final class Graph {
                      @NotNull ConflictStrategy strategy,
                      @NotNull Flag... flags) {
         Vertex present = adjacencyList.computeIfAbsent(source, _ -> new ConcurrentHashMap<>())
-                .putIfAbsent(target, new Vertex(mapper, flags.length == 0 ? EnumSet.noneOf(Flag.class) : EnumSet.copyOf(List.of(flags))));
+                .putIfAbsent(target, new Vertex(mapper, toEnumSet(flags)));
         if (present != null) {
             switch (strategy) {
                 case FAIL -> throw new IllegalArgumentException(
                         "Duplicated mapper registration for route: '%s' -> '%s'".formatted(source, target)
                 );
                 case OVERRIDE -> adjacencyList.compute(source, (_, _) -> new ConcurrentHashMap<>())
-                        .putIfAbsent(target, new Vertex(mapper, EnumSet.copyOf(List.of(flags))));
+                        .putIfAbsent(target, new Vertex(mapper, toEnumSet(flags)));
             }
         }
+    }
+
+    private EnumSet<Flag> toEnumSet(Flag... flags) {
+        return flags.length == 0 ? EnumSet.noneOf(Flag.class) : EnumSet.copyOf(List.of(flags));
     }
 
     /// Attempts to find a path that connects the two given [Type]s. Returns an empty [List] if no path was found.
