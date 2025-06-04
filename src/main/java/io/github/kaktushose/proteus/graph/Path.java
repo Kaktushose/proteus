@@ -39,7 +39,6 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     ///                     Can be null, if `head` and `intermediate` share the same [Format].
     /// @return a copy of this path with the given edge added to it
     /// @throws IllegalArgumentException      if the `vertex` is null and `head` and `intermediate` don't share the same [Format]
-    /// @throws UnsupportedOperationException if the `vertex` is null and `head` and `intermediate` don't have a format ([Format.None])
     public Path addEdge(@NotNull Type<?> intermediate, @Nullable Graph.Vertex vertex) {
         List<Edge> newEdges = new ArrayList<>(edges);
         if (vertex != null) {
