@@ -46,13 +46,7 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
             newEdges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, vertex.mapper()));
             return new Path(newEdges, (Type<Object>) intermediate);
         }
-        if (head.format() instanceof Format.None || intermediate.format() instanceof Format.None) {
-            throw new UnsupportedOperationException(
-                    "Mapper cannot be null for types without a format ('%s' and '%s'). Please report this error to the devs of proteus!"
-                            .formatted(head, intermediate)
-            );
-        }
-        if (!head.equalsFormat(intermediate)) {
+        if (!head.format().equals(intermediate.format())) {
             throw new IllegalArgumentException(
                     "Illegal edge for two types with different format ('%s' and '%s'). Please report this error to the devs of proteus!"
                             .formatted(head.format(), intermediate.format())
