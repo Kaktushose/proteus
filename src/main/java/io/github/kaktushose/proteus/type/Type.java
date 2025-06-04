@@ -23,7 +23,8 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     ///
     /// @param value the object [Object#getClass()] should be called on
     /// @return a new [Type] with [Format.None] and the container defined by `value`
-    public static Type<Object> dynamic(Object value) {
+    public static Type<Object> dynamic(@NotNull Object value) {
+        Objects.requireNonNull(value);
         return new Type<>(Format.none(), new TypeReference<>(value.getClass()) {});
     }
 
