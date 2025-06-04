@@ -182,8 +182,19 @@ public class Proteus {
     /// @param <T>      the target type
     /// @return a [ConversionResult] either holding the converted value or the error
     @NotNull
-    @SuppressWarnings("unchecked")
     public <S, T> ConversionResult<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
+        List<Mapper.UniMapper<Object, Object>> oldStack = callStack.get();
+        callStack.set(new ArrayList<>(oldStack));
+
+        try {
+            return convertInternal(value, source, target, lossless);
+        } finally {
+            callStack.set(oldStack);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <S, T> ConversionResult<T> convertInternal(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
         if (source.equals(target)) {
             return new ConversionResult.Success<>((T) value, true);
         }
@@ -207,7 +218,7 @@ public class Proteus {
         return switch (edge) {
             case Edge.ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
             case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) ->
-                    convert(value, Type.of(from.container()), Type.of(into.container()), lossless);
+                    convertInternal(value, Type.of(from.container()), Type.of(into.container()), lossless);
         };
     }
 

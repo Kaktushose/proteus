@@ -1,6 +1,7 @@
 package io.github.kaktushose.proteus;
 
 
+import io.github.kaktushose.proteus.conversion.ConversionResult;
 import io.github.kaktushose.proteus.conversion.CyclingConversionException;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
@@ -8,8 +9,7 @@ import io.github.kaktushose.proteus.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CyclingConversionTest {
 
@@ -57,5 +57,17 @@ class CyclingConversionTest {
         ));
 
         assertDoesNotThrow(() -> proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_THREE));
+    }
+
+    @Test
+    void conversion_withFailingCall_ShouldClearCallstack() {
+        proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) ->
+                MappingResult.lossy(s)
+        ));
+
+        var result = proteus.convert("INPUT", TEST_TYPE_ONE, TEST_TYPE_TWO, true);
+        assertInstanceOf(ConversionResult.Failure.class, result);
+
+        assertDoesNotThrow(() ->proteus.convert("INPUT", TEST_TYPE_ONE, TEST_TYPE_TWO, false));
     }
 }
