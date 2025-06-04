@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /// Represents the final result of a type conversion.
@@ -26,6 +27,24 @@ import java.util.function.Supplier;
 /// @param <T> the type of the result
 /// @see Proteus#convert(Object, Type, Type)
 public sealed interface ConversionResult<T> {
+
+    /// Creates a new [ConversionResult] with the given input.
+    ///
+    /// @param result    the [MappingResult] to create the [ConversionResult] from. This is either a [MappingResult.Lossless]
+    ///                                                                                      (or [MappingResult.Lossy]) <from the very last step or a [MappingResult.Failure] from any step that failed
+    /// @param errorType the [Failure.ErrorType] to use if the given [MappingResult] is a [MappingResult.Failure]
+    /// @param context   the [ConversionContext], can be null if this [ConversionResult] wasn't created during conversion
+    /// @param <T>       <T> the type of the result
+    /// @return the newly created [ConversionResult]
+    @NotNull
+    @SuppressWarnings("unchecked")
+    static <T> ConversionResult<T> of(@NotNull MappingResult<T> result, @NotNull Failure.ErrorType errorType, @Nullable ConversionContext context) {
+        return switch (result) {
+            case MappingResult.Lossless<T>(Object success) -> new Success<>((T) success, true);
+            case MappingResult.Lossy<T>(Object success) -> new Success<>((T) success, false);
+            case MappingResult.Failure<T>(String message) -> new Failure<>(errorType, message, context);
+        };
+    }
 
     /// If a value is present, returns the value, otherwise returns `other`.
     ///
@@ -64,6 +83,9 @@ public sealed interface ConversionResult<T> {
         return toOptional().orElseThrow(exceptionSupplier);
     }
 
+    /// Converts this result into an [Optional].
+    ///
+    /// @return the [Optional] wrapping this result
     default Optional<T> toOptional() {
         return switch (this) {
             case Success(T value, boolean _) -> Optional.of(value);
@@ -71,22 +93,15 @@ public sealed interface ConversionResult<T> {
         };
     }
 
-    /// Creates a new [ConversionResult] with the given input.
+    /// Converts this result into an [Optional] and accepts the given [Consumer] if this result is a [Failure].
     ///
-    /// @param result    the [MappingResult] to create the [ConversionResult] from. This is either a [MappingResult.Lossless]
-    ///                  (or [MappingResult.Lossy]) <from the very last step or a [MappingResult.Failure] from any step that failed
-    /// @param errorType the [Failure.ErrorType] to use if the given [MappingResult] is a [MappingResult.Failure]
-    /// @param context   the [ConversionContext], can be null if this [ConversionResult] wasn't created during conversion
-    /// @param <T>       <T> the type of the result
-    /// @return the newly created [ConversionResult]
-    @NotNull
-    @SuppressWarnings("unchecked")
-    static <T> ConversionResult<T> of(@NotNull MappingResult<T> result, @NotNull Failure.ErrorType errorType, @Nullable ConversionContext context) {
-        return switch (result) {
-            case MappingResult.Lossless<T>(Object success) -> new Success<>((T) success, true);
-            case MappingResult.Lossy<T>(Object success) -> new Success<>((T) success, false);
-            case MappingResult.Failure<T>(String message) -> new Failure<>(errorType, message, context);
-        };
+    /// @param loggingAction the operation to perform if this result is a [Failure]
+    /// @return the [Optional] wrapping this result
+    default Optional<T> toOptional(Consumer<Failure<T>> loggingAction) {
+        if (this instanceof Failure<T> failure) {
+            loggingAction.accept(failure);
+        }
+        return toOptional();
     }
 
     /// Implementation of [ConversionResult] that indicates a successful conversion.
@@ -108,8 +123,8 @@ public sealed interface ConversionResult<T> {
 
         /// Converts this [Failure] to a [Failure] with the type `R`. This is a convenience method to pass on [Failure]s.
         ///
-        /// @return this [Failure] with the type `R`
         /// @param <R> the type of the [Failure] to return
+        /// @return this [Failure] with the type `R`
         @SuppressWarnings("unchecked")
         public <R> Failure<R> to() {
             return (Failure<R>) this;
