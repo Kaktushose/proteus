@@ -32,7 +32,7 @@ public final class ProteusBuilder {
         return this;
     }
 
-    /// Whether to register default mappers as described by [DefaultMapper]. These default mappers are lossless and
+    /// The default mappers to register as described by [DefaultMapper]. These default mappers are lossless and
     /// follow the widening and narrowing primitive conversion of the Java Language Specification.
     ///
     /// @implNote By default, all [DefaultMapper]s will be registered. Can be disabled by calling this method with zero
