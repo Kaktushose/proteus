@@ -28,7 +28,7 @@ class SubTypesTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.builder().defaultMappers(false).build();
+        proteus = Proteus.builder().defaultMappers().build();
     }
 
     @Test
@@ -48,7 +48,7 @@ class SubTypesTest {
 
     @Test
     void strictMode_WithContainerConversion_ShouldReturnNoPathFound() {
-        proteus = Proteus.builder().defaultMappers(true).build();
+        proteus = Proteus.builder().defaultMappers(ProteusBuilder.DefaultMapper.WIDENING_PRIMITIVE).build();
         proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                         MappingResult.lossless(new SubType())
         ));

@@ -15,7 +15,7 @@ class TypeTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.builder().defaultMappers(false).build();
+        proteus = Proteus.builder().defaultMappers().build();
     }
 
     @Test
@@ -51,11 +51,11 @@ class TypeTest {
         final var secondType = Type.of(new TestFormat("second"), String.class);
         final var input = 10;
 
-        proteus = Proteus.builder().defaultMappers(false).build();
+        proteus = Proteus.builder().defaultMappers().build();
         proteus.from(firstType).into(secondType, Mapper.uni((i, _) -> MappingResult.lossless(i + "")));
         final var firstResult = proteus.convert(input, firstType, secondType);
 
-        proteus = Proteus.builder().defaultMappers(false).build();
+        proteus = Proteus.builder().defaultMappers().build();
         proteus.into(secondType).from(firstType, Mapper.uni((i, _) -> MappingResult.lossless(i + "")));
         final var secondResult = proteus.convert(input, firstType, secondType);
 

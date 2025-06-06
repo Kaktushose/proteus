@@ -1,17 +1,21 @@
 package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.type.Type;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.math.BigDecimal;
 
 import static io.github.kaktushose.proteus.mapping.Mapper.bi;
 import static io.github.kaktushose.proteus.mapping.Mapper.uni;
+import static io.github.kaktushose.proteus.mapping.MappingResult.failure;
 import static io.github.kaktushose.proteus.mapping.MappingResult.lossless;
 
-/// Default lossless mappers for primitive types following the widening primitive conversion. Additionally, provides
-/// bidirectional mappers for `char[]`, [String], [StringBuffer] and [StringBuilder].
+/// Default lossless mappers for primitive types following the widening and narrowing primitive conversion. Additionally,
+///  provides bidirectional mappers for `char[]`, [String], [StringBuffer] and [StringBuilder] as well as a [Double] to
+/// [BigDecimal] mapper.
 ///
 /// @see <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html#jls-5.1.2">Java Language Specification</a>
+@ApiStatus.Internal
 final class LosslessDefaultMappers {
 
     private static final Type<Byte> BYTE = Type.of(Byte.class);
@@ -25,9 +29,9 @@ final class LosslessDefaultMappers {
     private static final Type<StringBuilder> STRING_BUILDER = Type.of(StringBuilder.class);
     private static final Type<StringBuffer> STRING_BUFFER = Type.of(StringBuffer.class);
     private static final Type<char[]> CHARACTER_ARRAY = Type.of(char[].class);
-    private static final Type<BigDecimal> BIG_DECIMAL_TYPE = Type.of(BigDecimal.class);
+    private static final Type<BigDecimal> BIG_DECIMAL = Type.of(BigDecimal.class);
 
-    static void registerMappers(Proteus proteus) {
+    static void wideningPrimitives(Proteus proteus) {
         // byte
         proteus.register(BYTE, SHORT, uni((source, _) -> lossless((short) source)));
         proteus.register(BYTE, INTEGER, uni((source, _) -> lossless((int) source)));
@@ -58,7 +62,48 @@ final class LosslessDefaultMappers {
 
         // float
         proteus.register(FLOAT, DOUBLE, uni((source, _) -> lossless((double) source)));
+    }
 
+    static void narrowingPrimitives(Proteus proteus) {
+        proteus.register(DOUBLE, BYTE, uni((source, _) -> {
+            if (source < Byte.MIN_VALUE || source > Byte.MAX_VALUE) {
+                return failure("Number out of range for byte");
+            }
+            return lossless(source.byteValue());
+        }));
+        proteus.register(DOUBLE, SHORT, uni((source, _) -> {
+            if (source < Short.MIN_VALUE || source > Short.MAX_VALUE) {
+                return failure("Number out of range for short");
+            }
+            return lossless(source.shortValue());
+        }));
+        proteus.register(DOUBLE, CHARACTER, uni((source, _) -> {
+            if (source < Character.MIN_VALUE || source > Character.MAX_VALUE) {
+                return failure("Number out of range for char");
+            }
+            return lossless((char) source.doubleValue());
+        }));
+        proteus.register(DOUBLE, INTEGER, uni((source, _) -> {
+            if (source < Integer.MIN_VALUE || source > Integer.MAX_VALUE) {
+                return failure("Number out of range for integer");
+            }
+            return lossless(source.intValue());
+        }));
+        proteus.register(DOUBLE, LONG, uni((source, _) -> {
+            if (source < Long.MIN_VALUE || source > Long.MAX_VALUE) {
+                return failure("Number out of range for long");
+            }
+            return lossless(source.longValue());
+        }));
+        proteus.register(DOUBLE, FLOAT, uni((source, _) -> {
+            if (source < Float.MIN_VALUE || source > Float.MAX_VALUE) {
+                return failure("Number out of range for float");
+            }
+            return lossless(source.floatValue());
+        }));
+    }
+
+    static void string(Proteus proteus) {
         // char array
         proteus.register(STRING, CHARACTER_ARRAY, bi(
                 (source, _) -> lossless(source.toCharArray()),
@@ -76,7 +121,9 @@ final class LosslessDefaultMappers {
                 (source, _) -> lossless(new StringBuilder(source)),
                 (target, _) -> lossless(target.toString())
         ));
+    }
 
-        proteus.register(DOUBLE, BIG_DECIMAL_TYPE, uni((source, _) -> lossless(new BigDecimal(source))));
+    static void bigDecimal(Proteus proteus) {
+        proteus.register(DOUBLE, BIG_DECIMAL, uni((source, _) -> lossless(new BigDecimal(source))));
     }
 }

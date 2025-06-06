@@ -4,17 +4,21 @@ import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
+import java.util.EnumSet;
+import java.util.List;
+
 /// Builder for [Proteus] instances.
 public final class ProteusBuilder {
 
     private int cacheSize;
-    private boolean defaultMappers;
+    private EnumSet<DefaultMapper> defaultMappers;
     private ConflictStrategy conflictStrategy;
 
     /// Creates a new [ProteusBuilder].
     ProteusBuilder() {
         cacheSize = 1000;
-        defaultMappers = true;
+        defaultMappers = EnumSet.copyOf(List.of(DefaultMapper.values()));
         conflictStrategy = ConflictStrategy.FAIL;
     }
 
@@ -28,16 +32,18 @@ public final class ProteusBuilder {
         return this;
     }
 
-    /// Whether to register default mapper for primitive types. These default mappers are lossless and follow the
-    /// widening primitive conversion of the Java Language Specification. Additionally, there are bidirectional mappers
-    /// for `char[]`, [String], [StringBuffer] and [StringBuilder].
+    /// The default mappers to register as described by [DefaultMapper]. These default mappers are lossless and
+    /// follow the widening and narrowing primitive conversion of the Java Language Specification.
     ///
-    /// @param defaultMappers `true` i to register default mappers
+    /// @implNote By default, all [DefaultMapper]s will be registered. Can be disabled by calling this method with zero
+    /// arguments.
+    ///
+    /// @param defaultMappers the [DefaultMapper]s to register
     /// @return this instance for fluent interface
     /// @see <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html#jls-5.1.2">Java Language Specification</a>
     @NotNull
-    public ProteusBuilder defaultMappers(boolean defaultMappers) {
-        this.defaultMappers = defaultMappers;
+    public ProteusBuilder defaultMappers(DefaultMapper... defaultMappers) {
+        this.defaultMappers = defaultMappers.length == 0 ? EnumSet.noneOf(DefaultMapper.class) : EnumSet.copyOf(List.of(defaultMappers));
         return this;
     }
 
@@ -60,8 +66,13 @@ public final class ProteusBuilder {
         Graph graph = new Graph(cacheSize);
         Proteus proteus = new Proteus(graph, conflictStrategy);
 
-        if (defaultMappers) {
-            LosslessDefaultMappers.registerMappers(proteus);
+        for (DefaultMapper defaultMapper : defaultMappers) {
+            switch (defaultMapper) {
+                case WIDENING_PRIMITIVE -> LosslessDefaultMappers.wideningPrimitives(proteus);
+                case NARROWING_PRIMITIVE -> LosslessDefaultMappers.narrowingPrimitives(proteus);
+                case STRING -> LosslessDefaultMappers.string(proteus);
+                case BIG_DECIMAL -> LosslessDefaultMappers.bigDecimal(proteus);
+            }
         }
 
         return proteus;
@@ -75,5 +86,17 @@ public final class ProteusBuilder {
         IGNORE,
         /// Will override the existing path with the newly registered one.
         OVERRIDE
+    }
+
+    /// The [DefaultMapper]s to register.
+    public enum DefaultMapper {
+        /// Registers default mappers for widening primitive conversion.
+        WIDENING_PRIMITIVE,
+        /// Registers default mappers for narrowing primitive conversion.
+        NARROWING_PRIMITIVE,
+        /// Registers bidirectional mappers for `char[]`, [String], [StringBuffer] and [StringBuilder].
+        STRING,
+        /// Registers a default mapper for [Double] to [BigDecimal].
+        BIG_DECIMAL
     }
 }

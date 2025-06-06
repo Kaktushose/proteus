@@ -22,12 +22,12 @@ class ContainerConversionTest {
 
     @BeforeEach
     void init() {
-        proteus = Proteus.builder().defaultMappers(false).build();
+        proteus = Proteus.builder().defaultMappers().build();
     }
 
     @Test
     void conversion_withImplicitContainerPath_ShouldWork() {
-        proteus = Proteus.builder().defaultMappers(true).build();
+        proteus = Proteus.builder().defaultMappers(ProteusBuilder.DefaultMapper.WIDENING_PRIMITIVE).build();
         proteus.from(TEST_TYPE_TWO).into(TEST_TYPE_THREE, Mapper.uni((s, _) ->
                 MappingResult.lossless(String.valueOf(s)))
         );
