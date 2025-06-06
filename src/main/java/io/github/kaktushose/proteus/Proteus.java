@@ -157,6 +157,17 @@ public class Proteus {
         return this;
     }
 
+    /// Checks if a path between the given source and target type exists.
+    ///
+    /// @param source the [Type] of the value to convert
+    /// @param target the [Type] to convert into
+    /// @param <S>    the source type
+    /// @param <T>    the target type
+    /// @return `true` if a path exists, else `false`
+    public <S, T> boolean existsPath(@NotNull Type<S> source, @NotNull Type<T> target) {
+        return !graph.path(source, target).isEmpty();
+    }
+
     /// Attempts to convert the source [Type] with the given value [S] to the target [Type]. This will perform a lossy
     /// conversion, which means that some data might be lost during conversion. Use [#convert(Object, Type, Type, boolean)]
     /// for lossless conversion.
