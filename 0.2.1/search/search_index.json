@@ -1,0 +1,1 @@
+{"config":{"lang":["en"],"separator":"[\\s\\-]+","pipeline":["stopWordFilter"]},"docs":[{"location":"","title":"Proteus","text":""},{"location":"conversion/","title":"Conversion","text":""},{"location":"mappers/","title":"Mappers","text":""},{"location":"types/","title":"Types","text":""}]}
