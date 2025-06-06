@@ -1,11 +1,13 @@
 package io.github.kaktushose.proteus;
 
 import io.github.kaktushose.proteus.conversion.ConversionResult;
+import io.github.kaktushose.proteus.mapping.Mapper;
+import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class PathFindingTest {
 
@@ -28,4 +30,19 @@ class PathFindingTest {
         assertEquals(input, ((ConversionResult.Success<String>) result).value());
     }
 
+    @Test
+    void existsPath_withNoExistingPath_ShouldReturnFalse() {
+        assertFalse(proteus.existsPath(Type.of(FirstType.class), Type.of(SecondType.class)));
+    }
+
+    @Test
+    void existsPath_withExistingPath_ShouldReturnTrue() {
+        proteus.register(Type.of(FirstType.class), Type.of(SecondType.class), Mapper.uni((_, _) -> MappingResult.failure("")));
+
+        assertTrue(proteus.existsPath(Type.of(FirstType.class), Type.of(SecondType.class)));
+    }
+
+    private record FirstType() {}
+
+    private record SecondType() {}
 }
