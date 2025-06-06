@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 import static io.github.kaktushose.proteus.mapping.Mapper.bi;
 import static io.github.kaktushose.proteus.mapping.Mapper.uni;
+import static io.github.kaktushose.proteus.mapping.MappingResult.failure;
 import static io.github.kaktushose.proteus.mapping.MappingResult.lossless;
 
 /// Default lossless mappers for primitive types following the widening and narrowing primitive conversion. Additionally,
@@ -64,10 +65,45 @@ final class LosslessDefaultMappers {
     }
 
     static void narrowingPrimitives(Proteus proteus) {
-
+        proteus.register(DOUBLE, BYTE, uni((source, _) -> {
+            if (source < Byte.MIN_VALUE || source > Byte.MAX_VALUE) {
+                return failure("Number out of range for byte");
+            }
+            return lossless(source.byteValue());
+        }));
+        proteus.register(DOUBLE, SHORT, uni((source, _) -> {
+            if (source < Short.MIN_VALUE || source > Short.MAX_VALUE) {
+                return failure("Number out of range for short");
+            }
+            return lossless(source.shortValue());
+        }));
+        proteus.register(DOUBLE, CHARACTER, uni((source, _) -> {
+            if (source < Character.MIN_VALUE || source > Character.MAX_VALUE) {
+                return failure("Number out of range for char");
+            }
+            return lossless((char) source.doubleValue());
+        }));
+        proteus.register(DOUBLE, INTEGER, uni((source, _) -> {
+            if (source < Integer.MIN_VALUE || source > Integer.MAX_VALUE) {
+                return failure("Number out of range for integer");
+            }
+            return lossless(source.intValue());
+        }));
+        proteus.register(DOUBLE, LONG, uni((source, _) -> {
+            if (source < Long.MIN_VALUE || source > Long.MAX_VALUE) {
+                return failure("Number out of range for long");
+            }
+            return lossless(source.longValue());
+        }));
+        proteus.register(DOUBLE, FLOAT, uni((source, _) -> {
+            if (source < Float.MIN_VALUE || source > Float.MAX_VALUE) {
+                return failure("Number out of range for float");
+            }
+            return lossless(source.floatValue());
+        }));
     }
 
-    public static void string(Proteus proteus) {
+    static void string(Proteus proteus) {
         // char array
         proteus.register(STRING, CHARACTER_ARRAY, bi(
                 (source, _) -> lossless(source.toCharArray()),
@@ -87,7 +123,7 @@ final class LosslessDefaultMappers {
         ));
     }
 
-    public static void bigDecimal(Proteus proteus) {
+    static void bigDecimal(Proteus proteus) {
         proteus.register(DOUBLE, BIG_DECIMAL, uni((source, _) -> lossless(new BigDecimal(source))));
     }
 }
