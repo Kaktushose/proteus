@@ -84,6 +84,6 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     @NotNull
     @Override
     public String toString() {
-        return "%s(%s)".formatted(format, container);
+        return "%s(%s)".formatted(format == Format.NONE ? "" : format, container);
     }
 }
