@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.kaktushose"
-version = "0.2.1"
+version = "0.2.2"
 
 
 repositories {
@@ -108,9 +108,6 @@ java {
 tasks.javadoc {
     val options = options as StandardJavadocDocletOptions
     options.overview = "src/main/javadoc/overview.md"
-    options.links = listOf(
-        "https://google.github.io/guice/api-docs/7.0.0/javadoc/"
-    )
     options.encoding = "UTF-8"
     options.addBooleanOption("Xdoclint:none,-missing", true)
     options.tags("apiNote:a:API Note:", "implSpec:a:Implementation Requirements:", "implNote:a:Implementation Note:")
