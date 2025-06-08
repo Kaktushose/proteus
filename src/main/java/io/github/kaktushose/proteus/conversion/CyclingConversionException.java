@@ -1,9 +1,9 @@
 package io.github.kaktushose.proteus.conversion;
 
+import io.github.kaktushose.proteus.graph.Edge;
+import io.github.kaktushose.proteus.graph.Edge.ResolvedEdge;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
-import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,20 +14,15 @@ public class CyclingConversionException extends RuntimeException {
 
     /// Constructs a new CyclingConversionException.
     ///
-    /// @param from          the source [Type] of the path
-    /// @param into          the destination [Type] of the path
-    /// @param mapper        the [UniMapper] that was called cyclic
-    /// @param alreadyCalled the callstack of previously called [UniMapper]s
-    public CyclingConversionException(@Nullable Type<?> from,
-                                      @Nullable Type<?> into,
-                                      @Nullable UniMapper<Object, Object> mapper,
-                                      @NotNull List<UniMapper<Object, Object>> alreadyCalled) {
+    /// @param edge          the [ResolvedEdge] that was called cyclic
+    /// @param alreadyCalled the callstack of previously called [Edge]s
+    public CyclingConversionException(@NotNull ResolvedEdge edge, @NotNull List<ResolvedEdge> alreadyCalled) {
         super("Cannot convert from '%s' to '%s' because of cycling source adapter calls!\n   -> %s\n      was called by %s".formatted(
-                from,
-                into,
-                mapper != null ? mapper.getClass().getName() : null,
+                edge.from(),
+                edge.into(),
+                mapper(edge),
                 reverse(alreadyCalled).stream()
-                        .map(it -> it.getClass().getName())
+                        .map(CyclingConversionException::mapper)
                         .collect(Collectors.joining("\n      was called by "))
         ));
     }
@@ -36,5 +31,14 @@ public class CyclingConversionException extends RuntimeException {
     private static <T> List<T> reverse(@NotNull List<T> list) {
         Collections.reverse(list);
         return list;
+    }
+
+    @NotNull
+    private static String mapper(@NotNull ResolvedEdge edge) {
+        UniMapper<Object, Object> mapper = edge.mapper();
+        if (mapper.getClass().isSynthetic()) {
+            return "Inlined Mapper[%s => %s]".formatted(edge.from(), edge.into());
+        }
+        return mapper.getClass().getName();
     }
 }
