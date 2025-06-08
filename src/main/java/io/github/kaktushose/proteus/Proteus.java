@@ -174,7 +174,6 @@ public class Proteus {
         }
         boolean exists = true;
         for (Edge edge : path) {
-            System.out.println(edge);
             if (edge instanceof Edge.UnresolvedEdge(Type<?> from, Type<?> into)) {
                 exists = existsPath(Type.of(from.container()), Type.of(into.container()));
             }
