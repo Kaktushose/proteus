@@ -128,7 +128,7 @@ public class Proteus {
     /// @param from   the source [Type] of the conversion path
     /// @param into   the destination [Type] of the conversion path
     /// @param mapper the [Mapper] to associate with this conversion path
-    /// @param flags    the [Flag]s to register this mapper with
+    /// @param flags  the [Flag]s to register this mapper with
     /// @param <S>    the type of the `from` [Type]
     /// @param <T>    the type of into `from` [Type]
     @NotNull
@@ -172,16 +172,13 @@ public class Proteus {
         if (path.isEmpty()) {
             return false;
         }
-        boolean exists = true;
         for (Edge edge : path) {
-            if (edge instanceof Edge.UnresolvedEdge(Type<?> from, Type<?> into)) {
-                exists = existsPath(Type.of(from.container()), Type.of(into.container()));
-            }
-            if (!exists) {
-                break;
+            if (edge instanceof Edge.UnresolvedEdge(Type<?> from, Type<?> into)
+                && !existsPath(Type.of(from.container()), Type.of(into.container()))) {
+                return false;
             }
         }
-        return exists;
+        return true;
     }
 
     /// Attempts to convert the source [Type] with the given value [S] to the target [Type]. This will perform a lossy
