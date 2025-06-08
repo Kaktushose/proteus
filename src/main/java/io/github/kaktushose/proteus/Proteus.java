@@ -165,7 +165,24 @@ public class Proteus {
     /// @param <T>    the target type
     /// @return `true` if a path exists, else `false`
     public <S, T> boolean existsPath(@NotNull Type<S> source, @NotNull Type<T> target) {
-        return !graph.path(source, target).isEmpty();
+        if (source.equals(target)) {
+            return true;
+        }
+        List<Edge> path = graph.path(source, target);
+        if (path.isEmpty()) {
+            return false;
+        }
+        boolean exists = true;
+        for (Edge edge : path) {
+            System.out.println(edge);
+            if (edge instanceof Edge.UnresolvedEdge(Type<?> from, Type<?> into)) {
+                exists = existsPath(Type.of(from.container()), Type.of(into.container()));
+            }
+            if (!exists) {
+                break;
+            }
+        }
+        return exists;
     }
 
     /// Attempts to convert the source [Type] with the given value [S] to the target [Type]. This will perform a lossy
