@@ -4,6 +4,8 @@ import io.github.kaktushose.proteus.conversion.ConversionResult;
 import io.github.kaktushose.proteus.conversion.ConversionResult.ConversionContext;
 import io.github.kaktushose.proteus.conversion.CyclingConversionException;
 import io.github.kaktushose.proteus.graph.Edge;
+import io.github.kaktushose.proteus.graph.Edge.ResolvedEdge;
+import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
@@ -27,7 +29,7 @@ public class Proteus {
 
     private static final Proteus GLOBAL_INSTANCE = Proteus.create();
 
-    private static final ThreadLocal<List<Mapper.UniMapper<Object, Object>>> callStack = ThreadLocal.withInitial(ArrayList::new);
+    private static final ThreadLocal<List<ResolvedEdge>> callStack = ThreadLocal.withInitial(ArrayList::new);
     private final Graph graph;
     private final ProteusBuilder.ConflictStrategy conflictStrategy;
 
@@ -207,7 +209,7 @@ public class Proteus {
     /// @return a [ConversionResult] either holding the converted value or the error
     @NotNull
     public <S, T> ConversionResult<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
-        List<Mapper.UniMapper<Object, Object>> oldStack = callStack.get();
+        List<ResolvedEdge> oldStack = callStack.get();
         callStack.set(new ArrayList<>(oldStack));
 
         try {
@@ -240,29 +242,29 @@ public class Proteus {
     @NotNull
     private ConversionResult<Object> applyEdge(@NotNull Edge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
         return switch (edge) {
-            case Edge.ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
-            case Edge.UnresolvedEdge(Type<Object> from, Type<Object> into) ->
+            case ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
+            case UnresolvedEdge(Type<Object> from, Type<Object> into) ->
                     convertInternal(value, Type.of(from.container()), Type.of(into.container()), lossless);
         };
     }
 
     @NotNull
-    private ConversionResult<Object> applyMapper(@NotNull Edge.ResolvedEdge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
+    private ConversionResult<Object> applyMapper(@NotNull ResolvedEdge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
         Mapper.UniMapper<Object, Object> mapper = edge.mapper();
-        List<Mapper.UniMapper<Object, Object>> stack = callStack.get();
-        if (stack.contains(mapper)) {
-            throw new CyclingConversionException(edge.from(), edge.into(), mapper, stack);
+        List<ResolvedEdge> stack = callStack.get();
+        if (stack.contains(edge)) {
+            throw new CyclingConversionException(edge, stack);
         }
 
         ConversionContext context = new ConversionContext(path, edge);
-        stack.add(mapper);
+        stack.add(edge);
         MappingResult<Object> result = mapper.from(value, new MappingContext<>(edge.from(), edge.into()));
 
         if (lossless && result instanceof MappingResult.Lossy<?>) {
             return new ConversionResult.Failure<>(NO_LOSSLESS_CONVERSION, "No lossless conversion possible", context);
         }
 
-        stack.remove(mapper);
+        stack.remove(edge);
         return ConversionResult.of(result, MAPPING_FAILED, context);
     }
 }

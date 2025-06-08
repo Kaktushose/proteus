@@ -36,11 +36,11 @@ class CyclingConversionTest {
     @Test
     void conversion_withCyclingCall_ShouldThrow() {
         proteus.from(TEST_TYPE_ONE).into(TEST_TYPE_TWO, Mapper.uni((s, _) -> {
-            proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO);
+            proteus.convert("", TEST_TYPE_TWO, TEST_TYPE_ONE);
             return MappingResult.lossless(s);
         }));
         proteus.from(TEST_TYPE_TWO).into(TEST_TYPE_ONE, Mapper.uni((s, _) -> {
-            proteus.convert("", TEST_TYPE_TWO, TEST_TYPE_ONE);
+            proteus.convert("", TEST_TYPE_ONE, TEST_TYPE_TWO);
             return MappingResult.lossless(s);
         }));
 
