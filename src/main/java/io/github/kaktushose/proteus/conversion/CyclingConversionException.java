@@ -1,7 +1,6 @@
 package io.github.kaktushose.proteus.conversion;
 
 import io.github.kaktushose.proteus.graph.Edge;
-import io.github.kaktushose.proteus.graph.Edge.ResolvedEdge;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,9 +13,9 @@ public class CyclingConversionException extends RuntimeException {
 
     /// Constructs a new CyclingConversionException.
     ///
-    /// @param edge          the [ResolvedEdge] that was called cyclic
+    /// @param edge          the [Edge] that was called cyclic
     /// @param alreadyCalled the callstack of previously called [Edge]s
-    public CyclingConversionException(@NotNull ResolvedEdge edge, @NotNull List<ResolvedEdge> alreadyCalled) {
+    public CyclingConversionException(@NotNull Edge edge, @NotNull List<Edge> alreadyCalled) {
         super("Cannot convert from '%s' to '%s' because of cycling source adapter calls!\n   -> %s\n      was called by %s".formatted(
                 edge.from(),
                 edge.into(),
@@ -34,7 +33,7 @@ public class CyclingConversionException extends RuntimeException {
     }
 
     @NotNull
-    private static String mapper(@NotNull ResolvedEdge edge) {
+    private static String mapper(@NotNull Edge edge) {
         UniMapper<Object, Object> mapper = edge.mapper();
         if (mapper.getClass().isSynthetic()) {
             return "Inlined Mapper[%s => %s]".formatted(edge.from(), edge.into());
