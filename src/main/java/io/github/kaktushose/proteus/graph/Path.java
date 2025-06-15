@@ -16,7 +16,6 @@ import java.util.List;
 /// @param edges a [List] of all previous [Edge]s
 /// @param head  the [Type] that is currently the result of this path. In other words, this is the [Type] that the last
 ///              [Edge] in the list of edges maps to and thus the [Type] that the next [Edge] has to start with.
-@ApiStatus.Internal
 @SuppressWarnings("unchecked")
 record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
 
@@ -38,7 +37,6 @@ record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     /// @param vertex       the [UniMapper] that maps from the `head` of this path to the given `intermediate` [Type].
     ///                     Can be null, if `head` and `intermediate` share the same [Format].
     /// @return a copy of this path with the given edge added to it
-    /// @throws IllegalArgumentException      if the `vertex` is null and `head` and `intermediate` don't share the same [Format]
     public Path addEdge(@NotNull Type<?> intermediate, @NotNull Graph.Vertex vertex) {
         List<Edge> newEdges = new ArrayList<>(edges);
         newEdges.add(new Edge(head, (Type<Object>) intermediate, vertex.mapper()));
