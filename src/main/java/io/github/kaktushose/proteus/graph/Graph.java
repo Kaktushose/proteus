@@ -7,9 +7,7 @@ import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
 import io.github.kaktushose.proteus.mapping.MappingResult;
-import io.github.kaktushose.proteus.type.Format;
 import io.github.kaktushose.proteus.type.Type;
-import io.github.kaktushose.proteus.type.TypeReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +29,7 @@ public final class Graph {
     public record Vertex(UniMapper<Object, Object> mapper, EnumSet<Flag> flags) {}
 
     private final Map<Type<?>, Map<Type<?>, Vertex>> adjacencyList;
-    private ConcurrentLruCache<Pair<Type<?>, Type<?>>, List<Edge>> pathCache;
+    private ConcurrentLruCache<Key, List<Edge>> pathCache;
 
     /// Creates a new Graph with the given cache size.
     ///
@@ -101,16 +99,13 @@ public final class Graph {
     /// @return a possibly-empty [List] of [Edge]s that connect the `source` and `target` [Type]
     @NotNull
     public List<Edge> path(@NotNull Type<?> source, @NotNull Type<?> target) {
-        return pathCache.get(new Pair<>(source, target));
+        return pathCache.get(new Key(source, target));
     }
 
     @NotNull
     private Set<Type<?>> neighbours(@NotNull Type<?> type) {
-        Map<Type<?>, Vertex> mappers = adjacencyList.get(type);
-        Set<Type<?>> result = new HashSet<>();
-        if (mappers != null) {
-            result.addAll(mappers.keySet());
-        }
+        Map<Type<?>, Vertex> mappers = adjacencyList.getOrDefault(type, Map.of());
+        Set<Type<?>> result = new HashSet<>(mappers.keySet());
         result.addAll(adjacencyList.keySet().stream()
                 .filter(it -> it.equalsFormat(type))
                 .collect(Collectors.toSet()));
@@ -125,16 +120,12 @@ public final class Graph {
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private List<Edge> findPath(@NotNull Pair<Type<?>, Type<?>> route) {
-        Type<?> source = route.first();
-        Type<?> target = route.second();
-
-        if (source.equals(target)) {
-            throw new IllegalArgumentException("Source and target type cannot be equal. Please report this error to the devs of proteus!");
-        }
+    private List<Edge> findPath(@NotNull Graph.Key route) {
+        Type<?> source = route.source();
+        Type<?> target = route.target();
 
         if (source.equalsFormat(target)) {
-            return findPath(new Pair<>(Type.of(source.container()), Type.of(target.container())));
+            return findPath(new Key(Type.of(source.container()), Type.of(target.container())));
         }
 
         LinkedList<Path> queue = new LinkedList<>();
@@ -144,22 +135,14 @@ public final class Graph {
         while (!queue.isEmpty()) {
             Path current = queue.poll();
 
+            // if subtype or equal, simulate mapper
             if (equalsSubtype(current.head(), target)) {
-                return current.addEdge(new Type<>(target.format(), (TypeReference<Object>) target.container(), true), new Graph.Vertex(Mapper.uni((x, _) -> MappingResult.lossless(x)), EnumSet.noneOf(Flag.class))).edges();
+                return current.addEdge(target.withStrict(true),
+                        new Graph.Vertex(Mapper.uni((x, _) -> MappingResult.lossless(x)), toEnumSet())
+                ).edges();
             }
 
             Set<Type<?>> neighbours = neighbours(current.head());
-
-            if (current.head().container().type() instanceof Class<?> clazz) {
-                for (Type<?> type : superTypes(clazz.getSuperclass())) {
-                    queue.offerLast(current.withHead(new Type<>(type.format(), (TypeReference<Object>) type.container(), true)));
-                }
-
-                for (Type<?> type : interfaces(clazz)) {
-                    queue.offerLast(current.withHead(new Type<>(type.format(), (TypeReference<Object>) type.container(), true)));
-                }
-            }
-
             for (Type<?> neighbour : neighbours) {
                 if (visited.contains(neighbour)) {
                     continue;
@@ -169,24 +152,36 @@ public final class Graph {
                 var mapper = mapper(current.head(), neighbour);
 
                 if (mapper == null) {
-                    List<Edge> containerPath = findPath(new Pair<>(Type.of(current.head().container()), Type.of(neighbour.container())));
-                    if (containerPath.isEmpty()) continue;
+                    List<Edge> containerPath = findPath(new Key(Type.of(current.head().container()), Type.of(neighbour.container())));
+                    if (containerPath.isEmpty()) continue; // no path found - skip
 
                     ArrayList<Edge> newEdges = new ArrayList<>(current.edges());
                     newEdges.addAll(containerPath);
 
+                    // set enforce strict mode, because containerPath head could be subtype
                     Type<Object> lastEdgeType = newEdges.getLast().into();
-                    queue.offer(new Path(newEdges, new Type<>(neighbour.format(), (TypeReference<Object>) neighbour.container(), neighbour.enforceStrictMode() | lastEdgeType.enforceStrictMode())));
+                    queue.offer(new Path(newEdges, (Type<Object>) neighbour.withStrict(lastEdgeType.enforceStrictMode())));
                 } else {
                     if (current.head().enforceStrictMode() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
                         continue;
                     }
+
                     Path next = current.addEdge(neighbour, mapper);
-                    if (neighbour.equals(target) || neighbour.equalsFormat(target)) {
+                    if (neighbour.equals(target)) {
                         return next.edges();
                     }
 
                     queue.offerFirst(next);
+                }
+            }
+
+            if (current.head().container().type() instanceof Class<?> clazz) {
+                for (Type<?> type : superTypes(clazz.getSuperclass())) {
+                    queue.offerLast(current.withHead((Type<Object>) type.withStrict(true)));
+                }
+
+                for (Type<?> type : interfaces(clazz)) {
+                    queue.offerLast(current.withHead((Type<Object>) type.withStrict(true)));
                 }
             }
         }
@@ -220,5 +215,5 @@ public final class Graph {
         && bClass.isAssignableFrom(sClass);
     }
 
-    private record Pair<T, U>(@NotNull T first, @NotNull U second) {}
+    private record Key(@NotNull Type<?> source, @NotNull Type<?> target) {}
 }

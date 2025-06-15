@@ -39,18 +39,10 @@ record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     ///                     Can be null, if `head` and `intermediate` share the same [Format].
     /// @return a copy of this path with the given edge added to it
     /// @throws IllegalArgumentException      if the `vertex` is null and `head` and `intermediate` don't share the same [Format]
-    public Path addEdge(@NotNull Type<?> intermediate, @Nullable Graph.Vertex vertex) {
+    public Path addEdge(@NotNull Type<?> intermediate, @NotNull Graph.Vertex vertex) {
         List<Edge> newEdges = new ArrayList<>(edges);
-        if (vertex != null) {
-            newEdges.add(new Edge(head, (Type<Object>) intermediate, vertex.mapper()));
-            return new Path(newEdges, (Type<Object>) intermediate);
-        }
-        if (!head.format().equals(intermediate.format())) {
-            throw new IllegalArgumentException(
-                    "Illegal edge for two types with different format ('%s' and '%s'). Please report this error to the devs of proteus!"
-                            .formatted(head.format(), intermediate.format())
-            );
-        }
+        newEdges.add(new Edge(head, (Type<Object>) intermediate, vertex.mapper()));
+
         return new Path(newEdges, (Type<Object>) intermediate);
     }
 

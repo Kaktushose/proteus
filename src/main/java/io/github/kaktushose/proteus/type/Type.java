@@ -81,6 +81,12 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
         return format.equals(other.format());
     }
 
+    /// @param enforceStrictMode weather the copy should enforce strict mode
+    /// @return a copy of this type with the value for [Type#enforceStrictMode()] set to the parameter
+    public Type<T> withStrict(boolean enforceStrictMode) {
+        return new Type<>(format, container, enforceStrictMode);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Type<?> type)) return false;
