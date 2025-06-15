@@ -145,7 +145,7 @@ public final class Graph {
             Path current = queue.poll();
 
             if (equalsSubtype(current.head(), target)) {
-                return current.addEdge(target, new Graph.Vertex(Mapper.uni((x, _) -> MappingResult.lossless(x)), EnumSet.noneOf(Flag.class))).edges();
+                return current.addEdge(new Type<>(target.format(), (TypeReference<Object>) target.container(), true), new Graph.Vertex(Mapper.uni((x, _) -> MappingResult.lossless(x)), EnumSet.noneOf(Flag.class))).edges();
             }
 
             Set<Type<?>> neighbours = neighbours(current.head());
@@ -174,13 +174,15 @@ public final class Graph {
 
                     ArrayList<Edge> newEdges = new ArrayList<>(current.edges());
                     newEdges.addAll(containerPath);
-                    queue.offer(new Path(newEdges, (Type<Object>) neighbour));
+
+                    Type<Object> lastEdgeType = newEdges.getLast().into();
+                    queue.offer(new Path(newEdges, new Type<>(neighbour.format(), (TypeReference<Object>) neighbour.container(), neighbour.enforceStrictMode() | lastEdgeType.enforceStrictMode())));
                 } else {
                     if (current.head().enforceStrictMode() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
                         continue;
                     }
                     Path next = current.addEdge(neighbour, mapper);
-                    if (neighbour.equals(target) || neighbour.equalsFormat(target) || equalsSubtype(neighbour, target)) {
+                    if (neighbour.equals(target) || neighbour.equalsFormat(target)) {
                         return next.edges();
                     }
 
@@ -210,12 +212,12 @@ public final class Graph {
         return interfaces;
     }
 
-    private boolean equalsSubtype(Type<?> neighbour, Type<?> target) {
+    private boolean equalsSubtype(Type<?> sub, Type<?> base) {
         // this is different to #equalsFormat because this returns true for Format.None
-        return neighbour.format().equals(target.format())
-        && neighbour.container().type() instanceof Class<?> first
-        && target.container().type() instanceof Class<?> second
-        && second.isAssignableFrom(first);
+        return sub.format().equals(base.format())
+        && sub.container().type() instanceof Class<?> sClass
+        && base.container().type() instanceof Class<?> bClass
+        && bClass.isAssignableFrom(sClass);
     }
 
     private record Pair<T, U>(@NotNull T first, @NotNull U second) {}
