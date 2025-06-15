@@ -2,7 +2,6 @@ package io.github.kaktushose.proteus.conversion;
 
 import io.github.kaktushose.proteus.Proteus;
 import io.github.kaktushose.proteus.graph.Edge;
-import io.github.kaktushose.proteus.graph.Edge.ResolvedEdge;
 import io.github.kaktushose.proteus.mapping.MappingResult;
 import io.github.kaktushose.proteus.type.Type;
 import org.jetbrains.annotations.NotNull;
@@ -139,7 +138,7 @@ public sealed interface ConversionResult<T> {
                 return message;
             }
             List<Edge> path = context.path();
-            ResolvedEdge step = context.step();
+            Edge step = context.step();
             Type<?> from = step.from();
             Type<?> into = step.into();
             int index = path.indexOf(step);
@@ -174,8 +173,8 @@ public sealed interface ConversionResult<T> {
     /// Provides additional information about the conversion that failed.
     ///
     /// @param path a [List] of [Edge]s describing the full path of the conversion
-    /// @param step the [ResolvedEdge] at which the conversion failed
-    record ConversionContext(@NotNull List<Edge> path, @NotNull ResolvedEdge step) {
+    /// @param step the [Edge] at which the conversion failed
+    record ConversionContext(@NotNull List<Edge> path, @NotNull Edge step) {
 
         /// Gets the source [Type] of the path.
         ///

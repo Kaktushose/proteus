@@ -42,7 +42,7 @@ record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     public Path addEdge(@NotNull Type<?> intermediate, @Nullable Graph.Vertex vertex) {
         List<Edge> newEdges = new ArrayList<>(edges);
         if (vertex != null) {
-            newEdges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, vertex.mapper()));
+            newEdges.add(new Edge(head, (Type<Object>) intermediate, vertex.mapper()));
             return new Path(newEdges, (Type<Object>) intermediate);
         }
         if (!head.format().equals(intermediate.format())) {
@@ -51,7 +51,6 @@ record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
                             .formatted(head.format(), intermediate.format())
             );
         }
-        newEdges.add(new Edge.UnresolvedEdge(head, (Type<Object>) intermediate));
         return new Path(newEdges, (Type<Object>) intermediate);
     }
 

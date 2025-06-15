@@ -4,8 +4,6 @@ import io.github.kaktushose.proteus.conversion.ConversionResult;
 import io.github.kaktushose.proteus.conversion.ConversionResult.ConversionContext;
 import io.github.kaktushose.proteus.conversion.CyclingConversionException;
 import io.github.kaktushose.proteus.graph.Edge;
-import io.github.kaktushose.proteus.graph.Edge.ResolvedEdge;
-import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.graph.Graph;
 import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
@@ -29,7 +27,7 @@ public class Proteus {
 
     private static final Proteus GLOBAL_INSTANCE = Proteus.create();
 
-    private static final ThreadLocal<List<ResolvedEdge>> callStack = ThreadLocal.withInitial(ArrayList::new);
+    private static final ThreadLocal<List<Edge>> callStack = ThreadLocal.withInitial(ArrayList::new);
     private final Graph graph;
     private final ProteusBuilder.ConflictStrategy conflictStrategy;
 
@@ -171,16 +169,7 @@ public class Proteus {
             return true;
         }
         List<Edge> path = graph.path(source, target);
-        if (path.isEmpty()) {
-            return false;
-        }
-        for (Edge edge : path) {
-            if (edge instanceof Edge.UnresolvedEdge(Type<?> from, Type<?> into)
-                && !existsPath(Type.of(from.container()), Type.of(into.container()))) {
-                return false;
-            }
-        }
-        return true;
+        return !path.isEmpty();
     }
 
     /// Attempts to convert the source [Type] with the given value [S] to the target [Type]. This will perform a lossy
@@ -209,7 +198,7 @@ public class Proteus {
     /// @return a [ConversionResult] either holding the converted value or the error
     @NotNull
     public <S, T> ConversionResult<T> convert(@NotNull S value, @NotNull Type<S> source, @NotNull Type<T> target, boolean lossless) {
-        List<ResolvedEdge> oldStack = callStack.get();
+        List<Edge> oldStack = callStack.get();
         callStack.set(new ArrayList<>(oldStack));
 
         try {
@@ -233,25 +222,16 @@ public class Proteus {
         ConversionResult<Object> intermediate = new ConversionResult.Success<>(value, true);
         for (Edge edge : path) {
             if (intermediate instanceof ConversionResult.Success<?>(Object success, boolean _)) {
-                intermediate = applyEdge(edge, path, success, lossless);
+                intermediate = applyMapper(edge, path, success, lossless);
             }
         }
         return (ConversionResult<T>) intermediate;
     }
 
     @NotNull
-    private ConversionResult<Object> applyEdge(@NotNull Edge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
-        return switch (edge) {
-            case ResolvedEdge resolved -> applyMapper(resolved, path, value, lossless);
-            case UnresolvedEdge(Type<Object> from, Type<Object> into) ->
-                    convertInternal(value, Type.of(from.container()), Type.of(into.container()), lossless);
-        };
-    }
-
-    @NotNull
-    private ConversionResult<Object> applyMapper(@NotNull ResolvedEdge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
+    private ConversionResult<Object> applyMapper(@NotNull Edge edge, @NotNull List<Edge> path, @NotNull Object value, boolean lossless) {
         Mapper.UniMapper<Object, Object> mapper = edge.mapper();
-        List<ResolvedEdge> stack = callStack.get();
+        List<Edge> stack = callStack.get();
         if (stack.contains(edge)) {
             throw new CyclingConversionException(edge, stack);
         }

@@ -1,7 +1,6 @@
 package io.github.kaktushose.proteus.graph;
 
 import io.github.kaktushose.proteus.ProteusBuilder.ConflictStrategy;
-import io.github.kaktushose.proteus.graph.Edge.UnresolvedEdge;
 import io.github.kaktushose.proteus.internal.ConcurrentLruCache;
 import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
@@ -135,7 +134,7 @@ public final class Graph {
         }
 
         if (source.equalsFormat(target)) {
-            return List.of(new UnresolvedEdge((Type<Object>) source, (Type<Object>) target));
+            return findPath(new Pair<>(Type.of(source.container()), Type.of(target.container())));
         }
 
         LinkedList<Path> queue = new LinkedList<>();
@@ -145,10 +144,7 @@ public final class Graph {
         while (!queue.isEmpty()) {
             Path current = queue.poll();
 
-            if (current.head().format().equals(Format.NONE) && target.format().equals(Format.NONE)
-                    && target.container().type() instanceof Class<?> tClass
-                    && current.head().container().type() instanceof Class<?> cClass
-                    && tClass.isAssignableFrom(cClass)) {
+            if (equalsSubtype(current.head(), target)) {
                 return current.addEdge(target, new Graph.Vertex(Mapper.uni((x, _) -> MappingResult.lossless(x)), EnumSet.noneOf(Flag.class))).edges();
             }
 
@@ -171,17 +167,28 @@ public final class Graph {
                 visited.add(neighbour);
 
                 var mapper = mapper(current.head(), neighbour);
-                if (mapper != null && current.head().enforceStrictMode() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
-                    continue;
-                }
-                Path next = current.addEdge(neighbour, mapper);
-                if (neighbour.equals(target) || neighbour.equalsFormat(target) || equalsSubtype(neighbour, target)) {
-                    return next.edges();
-                }
 
-                queue.offerFirst(next);
+                if (mapper == null) {
+                    List<Edge> containerPath = findPath(new Pair<>(Type.of(current.head().container()), Type.of(neighbour.container())));
+                    if (containerPath.isEmpty()) continue;
+
+                    ArrayList<Edge> newEdges = new ArrayList<>(current.edges());
+                    newEdges.addAll(containerPath);
+                    queue.offer(new Path(newEdges, (Type<Object>) neighbour));
+                } else {
+                    if (current.head().enforceStrictMode() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
+                        continue;
+                    }
+                    Path next = current.addEdge(neighbour, mapper);
+                    if (neighbour.equals(target) || neighbour.equalsFormat(target) || equalsSubtype(neighbour, target)) {
+                        return next.edges();
+                    }
+
+                    queue.offerFirst(next);
+                }
             }
         }
+
         return List.of();
     }
 
