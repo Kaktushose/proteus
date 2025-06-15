@@ -18,7 +18,7 @@ import java.util.List;
 ///              [Edge] in the list of edges maps to and thus the [Type] that the next [Edge] has to start with.
 @ApiStatus.Internal
 @SuppressWarnings("unchecked")
-public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
+record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
 
     public Path {
         edges = Collections.unmodifiableList(edges);

@@ -24,6 +24,7 @@ class SubTypesTest {
     private static final Type<BaseInterface> baseInterface = Type.of(BaseInterface.class);
     private static final Type<BaseInterfaceImpl> baseInterfaceImpl = Type.of(BaseInterfaceImpl.class);
     private static final Type<String> string = Type.of(String.class);
+    private static final Type<InterfaceAndBaseType> interfaceAndBase = Type.of(InterfaceAndBaseType.class);
     private static Proteus proteus;
 
     @BeforeEach
@@ -32,12 +33,33 @@ class SubTypesTest {
     }
 
     @Test
+    void withoutName() {
+        DifferentType instance = new DifferentType();
+
+        proteus.from(baseType)
+                .into(string,  Mapper.uni((_, _) -> MappingResult.lossless("")));
+        proteus.from(baseInterface)
+                .into(differentType, Mapper.uni((_, _) -> MappingResult.lossless(instance)));
+
+        ConversionResult<DifferentType> result = proteus.convert(new InterfaceAndBaseType(), interfaceAndBase, differentType);
+        assertEquals(new ConversionResult.Success<>(instance, true), result);
+    }
+
+    @Test
+    void inputTypeIsSubTypeOfTarget_ShouldConvert() {
+        SubType val = new SubType();
+        ConversionResult<BaseType> result = proteus.convert(val, subType, baseType);
+
+        assertEquals(new ConversionResult.Success<>(val, true), result);
+    }
+
+    @Test
     void subTypeConversion_WithStrictMode_ShouldReturnNoPathFound() {
         proteus.from(differentType).into(subType, Mapper.uni((_, _) ->
                 MappingResult.lossless(new SubType())
         ));
         proteus.from(baseType).into(string, Mapper.uni((source, _) ->
-                MappingResult.lossless(source.value())
+                MappingResult.lossless(source.bValue())
         ), Flag.STRICT_SUB_TYPES);
 
         ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
@@ -71,7 +93,7 @@ class SubTypesTest {
                 MappingResult.lossless(source)
         ));
         proteus.from(baseType).into(string, Mapper.uni((source, _) ->
-                MappingResult.lossless(source.value())
+                MappingResult.lossless(source.bValue())
         ));
 
         ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
@@ -85,7 +107,7 @@ class SubTypesTest {
                 MappingResult.lossless(new SubType())
         ));
         proteus.from(baseType, subType).into(string, Mapper.uni((source, _) ->
-                MappingResult.lossless(source.value())
+                MappingResult.lossless(source.bValue())
         ));
 
         ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
@@ -113,7 +135,7 @@ class SubTypesTest {
                 MappingResult.lossless(new SubType())
         ));
         proteus.from(baseType).into(string, Mapper.uni((source, _) ->
-                MappingResult.lossless(source.value())
+                MappingResult.lossless(source.bValue())
         ));
 
         ConversionResult<String> result = proteus.convert(new DifferentType(), differentType, string);
@@ -132,6 +154,8 @@ class SubTypesTest {
         assertEquals(new ConversionResult.Success<>(resultType, true), result);
     }
 
+    private static class InterfaceAndBaseType extends BaseType implements BaseInterface {}
+
     private interface BaseInterface {
         default String value() {
             return INPUT;
@@ -143,7 +167,7 @@ class SubTypesTest {
     private static class DifferentType {}
 
     private static class BaseType {
-        String value() {
+        String bValue() {
             return INPUT;
         }
     }

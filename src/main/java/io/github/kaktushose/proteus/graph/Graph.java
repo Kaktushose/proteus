@@ -7,7 +7,10 @@ import io.github.kaktushose.proteus.mapping.Flag;
 import io.github.kaktushose.proteus.mapping.Mapper;
 import io.github.kaktushose.proteus.mapping.Mapper.BiMapper;
 import io.github.kaktushose.proteus.mapping.Mapper.UniMapper;
+import io.github.kaktushose.proteus.mapping.MappingResult;
+import io.github.kaktushose.proteus.type.Format;
 import io.github.kaktushose.proteus.type.Type;
+import io.github.kaktushose.proteus.type.TypeReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,8 +31,6 @@ public final class Graph {
 
     public record Vertex(UniMapper<Object, Object> mapper, EnumSet<Flag> flags) {}
 
-    // we have to use a thread local to retain this flag for unresolved edges
-    private static final ThreadLocal<Boolean> enforceStrictMode = ThreadLocal.withInitial(() -> false);
     private final Map<Type<?>, Map<Type<?>, Vertex>> adjacencyList;
     private ConcurrentLruCache<Pair<Type<?>, Type<?>>, List<Edge>> pathCache;
 
@@ -114,6 +115,7 @@ public final class Graph {
         result.addAll(adjacencyList.keySet().stream()
                 .filter(it -> it.equalsFormat(type))
                 .collect(Collectors.toSet()));
+
         return result;
     }
 
@@ -136,22 +138,30 @@ public final class Graph {
             return List.of(new UnresolvedEdge((Type<Object>) source, (Type<Object>) target));
         }
 
-        Queue<Path> queue = new LinkedList<>();
+        LinkedList<Path> queue = new LinkedList<>();
         Set<Type<?>> visited = new HashSet<>();
         queue.offer(new Path(source));
         visited.add(source);
         while (!queue.isEmpty()) {
             Path current = queue.poll();
+
+            if (current.head().format().equals(Format.NONE) && target.format().equals(Format.NONE)
+                    && target.container().type() instanceof Class<?> tClass
+                    && current.head().container().type() instanceof Class<?> cClass
+                    && tClass.isAssignableFrom(cClass)) {
+                return current.addEdge(target, new Graph.Vertex(Mapper.uni((x, _) -> MappingResult.lossless(x)), EnumSet.noneOf(Flag.class))).edges();
+            }
+
             Set<Type<?>> neighbours = neighbours(current.head());
 
-            if (neighbours.isEmpty() && current.head().container().type() instanceof Class<?> clazz) {
-                var result = superTypesNeighbours(clazz).or(() -> interfaceNeighbours(clazz));
-                if (result.isEmpty()) {
-                    continue;
+            if (current.head().container().type() instanceof Class<?> clazz) {
+                for (Type<?> type : superTypes(clazz.getSuperclass())) {
+                    queue.offerLast(current.withHead(new Type<>(type.format(), (TypeReference<Object>) type.container(), true)));
                 }
-                current = current.withHead((Type<Object>) result.get().first());
-                neighbours = result.get().second();
-                enforceStrictMode.set(true);
+
+                for (Type<?> type : interfaces(clazz)) {
+                    queue.offerLast(current.withHead(new Type<>(type.format(), (TypeReference<Object>) type.container(), true)));
+                }
             }
 
             for (Type<?> neighbour : neighbours) {
@@ -161,7 +171,7 @@ public final class Graph {
                 visited.add(neighbour);
 
                 var mapper = mapper(current.head(), neighbour);
-                if (mapper != null && enforceStrictMode.get() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
+                if (mapper != null && current.head().enforceStrictMode() && mapper.flags().contains(Flag.STRICT_SUB_TYPES)) {
                     continue;
                 }
                 Path next = current.addEdge(neighbour, mapper);
@@ -169,33 +179,28 @@ public final class Graph {
                     return next.edges();
                 }
 
-                queue.offer(next);
+                queue.offerFirst(next);
             }
         }
         return List.of();
     }
 
-    private Optional<Pair<Type<?>, Set<Type<?>>>> superTypesNeighbours(@Nullable Class<?> clazz) {
+    private Set<Type<?>> superTypes(@Nullable Class<?> clazz) {
+        Set<Type<?>> superTypes = new HashSet<>();
         while (clazz != null) {
-            Type<?> head = Type.of(clazz);
-            Set<Type<?>> neighbours = neighbours(head);
-            if (!neighbours.isEmpty()) {
-                return Optional.of(new Pair<>(head, neighbours));
-            }
+            superTypes.add(Type.of(clazz));
             clazz = clazz.getSuperclass();
         }
-        return Optional.empty();
+        return superTypes;
     }
 
-    private Optional<Pair<Type<?>, Set<Type<?>>>> interfaceNeighbours(@NotNull Class<?> clazz) {
+    private Set<Type<?>> interfaces(@NotNull Class<?> clazz) {
+        Set<Type<?>> interfaces = new HashSet<>();
         for (Class<?> anInterface : clazz.getInterfaces()) {
-            Type<?> head = Type.of(anInterface);
-            Set<Type<?>> neighbours = neighbours(head);
-            if (!neighbours.isEmpty()) {
-                return Optional.of(new Pair<>(head, neighbours));
-            }
+            interfaces.add(Type.of(anInterface));
+            interfaces.addAll(interfaces(anInterface));
         }
-        return Optional.empty();
+        return interfaces;
     }
 
     private boolean equalsSubtype(Type<?> neighbour, Type<?> target) {
