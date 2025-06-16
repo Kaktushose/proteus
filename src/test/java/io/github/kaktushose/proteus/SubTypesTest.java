@@ -33,7 +33,7 @@ class SubTypesTest {
     }
 
     @Test
-    void withoutName() {
+    void subTypeConversion_WithSuperTypeAndInterface_ShouldCheckAllPaths() {
         DifferentType instance = new DifferentType();
 
         proteus.from(baseType)
@@ -46,7 +46,7 @@ class SubTypesTest {
     }
 
     @Test
-    void inputTypeIsSubTypeOfTarget_ShouldConvert() {
+    void subTypeConversion_WithInputTypeIsSubTypeOfTarget_ShouldConvert() {
         SubType val = new SubType();
         ConversionResult<BaseType> result = proteus.convert(val, subType, baseType);
 
