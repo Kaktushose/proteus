@@ -11,7 +11,7 @@ import java.util.Objects;
 /// @param format    the [Format] describing this type
 /// @param container the [TypeReference] used to hold the data of this type
 /// @param <T>       the type of the [TypeReference]
-public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> container) {
+public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> container, boolean enforceStrictMode) {
 
     public Type {
         Objects.requireNonNull(format);
@@ -25,7 +25,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// @return a new [Type] with [Format#NONE] and the container defined by `value`
     public static Type<Object> dynamic(@NotNull Object value) {
         Objects.requireNonNull(value);
-        return new Type<>(Format.NONE, new TypeReference<>(value.getClass()) {});
+        return new Type<>(Format.NONE, new TypeReference<>(value.getClass()) {}, false);
     }
 
     /// Creates a new [Type] with the given [Format] and container [Class]. Primitive types will be converted to their
@@ -37,7 +37,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// @return a new [Type] with the given [Format] and container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Format format, @NotNull Class<T> container) {
-        return new Type<>(format, new TypeReference<>(wrap(container)) {});
+        return new Type<>(format, new TypeReference<>(wrap(container)) {}, false);
     }
 
     /// Creates a new [Type] with the given container [Class] that will have the [Format#NONE]. Primitive types will be
@@ -48,7 +48,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// @return a new [Type] with [Format#NONE] and the given container [Class]
     @NotNull
     public static <T> Type<T> of(@NotNull Class<T> container) {
-        return new Type<>(Format.NONE, new TypeReference<>(wrap(container)) {});
+        return new Type<>(Format.NONE, new TypeReference<>(wrap(container)) {}, false);
     }
 
     /// Creates a new [Type] with the given container [TypeReference] that will have the [Format#NONE].
@@ -58,7 +58,7 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
     /// @return a new [Type] with the given [Format] and the [Format#NONE]
     @NotNull
     public static <T> Type<T> of(@NotNull TypeReference<T> container) {
-        return new Type<>(Format.NONE, container);
+        return new Type<>(Format.NONE, container, false);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,6 +79,23 @@ public record Type<T>(@NotNull Format format, @NotNull TypeReference<T> containe
             return false;
         }
         return format.equals(other.format());
+    }
+
+    /// @param enforceStrictMode weather the copy should enforce strict mode
+    /// @return a copy of this type with the value for [Type#enforceStrictMode()] set to the parameter
+    public Type<T> withStrict(boolean enforceStrictMode) {
+        return new Type<>(format, container, enforceStrictMode);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Type<?> type)) return false;
+        return Objects.equals(format, type.format) && Objects.equals(container, type.container);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(format, container);
     }
 
     @NotNull

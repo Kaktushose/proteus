@@ -16,9 +16,8 @@ import java.util.List;
 /// @param edges a [List] of all previous [Edge]s
 /// @param head  the [Type] that is currently the result of this path. In other words, this is the [Type] that the last
 ///              [Edge] in the list of edges maps to and thus the [Type] that the next [Edge] has to start with.
-@ApiStatus.Internal
 @SuppressWarnings("unchecked")
-public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
+record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
 
     public Path {
         edges = Collections.unmodifiableList(edges);
@@ -38,20 +37,10 @@ public record Path(@NotNull List<Edge> edges, @NotNull Type<Object> head) {
     /// @param vertex       the [UniMapper] that maps from the `head` of this path to the given `intermediate` [Type].
     ///                     Can be null, if `head` and `intermediate` share the same [Format].
     /// @return a copy of this path with the given edge added to it
-    /// @throws IllegalArgumentException      if the `vertex` is null and `head` and `intermediate` don't share the same [Format]
-    public Path addEdge(@NotNull Type<?> intermediate, @Nullable Graph.Vertex vertex) {
+    public Path addEdge(@NotNull Type<?> intermediate, @NotNull Graph.Vertex vertex) {
         List<Edge> newEdges = new ArrayList<>(edges);
-        if (vertex != null) {
-            newEdges.add(new Edge.ResolvedEdge(head, (Type<Object>) intermediate, vertex.mapper()));
-            return new Path(newEdges, (Type<Object>) intermediate);
-        }
-        if (!head.format().equals(intermediate.format())) {
-            throw new IllegalArgumentException(
-                    "Illegal edge for two types with different format ('%s' and '%s'). Please report this error to the devs of proteus!"
-                            .formatted(head.format(), intermediate.format())
-            );
-        }
-        newEdges.add(new Edge.UnresolvedEdge(head, (Type<Object>) intermediate));
+        newEdges.add(new Edge(head, (Type<Object>) intermediate, vertex.mapper()));
+
         return new Path(newEdges, (Type<Object>) intermediate);
     }
 
