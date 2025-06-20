@@ -125,7 +125,7 @@ public final class Graph {
         Type<?> target = route.target();
 
         if (source.equalsFormat(target)) {
-            return findPath(new Key(Type.of(source.container()), Type.of(target.container())));
+            return path(Type.of(source.container()), Type.of(target.container()));
         }
 
         LinkedList<Path> queue = new LinkedList<>();
@@ -152,7 +152,7 @@ public final class Graph {
                 var mapper = mapper(current.head(), neighbour);
 
                 if (mapper == null) {
-                    List<Edge> containerPath = findPath(new Key(Type.of(current.head().container()), Type.of(neighbour.container())));
+                    List<Edge> containerPath = path(Type.of(current.head().container()), Type.of(neighbour.container()));
                     if (containerPath.isEmpty()) continue; // no path found - skip
 
                     ArrayList<Edge> newEdges = new ArrayList<>(current.edges());
